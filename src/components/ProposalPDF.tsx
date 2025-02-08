@@ -1,6 +1,6 @@
 // src/components/ProposalPDF.tsx
 "use client";
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Document,
   Page,
@@ -128,7 +128,10 @@ const ProposalPDF: React.FC<ProposalPDFProps> = (props) => {
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
   };
   
-  const generationDate = formatDate();
+  const [generationDate] = useState(() => {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  });
 
   return (
     <Document>
