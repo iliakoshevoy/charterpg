@@ -1,6 +1,6 @@
 // src/components/AircraftSelection.tsx
 "use client";
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { aircraftModels } from '@/data/aircraftData';
 import type { AircraftModel } from '@/data/aircraftData';
 
@@ -23,24 +23,31 @@ const AircraftSelection: React.FC<AircraftSelectionProps> = ({
 }) => {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [suggestions, setSuggestions] = useState<AircraftModel[]>([]);
+  const [mounted, setMounted] = useState(false);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const inputValue = e.target.value;
     onChange(inputValue);
 
-    if (inputValue.length > 0) {
-      const filtered = aircraftModels.filter(aircraft =>
-        aircraft.model.toLowerCase().startsWith(inputValue.toLowerCase())
-      );
-      setSuggestions(filtered);
-      setShowSuggestions(true);
-    } else {
+    if (inputValue.length === 0) {
       setSuggestions([]);
       setShowSuggestions(false);
+      onAircraftSelect(null);
+      return;
     }
-  };
 
-  const handleSuggestionClick = (aircraft: AircraftModel) => {
+    const filtered = aircraftModels.filter(aircraft =>
+      aircraft.model.toLowerCase().startsWith(inputValue.toLowerCase())
+    );
+    setSuggestions(filtered);
+    setShowSuggestions(true);
+  }, [onChange, onAircraftSelect]);
+
+  const handleSuggestionClick = useCallback((aircraft: AircraftModel) => {
     onChange(aircraft.model);
     onAircraftSelect({
       cabinWidth: aircraft.cabinWidth,
@@ -49,13 +56,17 @@ const AircraftSelection: React.FC<AircraftSelectionProps> = ({
       passengerCapacity: aircraft.passengerCapacity
     });
     setShowSuggestions(false);
-  };
+  }, [onChange, onAircraftSelect]);
 
   useEffect(() => {
     const handleClickOutside = () => setShowSuggestions(false);
-    document.addEventListener('click', handleClickOutside);
-    return () => document.removeEventListener('click', handleClickOutside);
-  }, []);
+    if (mounted) {
+      document.addEventListener('click', handleClickOutside);
+      return () => document.removeEventListener('click', handleClickOutside);
+    }
+  }, [mounted]);
+
+  if (!mounted) return <div className="w-full h-10 bg-gray-100 rounded-md animate-pulse" />;
 
   return (
     <div className="relative">

@@ -10,16 +10,22 @@ interface PDFGeneratorProps {
 }
 
 const PDFGenerator: React.FC<PDFGeneratorProps> = ({ formData }) => {
-  const [isClient, setIsClient] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setIsClient(true);
+    setMounted(true);
   }, []);
 
-  if (!isClient) {
+  // Check if we have enough data to generate a PDF
+  const hasValidData = formData.customerName && (
+    (formData.option1Name && formData.option1Image) ||
+    (formData.option2Name && formData.option2Image)
+  );
+
+  if (!mounted || !hasValidData) {
     return (
-      <button className="px-4 py-2 bg-gray-300 text-gray-500 rounded-md cursor-wait">
-        Initializing...
+      <button disabled className="px-4 py-2 bg-gray-300 text-gray-500 rounded-md cursor-not-allowed">
+        Please fill required fields
       </button>
     );
   }

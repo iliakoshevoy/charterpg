@@ -1,11 +1,15 @@
 // src/components/ProposalForm.tsx
 "use client";
-import React, { useState } from 'react';
+import React, { useState, Suspense } from 'react';
 import dynamic from 'next/dynamic';
-import AircraftSelection from '@/components/AircraftSelection';
 import type { ProposalPDFProps } from './ProposalPDF';
 
-const PDFGenerator = dynamic(() => import('@/components/PDFGenerator'), {
+const AircraftSelection = dynamic(() => import('./AircraftSelection'), {
+  ssr: false,
+  loading: () => <div className="w-full h-10 bg-gray-100 rounded-md animate-pulse" />
+});
+
+const PDFGenerator = dynamic(() => import('./PDFGenerator'), {
   ssr: false,
   loading: () => (
     <button disabled className="px-4 py-2 bg-gray-300 text-gray-500 rounded-md cursor-not-allowed">
@@ -29,7 +33,7 @@ const ProposalForm = () => {
     option2Name: '',
     option2Image: null,
     option2Details: null,
-  });
+});
   
   const [imagePreviews, setImagePreviews] = useState({
     option1: null as string | null,
@@ -56,11 +60,24 @@ const ProposalForm = () => {
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData(prev => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
-  };
+    const { name, value } = e.target;
+    
+    setFormData(prev => {
+        const newData = { ...prev };
+        
+        // Type assertion to make TypeScript happy
+        (newData as any)[name] = value;
+
+        // If we're clearing the aircraft name, also clear its details
+        if (name === 'option1Name' && !value) {
+            newData.option1Details = null;
+        } else if (name === 'option2Name' && !value) {
+            newData.option2Details = null;
+        }
+
+        return newData;
+    });
+};
 
   return (
     <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md">
