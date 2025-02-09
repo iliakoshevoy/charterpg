@@ -227,55 +227,55 @@ const ProposalPDF: React.FC<ProposalPDFProps> = (props) => {
         <Text style={styles.pageNumber}>2</Text>
       </Page>
 
-      {/* Option 2 Page */}
-      <Page size="A4" style={styles.page}>
-        <View style={styles.header}>
-          <Text style={styles.headerText}>Option 2</Text>
-        </View>
+      {/* Option 2 Page - Only render if there's content */}
+      {(props.option2Name) && (
+        <Page size="A4" style={styles.page}>
+          <View style={styles.header}>
+            <Text style={styles.headerText}>Option 2</Text>
+          </View>
 
-        <View style={styles.section}>
-          {props.option2Name && (
+          <View style={styles.section}>
             <View style={styles.detailRow}>
               <Text style={styles.label}>Aircraft Type:</Text>
               <Text style={styles.value}>{props.option2Name}</Text>
             </View>
-          )}
 
-          {props.option2Details && (
-            <>
-              {props.option2Details.cabinWidth && props.option2Details.cabinHeight && (
+            {props.option2Details && (
+              <>
+                {props.option2Details.cabinWidth && props.option2Details.cabinHeight && (
+                  <View style={styles.detailRow}>
+                    <Text style={styles.label}>Cabin Dimensions:</Text>
+                    <Text style={styles.value}>
+                      {props.option2Details.cabinWidth} × {props.option2Details.cabinHeight}
+                    </Text>
+                  </View>
+                )}
+                
+                {props.option2Details.baggageVolume && (
+                  <View style={styles.detailRow}>
+                    <Text style={styles.label}>Baggage Volume:</Text>
+                    <Text style={styles.value}>{props.option2Details.baggageVolume}</Text>
+                  </View>
+                )}
+                
                 <View style={styles.detailRow}>
-                  <Text style={styles.label}>Cabin Dimensions:</Text>
-                  <Text style={styles.value}>
-                    {props.option2Details.cabinWidth} × {props.option2Details.cabinHeight}
-                  </Text>
+                  <Text style={styles.label}>Passenger Capacity:</Text>
+                  <Text style={styles.value}>{props.option2Details.passengerCapacity}</Text>
                 </View>
-              )}
-              
-              {props.option2Details.baggageVolume && (
-                <View style={styles.detailRow}>
-                  <Text style={styles.label}>Baggage Volume:</Text>
-                  <Text style={styles.value}>{props.option2Details.baggageVolume}</Text>
-                </View>
-              )}
-              
-              <View style={styles.detailRow}>
-                <Text style={styles.label}>Passenger Capacity:</Text>
-                <Text style={styles.value}>{props.option2Details.passengerCapacity}</Text>
+              </>
+            )}
+
+            {props.option2Image && (
+              <View style={styles.imageContainer}>
+                <Image src={props.option2Image} style={styles.image} />
               </View>
-            </>
-          )}
+            )}
+          </View>
 
-          {props.option2Image && (
-            <View style={styles.imageContainer}>
-              <Image src={props.option2Image} style={styles.image} />
-            </View>
-          )}
-        </View>
-
-        <Text style={styles.footer}>Private Jet Charter Proposal • {generationDate}</Text>
-        <Text style={styles.pageNumber}>3</Text>
-      </Page>
+          <Text style={styles.footer}>Private Jet Charter Proposal • {generationDate}</Text>
+          <Text style={styles.pageNumber}>3</Text>
+        </Page>
+      )}
     </Document>
   );
 };

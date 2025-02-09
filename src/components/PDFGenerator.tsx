@@ -1,6 +1,6 @@
 "use client";
-import React, { useState, useEffect, useMemo } from "react";
-import { usePDF } from "@react-pdf/renderer";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
+import { pdf } from "@react-pdf/renderer";
 import ProposalPDF from "./ProposalPDF";
 import type { ProposalPDFProps } from "./ProposalPDF";
 
@@ -10,58 +10,115 @@ interface PDFGeneratorProps {
 
 const PDFGenerator: React.FC<PDFGeneratorProps> = ({ formData }) => {
   const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-    return () => setMounted(false);
-  }, []);
+  const [pdfBlob, setPdfBlob] = useState<string | null>(null);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [shouldGenerate, setShouldGenerate] = useState(false);
 
   const hasValidData = useMemo(() => {
-    return Boolean(formData.customerName); // Only require customerName
-  }, [formData.customerName]);
+    const hasCustomer = Boolean(formData.customerName);
+    const hasOption1 = Boolean(formData.option1Name);
+    const hasOption2 = Boolean(formData.option2Name);
+    return hasCustomer && (hasOption1 || hasOption2);
+  }, [
+    formData.customerName,
+    formData.option1Name,
+    formData.option2Name,
+  ]);
 
-  // Ensure 'instance' is either a valid ReactElement or undefined
-  const instance = useMemo(() => {
-    if (!hasValidData) return undefined; // Ensure the instance is undefined when data is invalid
-    return <ProposalPDF {...formData} />;
+  const generatePDF = useCallback(async () => {
+    if (!hasValidData) return;
+    
+    try {
+      setIsGenerating(true);
+      setError(null);
+      
+      const document = <ProposalPDF {...formData} />;
+      const blob = await pdf(document).toBlob();
+      const url = URL.createObjectURL(blob);
+      setPdfBlob(url);
+      
+      console.log('PDF Generated successfully');
+    } catch (err) {
+      console.error('Error generating PDF:', err);
+      setError('Failed to generate PDF');
+    } finally {
+      setIsGenerating(false);
+      setShouldGenerate(false);
+    }
   }, [formData, hasValidData]);
 
-  const [{ loading, url }] = usePDF({ document: instance });
+  // Watch for valid data and generate PDF only when needed
+  useEffect(() => {
+    if (hasValidData && !pdfBlob) {
+      setShouldGenerate(true);
+    }
+  }, [hasValidData, pdfBlob]);
 
-  if (!mounted || !hasValidData) {
-    return (
-      <button
-        disabled
-        className="px-4 py-2 bg-gray-300 text-gray-500 rounded-md cursor-not-allowed"
-      >
-        Please fill required fields
-      </button>
-    );
-  }
+  // Generate PDF when shouldGenerate is true
+  useEffect(() => {
+    if (shouldGenerate && mounted) {
+      generatePDF();
+    }
+  }, [shouldGenerate, generatePDF, mounted]);
+
+  // Cleanup
+  useEffect(() => {
+    setMounted(true);
+    return () => {
+      setMounted(false);
+      if (pdfBlob) {
+        URL.revokeObjectURL(pdfBlob);
+      }
+    };
+  }, []);
 
   const handleDownload = () => {
-    if (url) {
+    if (!pdfBlob) {
+      setShouldGenerate(true);
+      return;
+    }
+    
+    try {
       const link = document.createElement("a");
-      link.href = url;
+      link.href = pdfBlob;
       link.download = `charter-proposal-${formData.customerName || "unnamed"}.pdf`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
+    } catch (downloadError) {
+      console.error('Error downloading PDF:', downloadError);
+      setError('Error downloading PDF');
     }
   };
 
+  const buttonText = (() => {
+    if (isGenerating) return "Preparing PDF...";
+    if (error) return "Error";
+    if (!hasValidData) return "Please fill required fields";
+    if (!pdfBlob && hasValidData) return "Click to generate PDF";
+    return "Download Proposal";
+  })();
+
   return (
-    <button
-      onClick={handleDownload}
-      disabled={loading || !url}
-      className={`px-4 py-2 rounded-md ${
-        loading || !url
-          ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-          : "bg-blue-500 text-white hover:bg-blue-600 transition-colors"
-      }`}
-    >
-      {loading ? "Preparing PDF..." : "Download Proposal"}
-    </button>
+    <div>
+      <button
+        onClick={handleDownload}
+        disabled={isGenerating || Boolean(error) || !hasValidData}
+        className={`px-4 py-2 rounded-md ${
+          isGenerating || !hasValidData || error
+            ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+            : "bg-blue-500 text-white hover:bg-blue-600 transition-colors"
+        }`}
+      >
+        {buttonText}
+      </button>
+      {error && (
+        <div className="mt-2 text-sm text-red-600">
+          {error}
+        </div>
+      )}
+    </div>
   );
 };
 

@@ -3,6 +3,8 @@
 import React, { useState, Suspense } from 'react';
 import dynamic from 'next/dynamic';
 import type { ProposalPDFProps } from './ProposalPDF';
+import ImageUploadArea from '@/components/ImageUploadArea';
+
 
 const AircraftSelection = dynamic(() => import('./AircraftSelection'), {
   ssr: false,
@@ -202,130 +204,154 @@ const ProposalForm = () => {
           </div>
         </div>
 
-        {/* Aircraft Options */}
-        <div className="bg-gray-50 p-6 rounded-md">
-          <h2 className="text-xl font-semibold mb-4 text-gray-800">Aircraft Options</h2>
-          
-          {/* Option 1 */}
-          <div className="mb-6">
-            <h3 className="text-lg font-medium mb-3 text-gray-700">Option 1</h3>
-            <div className="space-y-3">
-              <div>
-                <label htmlFor="option1Name" className="block text-sm font-medium text-gray-700 mb-1">
-                  Aircraft Type
-                </label>
-                <AircraftSelection
-                  value={formData.option1Name}
-                  onChange={(value) => {
-                    setFormData(prev => ({
-                      ...prev,
-                      option1Name: value
-                    }));
-                  }}
-                  optionNumber="1"
-                  onAircraftSelect={(details) => {
-                    setFormData(prev => ({
-                      ...prev,
-                      option1Details: details
-                    }));
-                  }}
-                />
-                {formData.option1Details && (
-                  <div className="mt-2 text-sm text-gray-600">
-                    {formData.option1Details.cabinWidth && formData.option1Details.cabinHeight && (
-                      <p>Cabin: {formData.option1Details.cabinWidth} × {formData.option1Details.cabinHeight}</p>
-                    )}
-                    {formData.option1Details.baggageVolume && (
-                      <p>Baggage Volume: {formData.option1Details.baggageVolume}</p>
-                    )}
-                    <p>Passenger Capacity: {formData.option1Details.passengerCapacity}</p>
-                  </div>
-                )}
-              </div>
-              <div>
-                <label htmlFor="option1Image" className="block text-sm font-medium text-gray-700 mb-1">
-                  Aircraft Image
-                </label>
-                <input
-                  type="file"
-                  id="option1Image"
-                  accept="image/*"
-                  onChange={(e) => handleImageUpload(e, 'option1')}
-                  className="w-full text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-                />
-                {imagePreviews.option1 && (
-                  <div className="mt-2">
-                    <img
-                      src={imagePreviews.option1}
-                      alt="Option 1 preview"
-                      className="max-w-xs rounded-md"
-                    />
-                  </div>
-                )}
-              </div>
-            </div>
+ {/* Aircraft Options */}
+<div className="bg-gray-50 p-6 rounded-md">
+  <h2 className="text-xl font-semibold mb-4 text-gray-800">Aircraft Options</h2>
+  
+  {/* Option 1 */}
+  <div className="mb-6">
+    <h3 className="text-lg font-medium mb-3 text-gray-700">Option 1</h3>
+    <div className="space-y-3">
+      <div>
+        <label htmlFor="option1Name" className="block text-sm font-medium text-gray-700 mb-1">
+          Aircraft Type
+        </label>
+        <AircraftSelection
+          value={formData.option1Name}
+          onChange={(value) => {
+            setFormData(prev => ({
+              ...prev,
+              option1Name: value
+            }));
+          }}
+          optionNumber="1"
+          onAircraftSelect={(details) => {
+            setFormData(prev => ({
+              ...prev,
+              option1Details: details
+            }));
+          }}
+        />
+        {formData.option1Details && (
+          <div className="mt-2 text-sm text-gray-600">
+            {formData.option1Details.cabinWidth && formData.option1Details.cabinHeight && (
+              <p>Cabin: {formData.option1Details.cabinWidth} × {formData.option1Details.cabinHeight}</p>
+            )}
+            {formData.option1Details.baggageVolume && (
+              <p>Baggage Volume: {formData.option1Details.baggageVolume}</p>
+            )}
+            <p>Passenger Capacity: {formData.option1Details.passengerCapacity}</p>
           </div>
+        )}
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Aircraft Image
+        </label>
+        <ImageUploadArea
+          onImageUpload={(file) => {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+              const base64String = reader.result as string;
+              setFormData(prev => ({
+                ...prev,
+                option1Image: base64String
+              }));
+              setImagePreviews(prev => ({
+                ...prev,
+                option1: base64String
+              }));
+            };
+            reader.readAsDataURL(file);
+          }}
+          onImageRemove={() => {
+            setFormData(prev => ({
+              ...prev,
+              option1Image: null
+            }));
+            setImagePreviews(prev => ({
+              ...prev,
+              option1: null
+            }));
+          }}
+          previewUrl={imagePreviews.option1}
+        />
+      </div>
+    </div>
+  </div>
 
-          {/* Option 2 */}
-          <div>
-            <h3 className="text-lg font-medium mb-3 text-gray-700">Option 2</h3>
-            <div className="space-y-3">
-              <div>
-                <label htmlFor="option2Name" className="block text-sm font-medium text-gray-700 mb-1">
-                  Aircraft Type
-                </label>
-                <AircraftSelection
-                  value={formData.option2Name}
-                  onChange={(value) => {
-                    setFormData(prev => ({
-                      ...prev,
-                      option2Name: value
-                    }));
-                  }}
-                  optionNumber="2"
-                  onAircraftSelect={(details) => {
-                    setFormData(prev => ({
-                      ...prev,
-                      option2Details: details
-                    }));
-                  }}
-                />
-                {formData.option2Details && (
-                  <div className="mt-2 text-sm text-gray-600">
-                    {formData.option2Details.cabinWidth && formData.option2Details.cabinHeight && (
-                      <p>Cabin: {formData.option2Details.cabinWidth} × {formData.option2Details.cabinHeight}</p>
-                    )}
-                    {formData.option2Details.baggageVolume && (
-                      <p>Baggage Volume: {formData.option2Details.baggageVolume}</p>
-                    )}
-                    <p>Passenger Capacity: {formData.option2Details.passengerCapacity}</p>
-                  </div>
-                )}
-              </div>
-              <div>
-                <label htmlFor="option2Image" className="block text-sm font-medium text-gray-700 mb-1">
-                  Aircraft Image
-                </label>
-                <input
-                  type="file"
-                  id="option2Image"
-                  accept="image/*"
-                  onChange={(e) => handleImageUpload(e, 'option2')}
-                  className="w-full text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-                />
-                {imagePreviews.option2 && (
-                  <div className="mt-2">
-                    <img
-                      src={imagePreviews.option2}
-                      alt="Option 2 preview"
-                      className="max-w-xs rounded-md"
-                    />
-                  </div>
-                )}
-              </div>
-            </div>
+  {/* Option 2 */}
+  <div>
+    <h3 className="text-lg font-medium mb-3 text-gray-700">Option 2</h3>
+    <div className="space-y-3">
+      <div>
+        <label htmlFor="option2Name" className="block text-sm font-medium text-gray-700 mb-1">
+          Aircraft Type
+        </label>
+        <AircraftSelection
+          value={formData.option2Name}
+          onChange={(value) => {
+            setFormData(prev => ({
+              ...prev,
+              option2Name: value
+            }));
+          }}
+          optionNumber="2"
+          onAircraftSelect={(details) => {
+            setFormData(prev => ({
+              ...prev,
+              option2Details: details
+            }));
+          }}
+        />
+        {formData.option2Details && (
+          <div className="mt-2 text-sm text-gray-600">
+            {formData.option2Details.cabinWidth && formData.option2Details.cabinHeight && (
+              <p>Cabin: {formData.option2Details.cabinWidth} × {formData.option2Details.cabinHeight}</p>
+            )}
+            {formData.option2Details.baggageVolume && (
+              <p>Baggage Volume: {formData.option2Details.baggageVolume}</p>
+            )}
+            <p>Passenger Capacity: {formData.option2Details.passengerCapacity}</p>
           </div>
-        </div>
+        )}
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Aircraft Image
+        </label>
+        <ImageUploadArea
+          onImageUpload={(file) => {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+              const base64String = reader.result as string;
+              setFormData(prev => ({
+                ...prev,
+                option2Image: base64String
+              }));
+              setImagePreviews(prev => ({
+                ...prev,
+                option2: base64String
+              }));
+            };
+            reader.readAsDataURL(file);
+          }}
+          onImageRemove={() => {
+            setFormData(prev => ({
+              ...prev,
+              option2Image: null
+            }));
+            setImagePreviews(prev => ({
+              ...prev,
+              option2: null
+            }));
+          }}
+          previewUrl={imagePreviews.option2}
+        />
+      </div>
+    </div>
+  </div>
+</div>
 
         {/* Generate PDF Button */}
         <div className="mt-6">
