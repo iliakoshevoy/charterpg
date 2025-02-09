@@ -177,7 +177,7 @@ const ProposalPDF: React.FC<ProposalPDFProps> = (props) => {
       {/* First Page - Main Information */}
       <Page size="A4" style={styles.page}>
         <View style={styles.header}>
-          <Text style={styles.headerText}>Private Jet Charter Proposal</Text>
+          <Text style={styles.headerText}>Charter Proposal</Text>
           <Text style={styles.subHeader}>Prepared for: {props.customerName || 'N/A'}</Text>
         </View>
 

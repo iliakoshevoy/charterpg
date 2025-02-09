@@ -129,14 +129,12 @@ useEffect(() => {
 
   return (
     <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md">
-      <h1 className="text-2xl font-bold mb-6 text-gray-800">
-        Charter Proposal Generator
-      </h1>
+
       
       <div className="space-y-6">
         {/* Customer Information */}
         <div className="bg-gray-50 p-6 rounded-md">
-          <h2 className="text-xl font-semibold mb-4 text-gray-800">Customer Information</h2>
+          <h2 className="text-xl font-semibold mb-4 text-gray-800">Flight Information</h2>
           
           {/* Customer Name and Passengers Row */}
           <div className="grid grid-cols-2 gap-4 mb-4">
