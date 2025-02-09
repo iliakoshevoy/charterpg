@@ -1,10 +1,9 @@
-// src/components/ProposalForm.tsx
 "use client";
 import React, { useState, Suspense } from 'react';
 import dynamic from 'next/dynamic';
 import type { ProposalPDFProps } from './ProposalPDF';
 import ImageUploadArea from '@/components/ImageUploadArea';
-
+import AirportInput from '@/components/AirportInput';
 
 const AircraftSelection = dynamic(() => import('./AircraftSelection'), {
   ssr: false,
@@ -35,7 +34,12 @@ const ProposalForm = () => {
     option2Name: '',
     option2Image: null,
     option2Details: null,
-});
+  });
+
+  const [airportDetails, setAirportDetails] = useState({
+    departure: null as string | null,
+    arrival: null as string | null
+  });
   
   const [imagePreviews, setImagePreviews] = useState({
     option1: null as string | null,
@@ -79,7 +83,7 @@ const ProposalForm = () => {
 
         return newData;
     });
-};
+  };
 
   return (
     <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md">
@@ -157,34 +161,34 @@ const ProposalForm = () => {
 
           {/* Airports */}
           <div className="grid grid-cols-2 gap-4 mb-4">
-            <div>
-              <label htmlFor="departureAirport" className="block text-sm font-medium text-gray-700 mb-1">
-                Departure Airport
-              </label>
-              <input
-                type="text"
-                id="departureAirport"
-                name="departureAirport"
-                value={formData.departureAirport}
-                onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
-                placeholder="e.g., LAX"
-              />
-            </div>
-            <div>
-              <label htmlFor="arrivalAirport" className="block text-sm font-medium text-gray-700 mb-1">
-                Arrival Airport
-              </label>
-              <input
-                type="text"
-                id="arrivalAirport"
-                name="arrivalAirport"
-                value={formData.arrivalAirport}
-                onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
-                placeholder="e.g., JFK"
-              />
-            </div>
+            <AirportInput
+              label="Departure Airport"
+              value={formData.departureAirport}
+              onChange={(value, fullDetails) => {
+                setFormData(prev => ({
+                  ...prev,
+                  departureAirport: value
+                }));
+                setAirportDetails(prev => ({
+                  ...prev,
+                  departure: fullDetails
+                }));
+              }}
+            />
+            <AirportInput
+              label="Arrival Airport"
+              value={formData.arrivalAirport}
+              onChange={(value, fullDetails) => {
+                setFormData(prev => ({
+                  ...prev,
+                  arrivalAirport: value
+                }));
+                setAirportDetails(prev => ({
+                  ...prev,
+                  arrival: fullDetails
+                }));
+              }}
+            />
           </div>
 
           {/* Comment */}
@@ -204,158 +208,158 @@ const ProposalForm = () => {
           </div>
         </div>
 
- {/* Aircraft Options */}
-<div className="bg-gray-50 p-6 rounded-md">
-  <h2 className="text-xl font-semibold mb-4 text-gray-800">Aircraft Options</h2>
-  
-  {/* Option 1 */}
-  <div className="mb-6">
-    <h3 className="text-lg font-medium mb-3 text-gray-700">Option 1</h3>
-    <div className="space-y-3">
-      <div>
-        <label htmlFor="option1Name" className="block text-sm font-medium text-gray-700 mb-1">
-          Aircraft Type
-        </label>
-        <AircraftSelection
-          value={formData.option1Name}
-          onChange={(value) => {
-            setFormData(prev => ({
-              ...prev,
-              option1Name: value
-            }));
-          }}
-          optionNumber="1"
-          onAircraftSelect={(details) => {
-            setFormData(prev => ({
-              ...prev,
-              option1Details: details
-            }));
-          }}
-        />
-        {formData.option1Details && (
-          <div className="mt-2 text-sm text-gray-600">
-            {formData.option1Details.cabinWidth && formData.option1Details.cabinHeight && (
-              <p>Cabin: {formData.option1Details.cabinWidth} × {formData.option1Details.cabinHeight}</p>
-            )}
-            {formData.option1Details.baggageVolume && (
-              <p>Baggage Volume: {formData.option1Details.baggageVolume}</p>
-            )}
-            <p>Passenger Capacity: {formData.option1Details.passengerCapacity}</p>
+        {/* Aircraft Options */}
+        <div className="bg-gray-50 p-6 rounded-md">
+          <h2 className="text-xl font-semibold mb-4 text-gray-800">Aircraft Options</h2>
+          
+          {/* Option 1 */}
+          <div className="mb-6">
+            <h3 className="text-lg font-medium mb-3 text-gray-700">Option 1</h3>
+            <div className="space-y-3">
+              <div>
+                <label htmlFor="option1Name" className="block text-sm font-medium text-gray-700 mb-1">
+                  Aircraft Type
+                </label>
+                <AircraftSelection
+                  value={formData.option1Name}
+                  onChange={(value) => {
+                    setFormData(prev => ({
+                      ...prev,
+                      option1Name: value
+                    }));
+                  }}
+                  optionNumber="1"
+                  onAircraftSelect={(details) => {
+                    setFormData(prev => ({
+                      ...prev,
+                      option1Details: details
+                    }));
+                  }}
+                />
+                {formData.option1Details && (
+                  <div className="mt-2 text-sm text-gray-600">
+                    {formData.option1Details.cabinWidth && formData.option1Details.cabinHeight && (
+                      <p>Cabin: {formData.option1Details.cabinWidth} × {formData.option1Details.cabinHeight}</p>
+                    )}
+                    {formData.option1Details.baggageVolume && (
+                      <p>Baggage Volume: {formData.option1Details.baggageVolume}</p>
+                    )}
+                    <p>Passenger Capacity: {formData.option1Details.passengerCapacity}</p>
+                  </div>
+                )}
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Aircraft Image
+                </label>
+                <ImageUploadArea
+                  onImageUpload={(file) => {
+                    const reader = new FileReader();
+                    reader.onloadend = () => {
+                      const base64String = reader.result as string;
+                      setFormData(prev => ({
+                        ...prev,
+                        option1Image: base64String
+                      }));
+                      setImagePreviews(prev => ({
+                        ...prev,
+                        option1: base64String
+                      }));
+                    };
+                    reader.readAsDataURL(file);
+                  }}
+                  onImageRemove={() => {
+                    setFormData(prev => ({
+                      ...prev,
+                      option1Image: null
+                    }));
+                    setImagePreviews(prev => ({
+                      ...prev,
+                      option1: null
+                    }));
+                  }}
+                  previewUrl={imagePreviews.option1}
+                />
+              </div>
+            </div>
           </div>
-        )}
-      </div>
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
-          Aircraft Image
-        </label>
-        <ImageUploadArea
-          onImageUpload={(file) => {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-              const base64String = reader.result as string;
-              setFormData(prev => ({
-                ...prev,
-                option1Image: base64String
-              }));
-              setImagePreviews(prev => ({
-                ...prev,
-                option1: base64String
-              }));
-            };
-            reader.readAsDataURL(file);
-          }}
-          onImageRemove={() => {
-            setFormData(prev => ({
-              ...prev,
-              option1Image: null
-            }));
-            setImagePreviews(prev => ({
-              ...prev,
-              option1: null
-            }));
-          }}
-          previewUrl={imagePreviews.option1}
-        />
-      </div>
-    </div>
-  </div>
 
-  {/* Option 2 */}
-  <div>
-    <h3 className="text-lg font-medium mb-3 text-gray-700">Option 2</h3>
-    <div className="space-y-3">
-      <div>
-        <label htmlFor="option2Name" className="block text-sm font-medium text-gray-700 mb-1">
-          Aircraft Type
-        </label>
-        <AircraftSelection
-          value={formData.option2Name}
-          onChange={(value) => {
-            setFormData(prev => ({
-              ...prev,
-              option2Name: value
-            }));
-          }}
-          optionNumber="2"
-          onAircraftSelect={(details) => {
-            setFormData(prev => ({
-              ...prev,
-              option2Details: details
-            }));
-          }}
-        />
-        {formData.option2Details && (
-          <div className="mt-2 text-sm text-gray-600">
-            {formData.option2Details.cabinWidth && formData.option2Details.cabinHeight && (
-              <p>Cabin: {formData.option2Details.cabinWidth} × {formData.option2Details.cabinHeight}</p>
-            )}
-            {formData.option2Details.baggageVolume && (
-              <p>Baggage Volume: {formData.option2Details.baggageVolume}</p>
-            )}
-            <p>Passenger Capacity: {formData.option2Details.passengerCapacity}</p>
+          {/* Option 2 */}
+          <div>
+            <h3 className="text-lg font-medium mb-3 text-gray-700">Option 2</h3>
+            <div className="space-y-3">
+              <div>
+                <label htmlFor="option2Name" className="block text-sm font-medium text-gray-700 mb-1">
+                  Aircraft Type
+                </label>
+                <AircraftSelection
+                  value={formData.option2Name}
+                  onChange={(value) => {
+                    setFormData(prev => ({
+                      ...prev,
+                      option2Name: value
+                    }));
+                  }}
+                  optionNumber="2"
+                  onAircraftSelect={(details) => {
+                    setFormData(prev => ({
+                      ...prev,
+                      option2Details: details
+                    }));
+                  }}
+                />
+                {formData.option2Details && (
+                  <div className="mt-2 text-sm text-gray-600">
+                    {formData.option2Details.cabinWidth && formData.option2Details.cabinHeight && (
+                      <p>Cabin: {formData.option2Details.cabinWidth} × {formData.option2Details.cabinHeight}</p>
+                    )}
+                    {formData.option2Details.baggageVolume && (
+                      <p>Baggage Volume: {formData.option2Details.baggageVolume}</p>
+                    )}
+                    <p>Passenger Capacity: {formData.option2Details.passengerCapacity}</p>
+                  </div>
+                )}
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Aircraft Image
+                </label>
+                <ImageUploadArea
+                  onImageUpload={(file) => {
+                    const reader = new FileReader();
+                    reader.onloadend = () => {
+                      const base64String = reader.result as string;
+                      setFormData(prev => ({
+                        ...prev,
+                        option2Image: base64String
+                      }));
+                      setImagePreviews(prev => ({
+                        ...prev,
+                        option2: base64String
+                      }));
+                    };
+                    reader.readAsDataURL(file);
+                  }}
+                  onImageRemove={() => {
+                    setFormData(prev => ({
+                      ...prev,
+                      option2Image: null
+                    }));
+                    setImagePreviews(prev => ({
+                      ...prev,
+                      option2: null
+                    }));
+                  }}
+                  previewUrl={imagePreviews.option2}
+                />
+              </div>
+            </div>
           </div>
-        )}
-      </div>
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
-          Aircraft Image
-        </label>
-        <ImageUploadArea
-          onImageUpload={(file) => {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-              const base64String = reader.result as string;
-              setFormData(prev => ({
-                ...prev,
-                option2Image: base64String
-              }));
-              setImagePreviews(prev => ({
-                ...prev,
-                option2: base64String
-              }));
-            };
-            reader.readAsDataURL(file);
-          }}
-          onImageRemove={() => {
-            setFormData(prev => ({
-              ...prev,
-              option2Image: null
-            }));
-            setImagePreviews(prev => ({
-              ...prev,
-              option2: null
-            }));
-          }}
-          previewUrl={imagePreviews.option2}
-        />
-      </div>
-    </div>
-  </div>
-</div>
+        </div>
 
         {/* Generate PDF Button */}
         <div className="mt-6">
-          <PDFGenerator formData={formData} />
+          <PDFGenerator formData={formData} airportDetails={airportDetails} />
         </div>
       </div>
     </div>

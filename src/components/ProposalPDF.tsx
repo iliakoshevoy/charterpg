@@ -35,9 +35,13 @@ export interface ProposalPDFProps {
     baggageVolume: string | null;
     passengerCapacity: string;
   } | null;
+  airportDetails?: {
+    departure: string | null;
+    arrival: string | null;
+  };
 }
 
-// Create styles for PDF
+// Create styles for PDF (keep your existing styles)
 const styles = StyleSheet.create({
   page: {
     padding: 50,
@@ -123,11 +127,6 @@ const styles = StyleSheet.create({
 });
 
 const ProposalPDF: React.FC<ProposalPDFProps> = (props) => {
-  const formatDate = () => {
-    const d = new Date();
-    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-  };
-  
   const [generationDate] = useState(() => {
     const d = new Date();
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
@@ -158,7 +157,7 @@ const ProposalPDF: React.FC<ProposalPDFProps> = (props) => {
           <View style={styles.detailRow}>
             <Text style={styles.label}>Route:</Text>
             <Text style={styles.value}>
-              {props.departureAirport || 'N/A'} → {props.arrivalAirport || 'N/A'}
+              {props.airportDetails?.departure || props.departureAirport || 'N/A'} - {props.airportDetails?.arrival || props.arrivalAirport || 'N/A'}
             </Text>
           </View>
 
@@ -216,9 +215,12 @@ const ProposalPDF: React.FC<ProposalPDFProps> = (props) => {
             </>
           )}
 
-          {props.option1Image && (
+            {props.option1Image && (
             <View style={styles.imageContainer}>
-              <Image src={props.option1Image} style={styles.image} />
+              <Image 
+                src={props.option1Image.startsWith('data:image') ? props.option1Image : `data:image/jpeg;base64,${props.option1Image}`} 
+                style={styles.image} 
+              />
             </View>
           )}
         </View>
@@ -227,8 +229,8 @@ const ProposalPDF: React.FC<ProposalPDFProps> = (props) => {
         <Text style={styles.pageNumber}>2</Text>
       </Page>
 
-      {/* Option 2 Page - Only render if there's content */}
-      {(props.option2Name) && (
+      {/* Option 2 Page - Only if content exists */}
+      {props.option2Name && (
         <Page size="A4" style={styles.page}>
           <View style={styles.header}>
             <Text style={styles.headerText}>Option 2</Text>
@@ -265,11 +267,14 @@ const ProposalPDF: React.FC<ProposalPDFProps> = (props) => {
               </>
             )}
 
-            {props.option2Image && (
-              <View style={styles.imageContainer}>
-                <Image src={props.option2Image} style={styles.image} />
-              </View>
-            )}
+              {props.option2Image && (
+            <View style={styles.imageContainer}>
+              <Image 
+                src={props.option2Image.startsWith('data:image') ? props.option2Image : `data:image/jpeg;base64,${props.option2Image}`} 
+                style={styles.image} 
+              />
+            </View>
+          )}
           </View>
 
           <Text style={styles.footer}>Private Jet Charter Proposal • {generationDate}</Text>

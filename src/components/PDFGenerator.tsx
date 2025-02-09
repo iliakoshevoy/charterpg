@@ -4,11 +4,17 @@ import { pdf } from "@react-pdf/renderer";
 import ProposalPDF from "./ProposalPDF";
 import type { ProposalPDFProps } from "./ProposalPDF";
 
-interface PDFGeneratorProps {
-  formData: ProposalPDFProps;
+export interface AirportDetailsProps {
+  departure: string | null;
+  arrival: string | null;
 }
 
-const PDFGenerator: React.FC<PDFGeneratorProps> = ({ formData }) => {
+interface PDFGeneratorProps {
+  formData: ProposalPDFProps;
+  airportDetails: AirportDetailsProps;
+}
+
+const PDFGenerator: React.FC<PDFGeneratorProps> = ({ formData, airportDetails }) => {
   const [mounted, setMounted] = useState(false);
   const [pdfBlob, setPdfBlob] = useState<string | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -33,7 +39,7 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ formData }) => {
       setIsGenerating(true);
       setError(null);
       
-      const document = <ProposalPDF {...formData} />;
+      const document = <ProposalPDF {...formData} airportDetails={airportDetails} />;
       const blob = await pdf(document).toBlob();
       const url = URL.createObjectURL(blob);
       setPdfBlob(url);
@@ -46,7 +52,7 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ formData }) => {
       setIsGenerating(false);
       setShouldGenerate(false);
     }
-  }, [formData, hasValidData]);
+  }, [formData, airportDetails, hasValidData]);
 
   // Watch for valid data and generate PDF only when needed
   useEffect(() => {

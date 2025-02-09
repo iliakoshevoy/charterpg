@@ -562,14 +562,6 @@ export interface AircraftModel {
         passengerCapacity: "8-10"
       },
       {
-        id: createAircraftId("GULFSTREAM G700"),
-        model: "GULFSTREAM G700",
-        cabinWidth: "2.49m",
-        cabinHeight: "1.91m",
-        baggageVolume: "5.52m³",
-        passengerCapacity: "8-10"
-      },
-      {
         id: createAircraftId("GULFSTREAM GV-SP"),
         model: "GULFSTREAM GV-SP",
         cabinWidth: "2.22m",
