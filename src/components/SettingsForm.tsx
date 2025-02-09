@@ -112,7 +112,7 @@ const SettingsForm = () => {
                         Website
                     </label>
                     <input
-                        type="text" 
+                        type="text" npm
                         id="website"
                         name="website"
                         value={settings.website}

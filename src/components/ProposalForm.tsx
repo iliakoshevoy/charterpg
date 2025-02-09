@@ -4,6 +4,9 @@ import dynamic from 'next/dynamic';
 import type { ProposalPDFProps } from '@/types/proposal';
 import AirportInput from '@/components/AirportInput';
 import AircraftOption from './AircraftOption';
+import FlightLegs from '@/components/FlightLegs';
+import type { FlightLeg } from '@/types/flight';
+
 
 const PDFGenerator = dynamic(() => import('./PDFGenerator'), {
   ssr: false,
@@ -46,6 +49,18 @@ const ProposalForm = () => {
     departure: null as string | null,
     arrival: null as string | null
   });
+
+  const [flightLegs, setFlightLegs] = useState<FlightLeg[]>([{
+    id: crypto.randomUUID(),
+    departureDate: '',
+    departureTime: '',
+    departureAirport: '',
+    arrivalAirport: '',
+    airportDetails: {
+      departure: null,
+      arrival: null
+    }
+}]);
 
   // Aircraft options state
   const [aircraftOptions, setAircraftOptions] = useState<AircraftOptionType[]>([
@@ -104,6 +119,7 @@ useEffect(() => {
   const getPDFData = (): ProposalPDFProps => {
     return {
       ...basicFormData,
+      flightLegs,
       option1Name: aircraftOptions[0]?.name || '',
       option1Image1: aircraftOptions[0]?.image1 || null,
       option1Image2: aircraftOptions[0]?.image2 || null,
@@ -168,69 +184,12 @@ useEffect(() => {
             </div>
           </div>
 
-          {/* Flight Details */}
-          <div className="grid grid-cols-2 gap-4 mb-4">
-            <div>
-              <label htmlFor="departureDate" className="block text-sm font-medium text-gray-700 mb-1">
-                Date of Departure
-              </label>
-              <input
-                type="date"
-                id="departureDate"
-                name="departureDate"
-                value={basicFormData.departureDate}
-                onChange={handleBasicInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
-              />
-            </div>
-            <div>
-              <label htmlFor="departureTime" className="block text-sm font-medium text-gray-700 mb-1">
-                Time of Departure
-              </label>
-              <input
-                type="text"
-                id="departureTime"
-                name="departureTime"
-                value={basicFormData.departureTime}
-                onChange={handleBasicInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
-                placeholder="e.g., 14:30"
-              />
-            </div>
-          </div>
-
-          {/* Airports */}
-          <div className="grid grid-cols-2 gap-4 mb-4">
-            <AirportInput
-              label="Departure Airport"
-              value={basicFormData.departureAirport}
-              onChange={(value, fullDetails) => {
-                setBasicFormData(prev => ({
-                  ...prev,
-                  departureAirport: value
-                }));
-                setAirportDetails(prev => ({
-                  ...prev,
-                  departure: fullDetails
-                }));
-              }}
+          
+            {/* Flight Legs */}
+            <FlightLegs
+              legs={flightLegs}
+              onChange={setFlightLegs}
             />
-            <AirportInput
-              label="Arrival Airport"
-              value={basicFormData.arrivalAirport}
-              onChange={(value, fullDetails) => {
-                setBasicFormData(prev => ({
-                  ...prev,
-                  arrivalAirport: value
-                }));
-                setAirportDetails(prev => ({
-                  ...prev,
-                  arrival: fullDetails
-                }));
-              }}
-            />
-          </div>
-
           {/* Comment */}
           <div>
             <label htmlFor="comment" className="block text-sm font-medium text-gray-700 mb-1">

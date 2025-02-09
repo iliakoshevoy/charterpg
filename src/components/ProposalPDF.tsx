@@ -9,6 +9,36 @@ import {
   Image,
 } from '@react-pdf/renderer';
 import type { ProposalPDFProps, AircraftDetails, AircraftOption } from '@/types/proposal';
+import type { FlightLeg } from '@/types/flight';
+
+
+// Helper function to render a flight leg
+const renderFlightLeg = (leg: FlightLeg, index: number) => (
+  <View key={leg.id}>
+    {index > 0 && (
+      <Text style={[styles.sectionTitle, { marginTop: 20 }]}>
+        Leg {index + 1}
+      </Text>
+    )}
+    
+    <View style={styles.detailRow}>
+      <Text style={styles.label}>Departure Date:</Text>
+      <Text style={styles.value}>{leg.departureDate || 'N/A'}</Text>
+    </View>
+    
+    <View style={styles.detailRow}>
+      <Text style={styles.label}>Departure Time:</Text>
+      <Text style={styles.value}>{leg.departureTime || 'N/A'}</Text>
+    </View>
+
+    <View style={styles.detailRow}>
+      <Text style={styles.label}>Route:</Text>
+      <Text style={styles.value}>
+        {leg.airportDetails.departure || leg.departureAirport || 'N/A'} - {leg.airportDetails.arrival || leg.arrivalAirport || 'N/A'}
+      </Text>
+    </View>
+  </View>
+);
 
 // Define styles
 const styles = StyleSheet.create({
@@ -88,6 +118,8 @@ const styles = StyleSheet.create({
     color: '#6B7280',
   },
 });
+
+
 
 const ProposalPDF: React.FC<ProposalPDFProps> = (props) => {
   const [generationDate] = useState(() => {
@@ -182,34 +214,24 @@ const ProposalPDF: React.FC<ProposalPDFProps> = (props) => {
         </View>
 
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Flight Details</Text>
-          
-          <View style={styles.detailRow}>
-            <Text style={styles.label}>Departure Date:</Text>
-            <Text style={styles.value}>{props.departureDate || 'N/A'}</Text>
-          </View>
-          
-          <View style={styles.detailRow}>
-            <Text style={styles.label}>Departure Time:</Text>
-            <Text style={styles.value}>{props.departureTime || 'N/A'}</Text>
-          </View>
+  <Text style={styles.sectionTitle}>Flight Details</Text>
+  
+  <View style={styles.detailRow}>
+    <Text style={styles.label}>Number of Passengers:</Text>
+    <Text style={styles.value}>{props.passengerCount || 'N/A'}</Text>
+  </View>
 
-          <View style={styles.detailRow}>
-            <Text style={styles.label}>Route:</Text>
-            <Text style={styles.value}>
-              {props.airportDetails?.departure || props.departureAirport || 'N/A'} - {props.airportDetails?.arrival || props.arrivalAirport || 'N/A'}
-            </Text>
-          </View>
+  {/* Render all flight legs */}
+  {props.flightLegs.map((leg, index) => renderFlightLeg(leg, index))}
 
-          <View style={styles.detailRow}>
-            <Text style={styles.label}>Number of Passengers:</Text>
-            <Text style={styles.value}>{props.passengerCount || 'N/A'}</Text>
-          </View>
-
-          <View style={styles.detailRow}>
-            <Text style={styles.label}>Additional Comments:</Text>
-            <Text style={styles.value}>{props.comment || 'N/A'}</Text>
-          </View>
+  {props.comment && (
+    <>
+      <View style={styles.detailRow}>
+        <Text style={styles.label}>Additional Comments:</Text>
+        <Text style={styles.value}>{props.comment || 'N/A'}</Text>
+      </View>
+    </>
+  )}
         </View>
 
         <Text style={styles.footer}>Private Jet Charter Proposal • {generationDate}</Text>
