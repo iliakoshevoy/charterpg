@@ -121,8 +121,8 @@ const AircraftSelection: React.FC<AircraftSelectionProps> = ({
               onClick={() => handleSelectAircraft(aircraft)}
               className="px-4 py-2 hover:bg-blue-50 cursor-pointer"
             >
-              <div className="font-medium">{aircraft.model}</div>
-              <div className="text-sm text-gray-500">
+              <div className="font-medium text-black">{aircraft.model}</div>
+              <div className="text-sm text-black">
                 {aircraft.cabinWidth && aircraft.cabinHeight && (
                   <>Cabin: {aircraft.cabinWidth} × {aircraft.cabinHeight}</>
                 )}

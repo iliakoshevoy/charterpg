@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { pdf } from "@react-pdf/renderer";
 import ProposalPDF from "./ProposalPDF";
-import type { ProposalPDFProps } from "./ProposalPDF";
+import type { ProposalPDFProps } from '@/types/proposal';
 
 export interface AirportDetailsProps {
   departure: string | null;
@@ -23,9 +23,20 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ formData, airportDetails })
 
   const hasValidData = useMemo(() => {
     const hasCustomer = Boolean(formData.customerName);
-    const hasOption1 = Boolean(formData.option1Name);
-    return hasCustomer && hasOption1;
-  }, [formData.customerName, formData.option1Name]);
+    const hasAtLeastOneOption = Boolean(formData.option1Name) || 
+                               Boolean(formData.option2Name) ||
+                               Boolean(formData.option3Name) ||
+                               Boolean(formData.option4Name) ||
+                               Boolean(formData.option5Name);
+    return hasCustomer && hasAtLeastOneOption;
+  }, [
+    formData.customerName,
+    formData.option1Name,
+    formData.option2Name,
+    formData.option3Name,
+    formData.option4Name,
+    formData.option5Name
+  ]);
 
   const generatePDF = useCallback(async () => {
     if (!hasValidData) return;
@@ -34,23 +45,43 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ formData, airportDetails })
       setIsGenerating(true);
       setError(null);
       
-      // Debug log to check the data being passed
-      console.log('Generating PDF with data:', {
-        formData: {
-          customerName: formData.customerName,
-          option1: {
-            name: formData.option1Name,
-            hasImage: Boolean(formData.option1Image),
-            details: formData.option1Details
-          },
-          option2: {
-            name: formData.option2Name,
-            hasImage: Boolean(formData.option2Image),
-            details: formData.option2Details
-          }
-        },
-        airportDetails
-      });
+// Inside the generatePDF function
+console.log('Generating PDF with data:', {
+  formData: {
+    customerName: formData.customerName,
+    option1: {
+      name: formData.option1Name,
+      hasImage1: Boolean(formData.option1Image1),
+      hasImage2: Boolean(formData.option1Image2),
+      details: formData.option1Details
+    },
+    option2: {
+      name: formData.option2Name,
+      hasImage1: Boolean(formData.option2Image1),
+      hasImage2: Boolean(formData.option2Image2),
+      details: formData.option2Details
+    },
+    option3: {
+      name: formData.option3Name,
+      hasImage1: Boolean(formData.option3Image1),
+      hasImage2: Boolean(formData.option3Image2),
+      details: formData.option3Details
+    },
+    option4: {
+      name: formData.option4Name,
+      hasImage1: Boolean(formData.option4Image1),
+      hasImage2: Boolean(formData.option4Image2),
+      details: formData.option4Details
+    },
+    option5: {
+      name: formData.option5Name,
+      hasImage1: Boolean(formData.option5Image1),
+      hasImage2: Boolean(formData.option5Image2),
+      details: formData.option5Details
+    }
+  },
+  airportDetails
+});
       
       // Reset the blob URL before generating new one
       if (pdfBlob) {

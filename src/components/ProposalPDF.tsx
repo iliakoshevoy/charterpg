@@ -1,4 +1,3 @@
-// src/components/ProposalPDF.tsx
 "use client";
 import React, { useState } from 'react';
 import {
@@ -9,39 +8,9 @@ import {
   StyleSheet,
   Image,
 } from '@react-pdf/renderer';
+import type { ProposalPDFProps, AircraftDetails, AircraftOption } from '@/types/proposal';
 
-// Define types for our props
-export interface ProposalPDFProps {
-  customerName: string;
-  departureDate: string;
-  departureTime: string;
-  departureAirport: string;
-  arrivalAirport: string;
-  passengerCount: string;
-  comment: string;
-  option1Name: string;
-  option1Image: string | null;
-  option1Details: {
-    cabinWidth: string | null;
-    cabinHeight: string | null;
-    baggageVolume: string | null;
-    passengerCapacity: string;
-  } | null;
-  option2Name: string;
-  option2Image: string | null;
-  option2Details: {
-    cabinWidth: string | null;
-    cabinHeight: string | null;
-    baggageVolume: string | null;
-    passengerCapacity: string;
-  } | null;
-  airportDetails?: {
-    departure: string | null;
-    arrival: string | null;
-  };
-}
-
-// Create styles for PDF (keep your existing styles)
+// Define styles
 const styles = StyleSheet.create({
   page: {
     padding: 50,
@@ -99,12 +68,6 @@ const styles = StyleSheet.create({
     height: 300,
     objectFit: 'contain',
   },
-  aircraftOption: {
-    backgroundColor: '#F3F4F6',
-    padding: 20,
-    marginTop: 20,
-    borderRadius: 5,
-  },
   footer: {
     position: 'absolute',
     bottom: 30,
@@ -131,6 +94,83 @@ const ProposalPDF: React.FC<ProposalPDFProps> = (props) => {
     const d = new Date();
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
   });
+
+  // Helper function to render aircraft details
+  const renderAircraftDetails = (details: {
+    cabinWidth: string | null;
+    cabinHeight: string | null;
+    baggageVolume: string | null;
+    passengerCapacity: string;
+  } | null) => {
+    if (!details) return null;
+
+    return (
+      <>
+        {details.cabinWidth && details.cabinHeight && (
+          <View style={styles.detailRow}>
+            <Text style={styles.label}>Cabin Dimensions:</Text>
+            <Text style={styles.value}>
+              {details.cabinWidth} × {details.cabinHeight}
+            </Text>
+          </View>
+        )}
+        
+        {details.baggageVolume && (
+          <View style={styles.detailRow}>
+            <Text style={styles.label}>Baggage Volume:</Text>
+            <Text style={styles.value}>{details.baggageVolume}</Text>
+          </View>
+        )}
+        
+        <View style={styles.detailRow}>
+          <Text style={styles.label}>Passenger Capacity:</Text>
+          <Text style={styles.value}>{details.passengerCapacity}</Text>
+        </View>
+      </>
+    );
+  };
+
+  // Helper function to render images
+  const renderImages = (image1: string | null, image2: string | null) => {
+    if (!image1 && !image2) return null;
+
+    return (
+      <View style={styles.imageContainer}>
+        {image1 && (
+          <Image 
+            src={image1.startsWith('data:image') ? image1 : `data:image/jpeg;base64,${image1}`} 
+            style={styles.image} 
+          />
+        )}
+        {image2 && (
+          <Image 
+            src={image2.startsWith('data:image') ? image2 : `data:image/jpeg;base64,${image2}`} 
+            style={styles.image} 
+          />
+        )}
+      </View>
+    );
+  };
+
+  const getOptionData = (optionNumber: number): AircraftOption => {
+    const baseName = `option${optionNumber}`;
+    return {
+      name: props[`${baseName}Name` as keyof ProposalPDFProps] as string,
+      image1: props[`${baseName}Image1` as keyof ProposalPDFProps] as string | null,
+      image2: props[`${baseName}Image2` as keyof ProposalPDFProps] as string | null,
+      details: props[`${baseName}Details` as keyof ProposalPDFProps] as AircraftDetails | null,
+    };
+  };
+
+  // Get all options that have data
+  const getValidOptions = () => {
+    return Array.from({ length: 5 }, (_, i) => i + 1)
+      .map(num => ({
+        number: num,
+        data: getOptionData(num)
+      }))
+      .filter(option => option.data.name);
+  };
 
   return (
     <Document>
@@ -176,111 +216,27 @@ const ProposalPDF: React.FC<ProposalPDFProps> = (props) => {
         <Text style={styles.pageNumber}>1</Text>
       </Page>
 
-      {/* Option 1 Page */}
-      <Page size="A4" style={styles.page}>
-        <View style={styles.header}>
-          <Text style={styles.headerText}>Option 1</Text>
-        </View>
-
-        <View style={styles.section}>
-          {props.option1Name && (
-            <View style={styles.detailRow}>
-              <Text style={styles.label}>Aircraft Type:</Text>
-              <Text style={styles.value}>{props.option1Name}</Text>
-            </View>
-          )}
-
-          {props.option1Details && (
-            <>
-              {props.option1Details.cabinWidth && props.option1Details.cabinHeight && (
-                <View style={styles.detailRow}>
-                  <Text style={styles.label}>Cabin Dimensions:</Text>
-                  <Text style={styles.value}>
-                    {props.option1Details.cabinWidth} × {props.option1Details.cabinHeight}
-                  </Text>
-                </View>
-              )}
-              
-              {props.option1Details.baggageVolume && (
-                <View style={styles.detailRow}>
-                  <Text style={styles.label}>Baggage Volume:</Text>
-                  <Text style={styles.value}>{props.option1Details.baggageVolume}</Text>
-                </View>
-              )}
-              
-              <View style={styles.detailRow}>
-                <Text style={styles.label}>Passenger Capacity:</Text>
-                <Text style={styles.value}>{props.option1Details.passengerCapacity}</Text>
-              </View>
-            </>
-          )}
-
-          {props.option1Image && (
-            <View style={styles.imageContainer}>
-              <Image 
-                src={props.option1Image.startsWith('data:image') ? props.option1Image : `data:image/jpeg;base64,${props.option1Image}`} 
-                style={styles.image} 
-              />
-            </View>
-          )}
-        </View>
-
-        <Text style={styles.footer}>Private Jet Charter Proposal • {generationDate}</Text>
-        <Text style={styles.pageNumber}>2</Text>
-      </Page>
-
-      {/* Option 2 Page - Only if content exists */}
-      {props.option2Name && (
-        <Page size="A4" style={styles.page}>
+      {/* Dynamic Option Pages */}
+      {getValidOptions().map((option, index) => (
+        <Page key={option.number} size="A4" style={styles.page}>
           <View style={styles.header}>
-            <Text style={styles.headerText}>Option 2</Text>
+            <Text style={styles.headerText}>Option {option.number}</Text>
           </View>
 
           <View style={styles.section}>
             <View style={styles.detailRow}>
               <Text style={styles.label}>Aircraft Type:</Text>
-              <Text style={styles.value}>{props.option2Name}</Text>
+              <Text style={styles.value}>{option.data.name}</Text>
             </View>
 
-            {props.option2Details && (
-              <>
-                {props.option2Details.cabinWidth && props.option2Details.cabinHeight && (
-                  <View style={styles.detailRow}>
-                    <Text style={styles.label}>Cabin Dimensions:</Text>
-                    <Text style={styles.value}>
-                      {props.option2Details.cabinWidth} × {props.option2Details.cabinHeight}
-                    </Text>
-                  </View>
-                )}
-                
-                {props.option2Details.baggageVolume && (
-                  <View style={styles.detailRow}>
-                    <Text style={styles.label}>Baggage Volume:</Text>
-                    <Text style={styles.value}>{props.option2Details.baggageVolume}</Text>
-                  </View>
-                )}
-                
-                <View style={styles.detailRow}>
-                  <Text style={styles.label}>Passenger Capacity:</Text>
-                  <Text style={styles.value}>{props.option2Details.passengerCapacity}</Text>
-                </View>
-              </>
-            )}
-
-              {props.option2Image && (
-            <View style={styles.imageContainer}>
-              <Image 
-                src={props.option2Image.startsWith('data:image') ? props.option2Image : `data:image/jpeg;base64,${props.option2Image}`} 
-                style={styles.image} 
-              />
-            </View>
-          )}
+            {renderAircraftDetails(option.data.details)}
+            {renderImages(option.data.image1, option.data.image2)}
           </View>
 
           <Text style={styles.footer}>Private Jet Charter Proposal • {generationDate}</Text>
-          <Text style={styles.pageNumber}>3</Text>
+          <Text style={styles.pageNumber}>{index + 2}</Text>
         </Page>
-      )}
+      ))}
     </Document>
   );
 };
