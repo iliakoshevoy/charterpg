@@ -13,7 +13,7 @@ const AirportInput: React.FC<AirportInputProps> = ({
   value,
   onChange,
   label,
-  placeholder = "Enter ICAO code"
+  placeholder = "Enter airport code or name"
 }) => {
   const [airports, setAirports] = useState<Airport[]>([]);
   const [loading, setLoading] = useState(true);
@@ -22,6 +22,7 @@ const AirportInput: React.FC<AirportInputProps> = ({
   const [suggestions, setSuggestions] = useState<Airport[]>([]);
   const [inputValue, setInputValue] = useState(value);
   const [selectedAirport, setSelectedAirport] = useState<Airport | null>(null);
+  const [displayValue, setDisplayValue] = useState(value);
 
   // Fetch airports data
   useEffect(() => {
@@ -37,6 +38,7 @@ const AirportInput: React.FC<AirportInputProps> = ({
           const airport = data.find((a: Airport) => a.icao === value);
           if (airport) {
             setSelectedAirport(airport);
+            setDisplayValue(`${airport.airportName} (${airport.icao})`);
             const fullDetails = `${airport.airportName}, ${airport.country} (${airport.icao})`;
             onChange(airport.icao, fullDetails);
           }
@@ -53,34 +55,44 @@ const AirportInput: React.FC<AirportInputProps> = ({
 
   // Update local input value when prop changes
   useEffect(() => {
-    setInputValue(value);
     if (!value) {
       setSelectedAirport(null);
+      setDisplayValue('');
+      setInputValue('');
     }
   }, [value]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const input = e.target.value.toUpperCase();
+    const input = e.target.value;
+    setDisplayValue(input);
     setInputValue(input);
-    onChange(input, null); // Clear full details when input changes
-    setSelectedAirport(null);
+    
+    // Handle custom input (not in database)
+    if (!selectedAirport) {
+      onChange(input, input);
+    }
 
     if (input.length > 0) {
+      const searchTerm = input.toLowerCase();
       const filtered = airports.filter(airport => 
-        airport.icao.toLowerCase().startsWith(input.toLowerCase()) ||
-        airport.airportName.toLowerCase().includes(input.toLowerCase())
+        airport.icao.toLowerCase().includes(searchTerm) ||
+        airport.airportName.toLowerCase().includes(searchTerm) ||
+        airport.country.toLowerCase().includes(searchTerm)
       );
       setSuggestions(filtered);
       setShowSuggestions(true);
     } else {
       setSuggestions([]);
       setShowSuggestions(false);
+      setSelectedAirport(null);
     }
   };
 
   const handleSelectAirport = (airport: Airport) => {
     setSelectedAirport(airport);
-    setInputValue(airport.icao);
+    const displayText = `${airport.airportName} (${airport.icao})`;
+    setDisplayValue(displayText);
+    setInputValue(displayText);
     const fullDetails = `${airport.airportName}, ${airport.country} (${airport.icao})`;
     onChange(airport.icao, fullDetails);
     setShowSuggestions(false);
@@ -101,35 +113,31 @@ const AirportInput: React.FC<AirportInputProps> = ({
       </label>
       <input
         type="text"
-        value={inputValue}
+        value={displayValue}
         onChange={handleInputChange}
         onFocus={() => {
-          if (inputValue.length > 0) {
+          if (displayValue.length > 0) {
+            const searchTerm = displayValue.toLowerCase();
             const filtered = airports.filter(airport => 
-              airport.icao.toLowerCase().startsWith(inputValue.toLowerCase()) ||
-              airport.airportName.toLowerCase().includes(inputValue.toLowerCase())
+              airport.icao.toLowerCase().includes(searchTerm) ||
+              airport.airportName.toLowerCase().includes(searchTerm) ||
+              airport.country.toLowerCase().includes(searchTerm)
             );
             setSuggestions(filtered);
             setShowSuggestions(true);
           }
         }}
         onBlur={() => {
-          // Delay hiding suggestions to allow click events to fire
           setTimeout(() => {
             setShowSuggestions(false);
-            // If no airport was selected but we have a value, reset to selected airport
-            if (!selectedAirport && value) {
-              setInputValue(value);
-            }
           }, 200);
         }}
-        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white uppercase"
+        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-800 bg-white"
         placeholder={placeholder}
-        maxLength={4}
       />
       
       {selectedAirport && (
-        <div className="mt-1 text-sm text-gray-500">
+        <div className="mt-1 text-sm font-medium text-gray-600">
           {selectedAirport.airportName}, {selectedAirport.country}
         </div>
       )}
@@ -140,11 +148,13 @@ const AirportInput: React.FC<AirportInputProps> = ({
             <div
               key={airport.icao}
               onClick={() => handleSelectAirport(airport)}
-              className="px-4 py-2 hover:bg-blue-50 cursor-pointer"
+              className="px-4 py-2 hover:bg-blue-50 cursor-pointer border-b border-gray-100 last:border-0"
             >
-              <div className="font-medium">{airport.icao}</div>
-              <div className="text-sm text-gray-500">
-                {airport.airportName}, {airport.country}
+              <div className="font-medium text-gray-900">
+                {airport.airportName} ({airport.icao})
+              </div>
+              <div className="text-sm text-gray-600">
+                {airport.country}
               </div>
             </div>
           ))}

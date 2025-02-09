@@ -215,7 +215,7 @@ const ProposalPDF: React.FC<ProposalPDFProps> = (props) => {
             </>
           )}
 
-            {props.option1Image && (
+          {props.option1Image && (
             <View style={styles.imageContainer}>
               <Image 
                 src={props.option1Image.startsWith('data:image') ? props.option1Image : `data:image/jpeg;base64,${props.option1Image}`} 

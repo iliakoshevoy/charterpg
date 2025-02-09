@@ -24,13 +24,8 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ formData, airportDetails })
   const hasValidData = useMemo(() => {
     const hasCustomer = Boolean(formData.customerName);
     const hasOption1 = Boolean(formData.option1Name);
-    const hasOption2 = Boolean(formData.option2Name);
-    return hasCustomer && (hasOption1 || hasOption2);
-  }, [
-    formData.customerName,
-    formData.option1Name,
-    formData.option2Name,
-  ]);
+    return hasCustomer && hasOption1;
+  }, [formData.customerName, formData.option1Name]);
 
   const generatePDF = useCallback(async () => {
     if (!hasValidData) return;
@@ -39,6 +34,30 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ formData, airportDetails })
       setIsGenerating(true);
       setError(null);
       
+      // Debug log to check the data being passed
+      console.log('Generating PDF with data:', {
+        formData: {
+          customerName: formData.customerName,
+          option1: {
+            name: formData.option1Name,
+            hasImage: Boolean(formData.option1Image),
+            details: formData.option1Details
+          },
+          option2: {
+            name: formData.option2Name,
+            hasImage: Boolean(formData.option2Image),
+            details: formData.option2Details
+          }
+        },
+        airportDetails
+      });
+      
+      // Reset the blob URL before generating new one
+      if (pdfBlob) {
+        URL.revokeObjectURL(pdfBlob);
+        setPdfBlob(null);
+      }
+
       const document = <ProposalPDF {...formData} airportDetails={airportDetails} />;
       const blob = await pdf(document).toBlob();
       const url = URL.createObjectURL(blob);
@@ -52,7 +71,16 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ formData, airportDetails })
       setIsGenerating(false);
       setShouldGenerate(false);
     }
-  }, [formData, airportDetails, hasValidData]);
+  }, [formData, airportDetails, hasValidData, pdfBlob]);
+
+  // Reset PDF blob when form data changes
+  useEffect(() => {
+    if (pdfBlob) {
+      URL.revokeObjectURL(pdfBlob);
+      setPdfBlob(null);
+      setShouldGenerate(true);
+    }
+  }, [formData, airportDetails]);
 
   // Watch for valid data and generate PDF only when needed
   useEffect(() => {
