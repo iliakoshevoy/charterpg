@@ -5,3 +5,4 @@ export interface ProposalData {
   aircraftImage: File | null;
   imageUrl?: string; // For preview
 }
+//test
