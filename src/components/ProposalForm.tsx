@@ -1,11 +1,12 @@
 "use client";
 import React, { useState, Suspense, useEffect } from 'react';
 import dynamic from 'next/dynamic';
-import type { ProposalPDFProps } from '@/types/proposal';
-import AirportInput from '@/components/AirportInput';
+
 import AircraftOption from './AircraftOption';
 import FlightLegs from '@/components/FlightLegs';
 import type { FlightLeg } from '@/types/flight';
+import type { ProposalPDFProps, AircraftDetails, AircraftOptionType } from '@/types/proposal';
+
 
 
 const PDFGenerator = dynamic(() => import('./PDFGenerator'), {
@@ -17,20 +18,7 @@ const PDFGenerator = dynamic(() => import('./PDFGenerator'), {
   )
 });
 
-interface AircraftOptionType {
-  id: string;
-  name: string;
-  image1: string | null;
-  image2: string | null;
-  details: {
-    cabinWidth: string | null;
-    cabinHeight: string | null;
-    baggageVolume: string | null;
-    passengerCapacity: string;
-  } | null;
-  imagePreview1: string | null;
-  imagePreview2: string | null;
-}
+
 
 const ProposalForm = () => {
   // Basic form data
@@ -71,7 +59,11 @@ const ProposalForm = () => {
       image2: null,
       details: null,
       imagePreview1: null,
-      imagePreview2: null
+      imagePreview2: null,
+      yearOfManufacture: null,
+      price: null,
+      paxCapacity: null,
+      notes: null
     }
   ]);
 
@@ -89,7 +81,11 @@ useEffect(() => {
         image2: null,
         details: null,
         imagePreview1: null,
-        imagePreview2: null
+        imagePreview2: null,
+        yearOfManufacture: null,  // Added
+        price: null,              // Added
+        paxCapacity: null,        // Added
+        notes: null               // Added
       }
     ]);
   }
@@ -124,22 +120,42 @@ useEffect(() => {
       option1Image1: aircraftOptions[0]?.image1 || null,
       option1Image2: aircraftOptions[0]?.image2 || null,
       option1Details: aircraftOptions[0]?.details || null,
+      option1YearOfManufacture: aircraftOptions[0]?.yearOfManufacture || null,  // Added
+      option1Price: aircraftOptions[0]?.price || null,                          // Added
+      option1PaxCapacity: aircraftOptions[0]?.paxCapacity || null,              // Added
+      option1Notes: aircraftOptions[0]?.notes || null,                          // Added
       option2Name: aircraftOptions[1]?.name || '',
       option2Image1: aircraftOptions[1]?.image1 || null,
       option2Image2: aircraftOptions[1]?.image2 || null,
       option2Details: aircraftOptions[1]?.details || null,
+      option2YearOfManufacture: aircraftOptions[0]?.yearOfManufacture || null,  // Added
+      option2Price: aircraftOptions[0]?.price || null,                          // Added
+      option2PaxCapacity: aircraftOptions[0]?.paxCapacity || null,              // Added
+      option2Notes: aircraftOptions[0]?.notes || null,                          // Added
       option3Name: aircraftOptions[2]?.name || '',
       option3Image1: aircraftOptions[2]?.image1 || null,
       option3Image2: aircraftOptions[2]?.image2 || null,
       option3Details: aircraftOptions[2]?.details || null,
+      option3YearOfManufacture: aircraftOptions[0]?.yearOfManufacture || null,  // Added
+      option3Price: aircraftOptions[0]?.price || null,                          // Added
+      option3PaxCapacity: aircraftOptions[0]?.paxCapacity || null,              // Added
+      option3Notes: aircraftOptions[0]?.notes || null,                          // Added
       option4Name: aircraftOptions[3]?.name || '',
       option4Image1: aircraftOptions[3]?.image1 || null,
       option4Image2: aircraftOptions[3]?.image2 || null,
       option4Details: aircraftOptions[3]?.details || null,
+      option4YearOfManufacture: aircraftOptions[0]?.yearOfManufacture || null,  // Added
+      option4Price: aircraftOptions[0]?.price || null,                          // Added
+      option4PaxCapacity: aircraftOptions[0]?.paxCapacity || null,              // Added
+      option4Notes: aircraftOptions[0]?.notes || null,                          // Added
       option5Name: aircraftOptions[4]?.name || '',
       option5Image1: aircraftOptions[4]?.image1 || null,
       option5Image2: aircraftOptions[4]?.image2 || null,
       option5Details: aircraftOptions[4]?.details || null,
+      option5YearOfManufacture: aircraftOptions[0]?.yearOfManufacture || null,  // Added
+      option5Price: aircraftOptions[0]?.price || null,                          // Added
+      option5PaxCapacity: aircraftOptions[0]?.paxCapacity || null,              // Added
+      option5Notes: aircraftOptions[0]?.notes || null,                          // Added
     };
   };
 
@@ -219,23 +235,31 @@ useEffect(() => {
                 index === aircraftOptions.length - 1 ? 'animate-slide-down' : ''
               }`}
             >
-              <AircraftOption
-                optionNumber={index + 1}
-                name={option.name}
-                details={option.details}
-                image1={option.image1}
-                image2={option.image2}
-                imagePreview1={option.imagePreview1}
-                imagePreview2={option.imagePreview2}
-                onNameChange={(value) => handleOptionUpdate(index, { name: value })}
-                onDetailsChange={(details) => handleOptionUpdate(index, { details })}
-                onImage1Change={(image) => handleOptionUpdate(index, { image1: image })}
-                onImage2Change={(image) => handleOptionUpdate(index, { image2: image })}
-                onImagePreview1Change={(preview) => handleOptionUpdate(index, { imagePreview1: preview })}
-                onImagePreview2Change={(preview) => handleOptionUpdate(index, { imagePreview2: preview })}
-                onRemove={index > 0 ? () => handleRemoveOption(index) : undefined}
-                className="mb-6"
-              />
+<AircraftOption
+  optionNumber={index + 1}
+  name={option.name}
+  details={option.details}
+  image1={option.image1}
+  image2={option.image2}
+  imagePreview1={option.imagePreview1}
+  imagePreview2={option.imagePreview2}
+  yearOfManufacture={option.yearOfManufacture}
+  price={option.price}
+  paxCapacity={option.paxCapacity}
+  notes={option.notes}
+  onNameChange={(value) => handleOptionUpdate(index, { name: value })}
+  onDetailsChange={(details) => handleOptionUpdate(index, { details })}
+  onImage1Change={(image) => handleOptionUpdate(index, { image1: image })}
+  onImage2Change={(image) => handleOptionUpdate(index, { image2: image })}
+  onImagePreview1Change={(preview) => handleOptionUpdate(index, { imagePreview1: preview })}
+  onImagePreview2Change={(preview) => handleOptionUpdate(index, { imagePreview2: preview })}
+  onYearOfManufactureChange={(value) => handleOptionUpdate(index, { yearOfManufacture: value })}
+  onPriceChange={(value) => handleOptionUpdate(index, { price: value })}
+  onPaxCapacityChange={(value) => handleOptionUpdate(index, { paxCapacity: value })}
+  onNotesChange={(value) => handleOptionUpdate(index, { notes: value })}
+  onRemove={index > 0 ? () => handleRemoveOption(index) : undefined}
+  className="mb-6"
+/>
             </div>
           ))}
           </div>
