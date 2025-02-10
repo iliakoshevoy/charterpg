@@ -191,6 +191,10 @@ const ProposalPDF: React.FC<ProposalPDFProps> = (props) => {
       image1: props[`${baseName}Image1` as keyof ProposalPDFProps] as string | null,
       image2: props[`${baseName}Image2` as keyof ProposalPDFProps] as string | null,
       details: props[`${baseName}Details` as keyof ProposalPDFProps] as AircraftDetails | null,
+      yearOfManufacture: props[`${baseName}YearOfManufacture` as keyof ProposalPDFProps] as string | null,
+      price: props[`${baseName}Price` as keyof ProposalPDFProps] as string | null,
+      paxCapacity: props[`${baseName}PaxCapacity` as keyof ProposalPDFProps] as string | null,
+      notes: props[`${baseName}Notes` as keyof ProposalPDFProps] as string | null,
     };
   };
 
@@ -240,25 +244,57 @@ const ProposalPDF: React.FC<ProposalPDFProps> = (props) => {
 
       {/* Dynamic Option Pages */}
       {getValidOptions().map((option, index) => (
-        <Page key={option.number} size="A4" style={styles.page}>
-          <View style={styles.header}>
-            <Text style={styles.headerText}>Option {option.number}</Text>
-          </View>
+  <Page key={option.number} size="A4" style={styles.page}>
+    <View style={styles.header}>
+      <Text style={styles.headerText}>Option {option.number}</Text>
+    </View>
 
-          <View style={styles.section}>
-            <View style={styles.detailRow}>
-              <Text style={styles.label}>Aircraft Type:</Text>
-              <Text style={styles.value}>{option.data.name}</Text>
-            </View>
+    <View style={styles.section}>
+      {/* Aircraft Type and Year of Manufacture row */}
+      <View style={styles.detailRow}>
+        <Text style={styles.label}>Aircraft Type:</Text>
+        <Text style={styles.value}>{option.data.name}</Text>
+      </View>
 
-            {renderAircraftDetails(option.data.details)}
-            {renderImages(option.data.image1, option.data.image2)}
-          </View>
+      {option.data.yearOfManufacture && (
+        <View style={styles.detailRow}>
+          <Text style={styles.label}>Year of Manufacture:</Text>
+          <Text style={styles.value}>{option.data.yearOfManufacture}</Text>
+        </View>
+      )}
 
-          <Text style={styles.footer}>Private Jet Charter Proposal • {generationDate}</Text>
-          <Text style={styles.pageNumber}>{index + 2}</Text>
-        </Page>
-      ))}
+      {/* Price and Passenger Capacity row */}
+      {option.data.price && (
+        <View style={styles.detailRow}>
+          <Text style={styles.label}>Price:</Text>
+          <Text style={styles.value}>{option.data.price}</Text>
+        </View>
+      )}
+
+      {option.data.paxCapacity && (
+        <View style={styles.detailRow}>
+          <Text style={styles.label}>Passenger Capacity:</Text>
+          <Text style={styles.value}>{option.data.paxCapacity}</Text>
+        </View>
+      )}
+
+      {/* Notes section */}
+      {option.data.notes && (
+        <View style={styles.detailRow}>
+          <Text style={styles.label}>Notes:</Text>
+          <Text style={styles.value}>{option.data.notes}</Text>
+        </View>
+      )}
+
+      {/* Original aircraft details */}
+      {renderAircraftDetails(option.data.details)}
+      {renderImages(option.data.image1, option.data.image2)}
+    </View>
+
+    <Text style={styles.footer}>Private Jet Charter Proposal • {generationDate}</Text>
+    <Text style={styles.pageNumber}>{index + 2}</Text>
+  </Page>
+))}
     </Document>
   );
 };

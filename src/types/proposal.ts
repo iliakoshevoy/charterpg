@@ -8,6 +8,10 @@
     image1: string | null;
     image2: string | null;
     details: AircraftDetails | null;
+    yearOfManufacture: string | null;  // Added
+    price: string | null;              // Added
+    paxCapacity: string | null;        // Added
+    notes: string | null;              // Added
   }
   
   
