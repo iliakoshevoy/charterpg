@@ -1,3 +1,4 @@
+// src/components/FlightLeg.tsx
 "use client";
 import React from 'react';
 import { X } from 'lucide-react';
@@ -74,13 +75,23 @@ const FlightLeg: React.FC<FlightLegProps> = ({
           <AirportInput
             label="Departure Airport"
             value={data.departureAirport}
-            onChange={(value, fullDetails) => {
+            onChange={(value, fullDetails, coordinates) => {
               onUpdate({
                 ...data,
                 departureAirport: value,
                 airportDetails: {
                   ...data.airportDetails,
                   departure: fullDetails
+                },
+                coordinates: {
+                  departure: coordinates || {
+                    lat: data.coordinates?.departure?.lat || '',
+                    lng: data.coordinates?.departure?.lng || ''
+                  },
+                  arrival: data.coordinates?.arrival || {
+                    lat: '',
+                    lng: ''
+                  }
                 }
               });
             }}
@@ -88,13 +99,23 @@ const FlightLeg: React.FC<FlightLegProps> = ({
           <AirportInput
             label="Arrival Airport"
             value={data.arrivalAirport}
-            onChange={(value, fullDetails) => {
+            onChange={(value, fullDetails, coordinates) => {
               onUpdate({
                 ...data,
                 arrivalAirport: value,
                 airportDetails: {
                   ...data.airportDetails,
                   arrival: fullDetails
+                },
+                coordinates: {
+                  departure: data.coordinates?.departure || {
+                    lat: '',
+                    lng: ''
+                  },
+                  arrival: coordinates || {
+                    lat: data.coordinates?.arrival?.lat || '',
+                    lng: data.coordinates?.arrival?.lng || ''
+                  }
                 }
               });
             }}
@@ -105,4 +126,4 @@ const FlightLeg: React.FC<FlightLegProps> = ({
   );
 };
 
-export default FlightLeg;  // Changed this line from FlightLegComponent to FlightLeg
+export default FlightLeg;

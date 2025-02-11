@@ -39,6 +39,10 @@ export interface AircraftOptionType {
 }
 
 export interface ProposalPDFProps {
+    airportDetails: {
+      departure: string | null;
+      arrival: string | null;
+    };
   customerName: string;
   passengerCount: string;
   comment: string;

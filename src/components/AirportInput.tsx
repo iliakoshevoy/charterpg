@@ -1,10 +1,11 @@
+// src/components/AirportInput.tsx
 "use client";
 import React, { useState, useEffect } from 'react';
 import type { Airport } from '@/lib/googleSheets';
 
 interface AirportInputProps {
   value: string;
-  onChange: (value: string, fullDetails: string | null) => void;
+  onChange: (value: string, fullDetails: string | null, coordinates?: { lat: string; lng: string }) => void;
   label: string;
   placeholder?: string;
 }
@@ -40,7 +41,14 @@ const AirportInput: React.FC<AirportInputProps> = ({
             setSelectedAirport(airport);
             setDisplayValue(`${airport.airportName} (${airport.icao})`);
             const fullDetails = `${airport.airportName}, ${airport.country} (${airport.icao})`;
-            onChange(airport.icao, fullDetails);
+            onChange(
+              airport.icao, 
+              fullDetails,
+              airport.latitude && airport.longitude ? {
+                lat: airport.latitude,
+                lng: airport.longitude
+              } : undefined
+            );
           }
         }
       } catch (err) {
@@ -94,7 +102,17 @@ const AirportInput: React.FC<AirportInputProps> = ({
     setDisplayValue(displayText);
     setInputValue(displayText);
     const fullDetails = `${airport.airportName}, ${airport.country} (${airport.icao})`;
-    onChange(airport.icao, fullDetails);
+    
+    // Pass coordinates if available
+    onChange(
+      airport.icao, 
+      fullDetails,
+      airport.latitude && airport.longitude ? {
+        lat: airport.latitude,
+        lng: airport.longitude
+      } : undefined
+    );
+    
     setShowSuggestions(false);
   };
 

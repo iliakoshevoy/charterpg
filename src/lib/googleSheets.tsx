@@ -33,6 +33,8 @@ export interface Airport {
   icao: string;
   country: string;
   airportName: string;
+  latitude: string;  // Add these
+  longitude: string; // Add these
 }
 
 // Aircraft Data Functions
@@ -61,6 +63,7 @@ export async function getAircraftData(): Promise<AircraftModel[]> {
 }
 
 // Airport Data Functions
+// src/lib/googleSheets.ts
 export async function getAirportsData(): Promise<Airport[]> {
   if (!SPREADSHEET_ID) throw new Error('Spreadsheet ID not found');
   
@@ -74,8 +77,10 @@ export async function getAirportsData(): Promise<Airport[]> {
     return rows.map((row: GoogleSpreadsheetRow) => ({
       icao: row.get('icao') || '',
       country: row.get('country') || '',
-      airportName: row.get('airport name') || ''
-    })).filter(airport => airport.icao); // Only return airports with ICAO codes
+      airportName: row.get('airport name') || '',
+      latitude: row.get('latitude') || '',  // Add these fields
+      longitude: row.get('longitude') || '' // Add these fields
+    })).filter(airport => airport.icao);
   } catch (error) {
     console.error('Error fetching airports data:', error);
     return [];

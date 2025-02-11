@@ -10,7 +10,7 @@ import {
 } from '@react-pdf/renderer';
 import type { ProposalPDFProps, AircraftDetails, AircraftOption } from '@/types/proposal';
 import type { FlightLeg } from '@/types/flight';
-
+import { generateStaticMapURL } from '@/utils/mapGenerator';
 
 // Helper function to render a flight leg
 const renderFlightLeg = (leg: FlightLeg, index: number) => (
@@ -39,6 +39,8 @@ const renderFlightLeg = (leg: FlightLeg, index: number) => (
     </View>
   </View>
 );
+
+
 
 // Define styles
 const styles = StyleSheet.create({
@@ -116,6 +118,12 @@ const styles = StyleSheet.create({
     right: 50,
     fontSize: 10,
     color: '#6B7280',
+  },
+  mapImage: {
+    width: 620,
+    height: 300,
+    objectFit: 'contain',
+    marginVertical: 15,
   },
 });
 
@@ -198,6 +206,9 @@ const ProposalPDF: React.FC<ProposalPDFProps> = (props) => {
     };
   };
 
+
+  const mapUrl = generateStaticMapURL(props.flightLegs);
+
   // Get all options that have data
   const getValidOptions = () => {
     return Array.from({ length: 5 }, (_, i) => i + 1)
@@ -224,6 +235,14 @@ const ProposalPDF: React.FC<ProposalPDFProps> = (props) => {
     <Text style={styles.label}>Number of Passengers:</Text>
     <Text style={styles.value}>{props.passengerCount || 'N/A'}</Text>
   </View>
+
+  <View style={styles.section}>
+  <Text style={styles.sectionTitle}>Flight Route</Text>
+  <Image
+    src={mapUrl}
+    style={styles.mapImage}
+  />
+</View>
 
   {/* Render all flight legs */}
   {props.flightLegs.map((leg, index) => renderFlightLeg(leg, index))}

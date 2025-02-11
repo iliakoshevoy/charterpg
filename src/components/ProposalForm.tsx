@@ -114,6 +114,10 @@ useEffect(() => {
   // Convert state to PDF props
   const getPDFData = (): ProposalPDFProps => {
     return {
+      airportDetails: {
+        departure: airportDetails.departure,
+        arrival: airportDetails.arrival
+      },
       ...basicFormData,
       flightLegs,
       option1Name: aircraftOptions[0]?.name || '',

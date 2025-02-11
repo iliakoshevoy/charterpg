@@ -1,17 +1,18 @@
+// src/components/FlightLegs.tsx
 "use client";
 import React from 'react';
 import { Plus } from 'lucide-react';
-import FlightLeg from './FlightLeg';  // Update this import
-import type { FlightLeg as FlightLegType, FlightLegs } from '@/types/flight';  // Rename to avoid naming conflict
+import FlightLeg from './FlightLeg';
+import type { FlightLeg as FlightLegType } from '@/types/flight';
 
-interface FlightLegsManagerProps {
-  legs: FlightLegs;
-  onChange: (legs: FlightLegs) => void;
+interface FlightLegsProps {
+  legs: FlightLegType[];
+  onChange: (legs: FlightLegType[]) => void;
 }
 
 const MAX_LEGS = 4;
 
-const FlightLegsManager: React.FC<FlightLegsManagerProps> = ({ legs, onChange }) => {
+const FlightLegs: React.FC<FlightLegsProps> = ({ legs, onChange }) => {
   const addLeg = () => {
     if (legs.length >= MAX_LEGS) return;
 
@@ -24,6 +25,16 @@ const FlightLegsManager: React.FC<FlightLegsManagerProps> = ({ legs, onChange })
       airportDetails: {
         departure: null,
         arrival: null
+      },
+      coordinates: {
+        departure: {
+          lat: '',
+          lng: ''
+        },
+        arrival: {
+          lat: '',
+          lng: ''
+        }
       }
     };
 
@@ -65,4 +76,4 @@ const FlightLegsManager: React.FC<FlightLegsManagerProps> = ({ legs, onChange })
   );
 };
 
-export default FlightLegsManager;
+export default FlightLegs;

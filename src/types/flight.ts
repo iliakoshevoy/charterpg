@@ -1,3 +1,4 @@
+// src/types/flight.ts
 export interface FlightLeg {
     id: string;
     departureDate: string;
@@ -5,9 +6,19 @@ export interface FlightLeg {
     departureAirport: string;
     arrivalAirport: string;
     airportDetails: {
-        departure: string | null;
-        arrival: string | null;
+      departure: string | null;
+      arrival: string | null;
     };
-}
+    coordinates?: {
+      departure: {
+        lat: string;
+        lng: string;
+      };
+      arrival: {
+        lat: string;
+        lng: string;
+      };
+    };
+  }
 
-export type FlightLegs = FlightLeg[];
+  export type FlightLegs = FlightLeg[];
