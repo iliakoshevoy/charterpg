@@ -45,8 +45,8 @@ const FlightLeg: React.FC<FlightLegProps> = ({
         )}
       </div>
 
-      <div className="flex flex-nowrap gap-4 items-end"> {/* Changed this line */}
-        <div className="w-[300px]"> {/* Changed this line */}
+      <div className="flex flex-nowrap gap-4 items-end"> 
+        <div className="w-[300px]"> 
           <AirportInput
             label="From"
             value={data.departureAirport}
@@ -73,7 +73,7 @@ const FlightLeg: React.FC<FlightLegProps> = ({
           />
         </div>
         
-        <div className="w-[300px]"> {/* Changed this line */}
+        <div className="w-[300px]">
           <AirportInput
             label="To"
             value={data.arrivalAirport}
@@ -100,7 +100,7 @@ const FlightLeg: React.FC<FlightLegProps> = ({
           />
         </div>
 
-        <div className="w-[160px]"> {/* Slightly increased width */}
+        <div className="w-[160px]"> 
           <label htmlFor={`departureDate-${legNumber}`} className="block text-sm font-medium text-gray-700 mb-1">
             Departure (local)
           </label>
@@ -135,7 +135,7 @@ const FlightLeg: React.FC<FlightLegProps> = ({
           onChange={(e) => handleInputChange('passengerCount', e.target.value)}
           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
         >
-          <option value="">-</option>
+          <option value=""></option>
           {paxOptions.map(num => (
             <option key={num} value={num}>{num}</option>
           ))}

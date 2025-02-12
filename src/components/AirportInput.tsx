@@ -14,7 +14,7 @@ const AirportInput: React.FC<AirportInputProps> = ({
   value,
   onChange,
   label,
-  placeholder = "Enter airport code or name"
+  placeholder = "Airport"
 }) => {
   const [airports, setAirports] = useState<Airport[]>([]);
   const [loading, setLoading] = useState(true);
