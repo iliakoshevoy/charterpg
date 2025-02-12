@@ -43,6 +43,7 @@ const renderFlightLeg = (leg: FlightLeg, index: number) => (
 
 
 // Define styles
+// Update your existing styles
 const styles = StyleSheet.create({
   page: {
     padding: 50,
@@ -56,34 +57,41 @@ const styles = StyleSheet.create({
   },
   headerText: {
     color: '#1E40AF',
-    fontSize: 28,
+    fontSize: 32,  // Increased from 28
     fontWeight: 'bold',
     textAlign: 'center',
   },
   subHeader: {
-    fontSize: 16,
+    fontSize: 18,  // Increased from 16
     color: '#6B7280',
     textAlign: 'center',
     marginTop: 10,
   },
   section: {
-    marginBottom: 25,
+    marginBottom: 30,  // Increased from 25
+    borderBottom: 1,
+    borderBottomColor: '#E5E7EB',
+    paddingBottom: 15,
   },
   sectionTitle: {
-    fontSize: 18,
+    fontSize: 20,  // Increased from 18
     color: '#1E40AF',
-    marginBottom: 15,
+    marginBottom: 20,  // Increased from 15
     fontWeight: 'bold',
+    borderBottom: 0.5,
+    borderBottomColor: '#E5E7EB',
+    paddingBottom: 5,
   },
   detailRow: {
     flexDirection: 'row',
-    marginBottom: 10,
+    marginBottom: 12,  // Increased from 10
     paddingVertical: 5,
   },
   label: {
-    width: '30%',
+    width: '35%',  // Increased from 30%
     fontSize: 12,
     color: '#4B5563',
+    fontWeight: 'bold',  // Added
   },
   value: {
     flex: 1,
@@ -91,14 +99,25 @@ const styles = StyleSheet.create({
     color: '#111827',
   },
   imageContainer: {
-    marginTop: 20,
-    marginBottom: 20,
+    marginTop: 25,
+    marginBottom: 25,
     alignItems: 'center',
+    border: 1,
+    borderColor: '#E5E7EB',
+    padding: 10,
   },
   image: {
     width: 450,
     height: 300,
     objectFit: 'contain',
+  },
+  mapImage: {
+    width: 500,  // Reduced from 620
+    height: 300,
+    objectFit: 'contain',
+    marginVertical: 15,
+    border: 1,
+    borderColor: '#E5E7EB',
   },
   footer: {
     position: 'absolute',
@@ -118,13 +137,7 @@ const styles = StyleSheet.create({
     right: 50,
     fontSize: 10,
     color: '#6B7280',
-  },
-  mapImage: {
-    width: 620,
-    height: 300,
-    objectFit: 'contain',
-    marginVertical: 15,
-  },
+  }
 });
 
 
@@ -223,99 +236,135 @@ const ProposalPDF: React.FC<ProposalPDFProps> = (props) => {
     <Document>
       {/* First Page - Main Information */}
       <Page size="A4" style={styles.page}>
+  {/* Header Section */}
+  <View style={styles.header}>
+    <Text style={styles.headerText}>Charter Proposal</Text>
+    <Text style={styles.subHeader}>
+      Prepared for: {props.customerName || 'N/A'}
+    </Text>
+  </View>
+
+  {/* Flight Details Section */}
+  <View style={styles.section}>
+    <Text style={styles.sectionTitle}>Flight Information</Text>
+    <View style={styles.detailRow}>
+      <Text style={styles.label}>Number of Passengers:</Text>
+      <Text style={styles.value}>{props.passengerCount || 'N/A'}</Text>
+    </View>
+  </View>
+
+  {/* Flight Legs Section */}
+  <View style={styles.section}>
+    <Text style={styles.sectionTitle}>Flight Legs</Text>
+    {props.flightLegs.map((leg, index) => (
+      <View key={leg.id} style={styles.section}>
+        {index > 0 && (
+          <Text style={[styles.sectionTitle, { fontSize: 16 }]}>
+            Leg {index + 1}
+          </Text>
+        )}
+        <View style={styles.detailRow}>
+          <Text style={styles.label}>Departure:</Text>
+          <Text style={styles.value}>
+            {leg.airportDetails.departure || leg.departureAirport || 'N/A'}
+          </Text>
+        </View>
+        <View style={styles.detailRow}>
+          <Text style={styles.label}>Arrival:</Text>
+          <Text style={styles.value}>
+            {leg.airportDetails.arrival || leg.arrivalAirport || 'N/A'}
+          </Text>
+        </View>
+        <View style={styles.detailRow}>
+          <Text style={styles.label}>Date:</Text>
+          <Text style={styles.value}>{leg.departureDate || 'N/A'}</Text>
+        </View>
+        <View style={styles.detailRow}>
+          <Text style={styles.label}>Time:</Text>
+          <Text style={styles.value}>{leg.departureTime || 'N/A'}</Text>
+        </View>
+      </View>
+    ))}
+  </View>
+
+  {/* Comments Section */}
+  {props.comment && (
+    <View style={styles.section}>
+      <Text style={styles.sectionTitle}>Additional Information</Text>
+      <View style={styles.detailRow}>
+        <Text style={styles.value}>{props.comment}</Text>
+      </View>
+    </View>
+  )}
+
+  {/* Map Section */}
+  <View style={styles.imageContainer}>
+    <Image src={mapUrl} style={styles.mapImage} />
+  </View>
+
+  {/* Footer */}
+  <Text style={styles.footer}>
+    Private Jet Charter Proposal • {generationDate}
+  </Text>
+  <Text style={styles.pageNumber}>1</Text>
+</Page>
+
+{/* Aircraft Options Pages */}
+{getValidOptions().map((option, index) => (
+      <Page key={option.number} size="A4" style={styles.page}>
         <View style={styles.header}>
-          <Text style={styles.headerText}>Charter Proposal</Text>
-          <Text style={styles.subHeader}>Prepared for: {props.customerName || 'N/A'}</Text>
+          <Text style={styles.headerText}>Option {option.number}</Text>
         </View>
 
         <View style={styles.section}>
-  <Text style={styles.sectionTitle}>Flight Details</Text>
-  
-  <View style={styles.detailRow}>
-    <Text style={styles.label}>Number of Passengers:</Text>
-    <Text style={styles.value}>{props.passengerCount || 'N/A'}</Text>
-  </View>
+          {/* Aircraft Type and Year of Manufacture row */}
+          <View style={styles.detailRow}>
+            <Text style={styles.label}>Aircraft Type:</Text>
+            <Text style={styles.value}>{option.data.name}</Text>
+          </View>
 
-  <View style={styles.section}>
-  <Text style={styles.sectionTitle}>Flight Route</Text>
-  <Image
-    src={mapUrl}
-    style={styles.mapImage}
-  />
-</View>
+          {option.data.yearOfManufacture && (
+            <View style={styles.detailRow}>
+              <Text style={styles.label}>Year of Manufacture:</Text>
+              <Text style={styles.value}>{option.data.yearOfManufacture}</Text>
+            </View>
+          )}
 
-  {/* Render all flight legs */}
-  {props.flightLegs.map((leg, index) => renderFlightLeg(leg, index))}
+          {/* Price and Passenger Capacity row */}
+          {option.data.price && (
+            <View style={styles.detailRow}>
+              <Text style={styles.label}>Price:</Text>
+              <Text style={styles.value}>{option.data.price}</Text>
+            </View>
+          )}
 
-  {props.comment && (
-    <>
-      <View style={styles.detailRow}>
-        <Text style={styles.label}>Additional Comments:</Text>
-        <Text style={styles.value}>{props.comment || 'N/A'}</Text>
-      </View>
-    </>
-  )}
+          {option.data.paxCapacity && (
+            <View style={styles.detailRow}>
+              <Text style={styles.label}>Passenger Capacity:</Text>
+              <Text style={styles.value}>{option.data.paxCapacity}</Text>
+            </View>
+          )}
+
+          {/* Notes section */}
+          {option.data.notes && (
+            <View style={styles.detailRow}>
+              <Text style={styles.label}>Notes:</Text>
+              <Text style={styles.value}>{option.data.notes}</Text>
+            </View>
+          )}
+
+          {/* Original aircraft details */}
+          {renderAircraftDetails(option.data.details)}
+          {renderImages(option.data.image1, option.data.image2)}
         </View>
 
         <Text style={styles.footer}>Private Jet Charter Proposal • {generationDate}</Text>
-        <Text style={styles.pageNumber}>1</Text>
+        <Text style={styles.pageNumber}>{index + 2}</Text>
       </Page>
+    ))}
+  </Document>
+);
 
-      {/* Dynamic Option Pages */}
-      {getValidOptions().map((option, index) => (
-  <Page key={option.number} size="A4" style={styles.page}>
-    <View style={styles.header}>
-      <Text style={styles.headerText}>Option {option.number}</Text>
-    </View>
-
-    <View style={styles.section}>
-      {/* Aircraft Type and Year of Manufacture row */}
-      <View style={styles.detailRow}>
-        <Text style={styles.label}>Aircraft Type:</Text>
-        <Text style={styles.value}>{option.data.name}</Text>
-      </View>
-
-      {option.data.yearOfManufacture && (
-        <View style={styles.detailRow}>
-          <Text style={styles.label}>Year of Manufacture:</Text>
-          <Text style={styles.value}>{option.data.yearOfManufacture}</Text>
-        </View>
-      )}
-
-      {/* Price and Passenger Capacity row */}
-      {option.data.price && (
-        <View style={styles.detailRow}>
-          <Text style={styles.label}>Price:</Text>
-          <Text style={styles.value}>{option.data.price}</Text>
-        </View>
-      )}
-
-      {option.data.paxCapacity && (
-        <View style={styles.detailRow}>
-          <Text style={styles.label}>Passenger Capacity:</Text>
-          <Text style={styles.value}>{option.data.paxCapacity}</Text>
-        </View>
-      )}
-
-      {/* Notes section */}
-      {option.data.notes && (
-        <View style={styles.detailRow}>
-          <Text style={styles.label}>Notes:</Text>
-          <Text style={styles.value}>{option.data.notes}</Text>
-        </View>
-      )}
-
-      {/* Original aircraft details */}
-      {renderAircraftDetails(option.data.details)}
-      {renderImages(option.data.image1, option.data.image2)}
-    </View>
-
-    <Text style={styles.footer}>Private Jet Charter Proposal • {generationDate}</Text>
-    <Text style={styles.pageNumber}>{index + 2}</Text>
-  </Page>
-))}
-    </Document>
-  );
 };
 
 export default ProposalPDF;
