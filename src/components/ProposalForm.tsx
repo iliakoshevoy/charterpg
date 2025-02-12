@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, Suspense, useEffect } from 'react';
 import dynamic from 'next/dynamic';
-
+import { Plus } from 'lucide-react'; 
 import AircraftOption from './AircraftOption';
 import FlightLegs from '@/components/FlightLegs';
 import type { FlightLeg } from '@/types/flight';
@@ -18,7 +18,7 @@ const PDFGenerator = dynamic(() => import('./PDFGenerator'), {
   )
 });
 
-
+const MAX_LEGS = 4; // Add this constant
 
 const ProposalForm = () => {
   // Basic form data
@@ -165,65 +165,30 @@ useEffect(() => {
 
   return (
     <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md">
-
-      
       <div className="space-y-6">
-        {/* Customer Information */}
+        {/* Flight Information */}
         <div className="bg-gray-50 p-6 rounded-md">
-          <h2 className="text-xl font-semibold mb-4 text-gray-800">Flight Information</h2>
+          <h2 className="text-xl font-semibold mb-4 text-gray-800">Flight Details</h2>
           
-          {/* Customer Name and Passengers Row */}
-          <div className="grid grid-cols-2 gap-4 mb-4">
-            <div>
-              <label htmlFor="customerName" className="block text-sm font-medium text-gray-700 mb-1">
-                Customer Name
-              </label>
-              <input
-                type="text"
-                id="customerName"
-                name="customerName"
-                value={basicFormData.customerName}
-                onChange={handleBasicInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
-                placeholder="Enter customer name"
-              />
-            </div>
-            <div>
-              <label htmlFor="passengerCount" className="block text-sm font-medium text-gray-700 mb-1">
-                Number of Passengers
-              </label>
-              <input
-                type="text"
-                id="passengerCount"
-                name="passengerCount"
-                value={basicFormData.passengerCount}
-                onChange={handleBasicInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
-                placeholder="Enter number of passengers"
-              />
-            </div>
-          </div>
-
-          
-            {/* Flight Legs */}
+          {/* Flight Legs */}
+          <div className="space-y-4">
             <FlightLegs
               legs={flightLegs}
               onChange={setFlightLegs}
             />
-          {/* Comment */}
-          <div>
-            <label htmlFor="comment" className="block text-sm font-medium text-gray-700 mb-1">
-              Comment
-            </label>
-            <textarea
-              id="comment"
-              name="comment"
-              value={basicFormData.comment}
-              onChange={handleBasicInputChange}
-              rows={3}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
-              placeholder="Add any additional comments..."
-            />
+          
+            {/* Comment section - Single Notes field for all legs */}
+            <div className="mt-4">
+              <textarea
+                id="comment"
+                name="comment"
+                value={basicFormData.comment}
+                onChange={handleBasicInputChange}
+                rows={2}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
+                placeholder="Notes (Pets, special requests etc.)"
+              />
+            </div>
           </div>
         </div>
 
@@ -234,38 +199,38 @@ useEffect(() => {
           <div className="space-y-8">
             {aircraftOptions.map((option, index) => (
               <div
-              key={option.id}
-              className={`transform transition-all duration-500 ease-in-out ${
-                index === aircraftOptions.length - 1 ? 'animate-slide-down' : ''
-              }`}
-            >
-<AircraftOption
-  optionNumber={index + 1}
-  name={option.name}
-  details={option.details}
-  image1={option.image1}
-  image2={option.image2}
-  imagePreview1={option.imagePreview1}
-  imagePreview2={option.imagePreview2}
-  yearOfManufacture={option.yearOfManufacture}
-  price={option.price}
-  paxCapacity={option.paxCapacity}
-  notes={option.notes}
-  onNameChange={(value) => handleOptionUpdate(index, { name: value })}
-  onDetailsChange={(details) => handleOptionUpdate(index, { details })}
-  onImage1Change={(image) => handleOptionUpdate(index, { image1: image })}
-  onImage2Change={(image) => handleOptionUpdate(index, { image2: image })}
-  onImagePreview1Change={(preview) => handleOptionUpdate(index, { imagePreview1: preview })}
-  onImagePreview2Change={(preview) => handleOptionUpdate(index, { imagePreview2: preview })}
-  onYearOfManufactureChange={(value) => handleOptionUpdate(index, { yearOfManufacture: value })}
-  onPriceChange={(value) => handleOptionUpdate(index, { price: value })}
-  onPaxCapacityChange={(value) => handleOptionUpdate(index, { paxCapacity: value })}
-  onNotesChange={(value) => handleOptionUpdate(index, { notes: value })}
-  onRemove={index > 0 ? () => handleRemoveOption(index) : undefined}
-  className="mb-6"
-/>
-            </div>
-          ))}
+                key={option.id}
+                className={`transform transition-all duration-500 ease-in-out ${
+                  index === aircraftOptions.length - 1 ? 'animate-slide-down' : ''
+                }`}
+              >
+                <AircraftOption
+                  optionNumber={index + 1}
+                  name={option.name}
+                  details={option.details}
+                  image1={option.image1}
+                  image2={option.image2}
+                  imagePreview1={option.imagePreview1}
+                  imagePreview2={option.imagePreview2}
+                  yearOfManufacture={option.yearOfManufacture}
+                  price={option.price}
+                  paxCapacity={option.paxCapacity}
+                  notes={option.notes}
+                  onNameChange={(value) => handleOptionUpdate(index, { name: value })}
+                  onDetailsChange={(details) => handleOptionUpdate(index, { details })}
+                  onImage1Change={(image) => handleOptionUpdate(index, { image1: image })}
+                  onImage2Change={(image) => handleOptionUpdate(index, { image2: image })}
+                  onImagePreview1Change={(preview) => handleOptionUpdate(index, { imagePreview1: preview })}
+                  onImagePreview2Change={(preview) => handleOptionUpdate(index, { imagePreview2: preview })}
+                  onYearOfManufactureChange={(value) => handleOptionUpdate(index, { yearOfManufacture: value })}
+                  onPriceChange={(value) => handleOptionUpdate(index, { price: value })}
+                  onPaxCapacityChange={(value) => handleOptionUpdate(index, { paxCapacity: value })}
+                  onNotesChange={(value) => handleOptionUpdate(index, { notes: value })}
+                  onRemove={index > 0 ? () => handleRemoveOption(index) : undefined}
+                  className="mb-6"
+                />
+              </div>
+            ))}
           </div>
         </div>
 

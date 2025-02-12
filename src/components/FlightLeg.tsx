@@ -1,4 +1,5 @@
 // src/components/FlightLeg.tsx
+// FlightLeg.tsx
 "use client";
 import React from 'react';
 import { X } from 'lucide-react';
@@ -25,13 +26,15 @@ const FlightLeg: React.FC<FlightLegProps> = ({
     });
   };
 
+  const paxOptions = Array.from({ length: 100 }, (_, i) => i + 1);
+
   return (
-    <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+    <div className="bg-white rounded-lg">
       <div className="flex justify-between items-center mb-4">
-        <h3 className="text-lg font-medium text-gray-900">
-          {legNumber === 1 ? 'Flight Details' : `Leg ${legNumber}`}
+        <h3 className="text-sm font-medium text-gray-700">
+          {legNumber > 1 ? `Leg #${legNumber}` : ' '}
         </h3>
-        {onRemove && legNumber > 1 && (
+        {legNumber > 1 && onRemove && (
           <button
             onClick={onRemove}
             className="text-gray-400 hover:text-red-500 transition-colors"
@@ -42,38 +45,10 @@ const FlightLeg: React.FC<FlightLegProps> = ({
         )}
       </div>
 
-      <div className="space-y-4">
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label htmlFor={`departureDate-${legNumber}`} className="block text-sm font-medium text-gray-700 mb-1">
-              Date of Departure
-            </label>
-            <input
-              type="date"
-              id={`departureDate-${legNumber}`}
-              value={data.departureDate}
-              onChange={(e) => handleInputChange('departureDate', e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
-            />
-          </div>
-          <div>
-            <label htmlFor={`departureTime-${legNumber}`} className="block text-sm font-medium text-gray-700 mb-1">
-              Time of Departure
-            </label>
-            <input
-              type="text"
-              id={`departureTime-${legNumber}`}
-              value={data.departureTime}
-              onChange={(e) => handleInputChange('departureTime', e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
-              placeholder="e.g., 14:30"
-            />
-          </div>
-        </div>
-
-        <div className="grid grid-cols-2 gap-4">
+      <div className="flex flex-nowrap gap-4 items-end"> {/* Changed this line */}
+        <div className="w-[300px]"> {/* Changed this line */}
           <AirportInput
-            label="Departure Airport"
+            label="From"
             value={data.departureAirport}
             onChange={(value, fullDetails, coordinates) => {
               onUpdate({
@@ -96,8 +71,11 @@ const FlightLeg: React.FC<FlightLegProps> = ({
               });
             }}
           />
+        </div>
+        
+        <div className="w-[300px]"> {/* Changed this line */}
           <AirportInput
-            label="Arrival Airport"
+            label="To"
             value={data.arrivalAirport}
             onChange={(value, fullDetails, coordinates) => {
               onUpdate({
@@ -121,6 +99,48 @@ const FlightLeg: React.FC<FlightLegProps> = ({
             }}
           />
         </div>
+
+        <div className="w-[160px]"> {/* Slightly increased width */}
+          <label htmlFor={`departureDate-${legNumber}`} className="block text-sm font-medium text-gray-700 mb-1">
+            Departure (local)
+          </label>
+          <input
+            type="date"
+            id={`departureDate-${legNumber}`}
+            value={data.departureDate}
+            onChange={(e) => handleInputChange('departureDate', e.target.value)}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
+          />
+        </div>
+
+        <div className="w-[100px]">
+
+          <input
+            type="text"
+            id={`departureTime-${legNumber}`}
+            value={data.departureTime}
+            onChange={(e) => handleInputChange('departureTime', e.target.value)}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
+            placeholder="hh:mm"
+          />
+        </div>
+
+        <div className="w-[80px]">
+        <label htmlFor={`passengerCount-${legNumber}`} className="block text-sm font-medium text-gray-700 mb-1">
+          PAX
+        </label>
+        <select
+          id={`passengerCount-${legNumber}`}
+          value={data.passengerCount || ''}
+          onChange={(e) => handleInputChange('passengerCount', e.target.value)}
+          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
+        >
+          <option value="">-</option>
+          {paxOptions.map(num => (
+            <option key={num} value={num}>{num}</option>
+          ))}
+        </select>
+      </div>
       </div>
     </div>
   );

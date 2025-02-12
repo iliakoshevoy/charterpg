@@ -22,20 +22,13 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ formData, airportDetails })
   const [shouldGenerate, setShouldGenerate] = useState(false);
 
   const hasValidData = useMemo(() => {
-    const hasCustomer = Boolean(formData.customerName);
-    const hasAtLeastOneOption = Boolean(formData.option1Name) || 
-                               Boolean(formData.option2Name) ||
-                               Boolean(formData.option3Name) ||
-                               Boolean(formData.option4Name) ||
-                               Boolean(formData.option5Name);
-    return hasCustomer && hasAtLeastOneOption;
+    const hasAtLeastOneAirport = Boolean(formData.flightLegs[0]?.departureAirport) && 
+                                Boolean(formData.flightLegs[0]?.arrivalAirport);
+    const hasAtLeastOneOption = Boolean(formData.option1Name);
+    return hasAtLeastOneAirport && hasAtLeastOneOption;
   }, [
-    formData.customerName,
-    formData.option1Name,
-    formData.option2Name,
-    formData.option3Name,
-    formData.option4Name,
-    formData.option5Name
+    formData.flightLegs,
+    formData.option1Name
   ]);
 
   const generatePDF = useCallback(async () => {
