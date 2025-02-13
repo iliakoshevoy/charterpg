@@ -1,4 +1,3 @@
-// src/components/ImageUploadArea.tsx
 "use client";
 import React, { useCallback, useState } from 'react';
 
@@ -55,11 +54,15 @@ const ImageUploadArea: React.FC<ImageUploadAreaProps> = ({
 
   if (previewUrl) {
     return (
-      <div className="relative">
-        <img src={previewUrl} alt="Preview" className="max-w-xs rounded-md" />
+      <div className="relative w-[120px] h-[120px]">
+        <img 
+          src={previewUrl} 
+          alt="Preview" 
+          className="w-full h-full object-cover rounded-md"
+        />
         <button
           onClick={onImageRemove}
-          className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-600 focus:outline-none"
+          className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center hover:bg-red-600 focus:outline-none text-sm"
           aria-label="Remove image"
         >
           ×
@@ -74,7 +77,7 @@ const ImageUploadArea: React.FC<ImageUploadAreaProps> = ({
       onDragLeave={handleDragOut}
       onDragOver={handleDrag}
       onDrop={handleDrop}
-      className={`border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-colors
+      className={`border-2 border-dashed rounded-lg p-4 text-center cursor-pointer transition-colors h-[120px] flex items-center justify-center
         ${isDragging ? 'border-blue-500 bg-blue-50' : 'border-gray-300 hover:border-blue-400'}
       `}
     >
@@ -87,8 +90,7 @@ const ImageUploadArea: React.FC<ImageUploadAreaProps> = ({
       />
       <label htmlFor="fileInput" className="cursor-pointer">
         <div className="text-gray-600">
-          <p>Drag and drop an image here, or click to select</p>
-          <p className="text-sm text-gray-500 mt-1">Supports: JPG, PNG, GIF</p>
+          <p className="text-xs">Drop image or click</p>
         </div>
       </label>
     </div>

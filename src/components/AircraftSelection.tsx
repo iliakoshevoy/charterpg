@@ -1,4 +1,3 @@
-//src/components/AircraftSelection.tsx
 "use client";
 import React, { useState, useEffect } from 'react';
 import { Loader2 } from 'lucide-react';
@@ -29,7 +28,6 @@ const AircraftSelection: React.FC<AircraftSelectionProps> = ({
   const [suggestions, setSuggestions] = useState<AircraftModel[]>([]);
   const [inputValue, setInputValue] = useState(value);
 
-  // Fetch aircraft data in the background
   useEffect(() => {
     let isMounted = true;
 
@@ -69,7 +67,6 @@ const AircraftSelection: React.FC<AircraftSelectionProps> = ({
       setIsLoadingSuggestions(true);
       setShowSuggestions(true);
 
-      // Debounce the filtering process
       const timeoutId = setTimeout(() => {
         const filtered = aircraft.filter(plane =>
           plane.model.toLowerCase().includes(newValue.toLowerCase())
@@ -134,7 +131,7 @@ const AircraftSelection: React.FC<AircraftSelectionProps> = ({
       </div>
       
       {showSuggestions && suggestions.length > 0 && (
-        <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
+        <div className="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
           {suggestions.map((aircraft) => (
             <div
               key={aircraft.model}
@@ -142,14 +139,6 @@ const AircraftSelection: React.FC<AircraftSelectionProps> = ({
               className="px-4 py-2 hover:bg-blue-50 cursor-pointer"
             >
               <div className="font-medium text-black">{aircraft.model}</div>
-              <div className="text-sm text-black">
-                {aircraft.cabinWidth && aircraft.cabinHeight && (
-                  <>Cabin: {aircraft.cabinWidth} × {aircraft.cabinHeight}</>
-                )}
-                {aircraft.passengerCapacity && (
-                  <> • {aircraft.passengerCapacity} passengers</>
-                )}
-              </div>
             </div>
           ))}
         </div>
