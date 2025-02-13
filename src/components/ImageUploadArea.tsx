@@ -5,14 +5,17 @@ interface ImageUploadAreaProps {
   onImageUpload: (file: File) => void;
   onImageRemove: () => void;
   previewUrl: string | null;
+  uniqueId: string; // Add uniqueId prop
 }
 
 const ImageUploadArea: React.FC<ImageUploadAreaProps> = ({
   onImageUpload,
   onImageRemove,
-  previewUrl
+  previewUrl,
+  uniqueId
 }) => {
   const [isDragging, setIsDragging] = useState(false);
+  const inputId = `fileInput-${uniqueId}`; // Create unique input ID
 
   const handleDrag = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -54,11 +57,11 @@ const ImageUploadArea: React.FC<ImageUploadAreaProps> = ({
 
   if (previewUrl) {
     return (
-      <div className="relative w-[120px] h-[120px]">
+      <div className="relative w-[120px] h-[120px] flex items-center justify-center bg-gray-50 rounded-md">
         <img 
           src={previewUrl} 
           alt="Preview" 
-          className="w-full h-full object-cover rounded-md"
+          className="max-w-full max-h-full object-contain rounded-md"
         />
         <button
           onClick={onImageRemove}
@@ -86,9 +89,9 @@ const ImageUploadArea: React.FC<ImageUploadAreaProps> = ({
         onChange={handleFileSelect}
         accept="image/*"
         className="hidden"
-        id="fileInput"
+        id={inputId}
       />
-      <label htmlFor="fileInput" className="cursor-pointer">
+      <label htmlFor={inputId} className="cursor-pointer">
         <div className="text-gray-600">
           <p className="text-xs">Drop image or click</p>
         </div>

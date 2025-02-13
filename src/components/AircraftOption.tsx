@@ -168,6 +168,7 @@ const AircraftOption: React.FC<AircraftOptionProps> = ({
             Image 1
           </label>
           <ImageUploadArea
+            uniqueId={`option${optionNumber}-image1`}
             onImageUpload={(file) => {
               const reader = new FileReader();
               reader.onloadend = () => {
@@ -189,6 +190,7 @@ const AircraftOption: React.FC<AircraftOptionProps> = ({
             Image 2
           </label>
           <ImageUploadArea
+            uniqueId={`option${optionNumber}-image2`}
             onImageUpload={(file) => {
               const reader = new FileReader();
               reader.onloadend = () => {
