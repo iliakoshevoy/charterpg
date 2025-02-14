@@ -1,3 +1,4 @@
+// src/components/ProposalForm.tsx
 "use client";
 import React, { useState, Suspense, useEffect } from 'react';
 import dynamic from 'next/dynamic';
@@ -6,8 +7,6 @@ import AircraftOption from './AircraftOption';
 import FlightLegs from '@/components/FlightLegs';
 import type { FlightLeg } from '@/types/flight';
 import type { ProposalPDFProps, AircraftDetails, AircraftOptionType } from '@/types/proposal';
-
-
 
 const PDFGenerator = dynamic(() => import('./PDFGenerator'), {
   ssr: false,
@@ -18,7 +17,7 @@ const PDFGenerator = dynamic(() => import('./PDFGenerator'), {
   )
 });
 
-const MAX_LEGS = 4; // Add this constant
+const MAX_LEGS = 4;
 
 const ProposalForm = () => {
   // Basic form data
@@ -47,8 +46,13 @@ const ProposalForm = () => {
     airportDetails: {
       departure: null,
       arrival: null
-    }
-}]);
+    },
+    coordinates: {
+      departure: { lat: '', lng: '' },
+      arrival: { lat: '', lng: '' }
+    },
+    passengerCount: ''
+  }]);
 
   // Aircraft options state
   const [aircraftOptions, setAircraftOptions] = useState<AircraftOptionType[]>([
@@ -67,29 +71,27 @@ const ProposalForm = () => {
     }
   ]);
 
-  // Handle adding new option when the last one is filled
-// Handle adding new option when the last one is filled
-useEffect(() => {
-  const lastOption = aircraftOptions[aircraftOptions.length - 1];
-  if (lastOption?.name && aircraftOptions.length < 5) {
-    setAircraftOptions(prev => [
-      ...prev,
-      {
-        id: String(prev.length + 1),
-        name: '',
-        image1: null,
-        image2: null,
-        details: null,
-        imagePreview1: null,
-        imagePreview2: null,
-        yearOfManufacture: null,  // Added
-        price: null,              // Added
-        paxCapacity: null,        // Added
-        notes: null               // Added
-      }
-    ]);
-  }
-}, [aircraftOptions]);
+  useEffect(() => {
+    const lastOption = aircraftOptions[aircraftOptions.length - 1];
+    if (lastOption?.name && aircraftOptions.length < 5) {
+      setAircraftOptions(prev => [
+        ...prev,
+        {
+          id: String(prev.length + 1),
+          name: '',
+          image1: null,
+          image2: null,
+          details: null,
+          imagePreview1: null,
+          imagePreview2: null,
+          yearOfManufacture: null,
+          price: null,
+          paxCapacity: null,
+          notes: null
+        }
+      ]);
+    }
+  }, [aircraftOptions]);
 
   const handleBasicInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -124,42 +126,42 @@ useEffect(() => {
       option1Image1: aircraftOptions[0]?.image1 || null,
       option1Image2: aircraftOptions[0]?.image2 || null,
       option1Details: aircraftOptions[0]?.details || null,
-      option1YearOfManufacture: aircraftOptions[0]?.yearOfManufacture || null,  // Added
-      option1Price: aircraftOptions[0]?.price || null,                          // Added
-      option1PaxCapacity: aircraftOptions[0]?.paxCapacity || null,              // Added
-      option1Notes: aircraftOptions[0]?.notes || null,                          // Added
+      option1YearOfManufacture: aircraftOptions[0]?.yearOfManufacture || null,
+      option1Price: aircraftOptions[0]?.price || null,
+      option1PaxCapacity: aircraftOptions[0]?.paxCapacity || null,
+      option1Notes: aircraftOptions[0]?.notes || null,
       option2Name: aircraftOptions[1]?.name || '',
       option2Image1: aircraftOptions[1]?.image1 || null,
       option2Image2: aircraftOptions[1]?.image2 || null,
       option2Details: aircraftOptions[1]?.details || null,
-      option2YearOfManufacture: aircraftOptions[0]?.yearOfManufacture || null,  // Added
-      option2Price: aircraftOptions[0]?.price || null,                          // Added
-      option2PaxCapacity: aircraftOptions[0]?.paxCapacity || null,              // Added
-      option2Notes: aircraftOptions[0]?.notes || null,                          // Added
+      option2YearOfManufacture: aircraftOptions[1]?.yearOfManufacture || null,
+      option2Price: aircraftOptions[1]?.price || null,
+      option2PaxCapacity: aircraftOptions[1]?.paxCapacity || null,
+      option2Notes: aircraftOptions[1]?.notes || null,
       option3Name: aircraftOptions[2]?.name || '',
       option3Image1: aircraftOptions[2]?.image1 || null,
       option3Image2: aircraftOptions[2]?.image2 || null,
       option3Details: aircraftOptions[2]?.details || null,
-      option3YearOfManufacture: aircraftOptions[0]?.yearOfManufacture || null,  // Added
-      option3Price: aircraftOptions[0]?.price || null,                          // Added
-      option3PaxCapacity: aircraftOptions[0]?.paxCapacity || null,              // Added
-      option3Notes: aircraftOptions[0]?.notes || null,                          // Added
+      option3YearOfManufacture: aircraftOptions[2]?.yearOfManufacture || null,
+      option3Price: aircraftOptions[2]?.price || null,
+      option3PaxCapacity: aircraftOptions[2]?.paxCapacity || null,
+      option3Notes: aircraftOptions[2]?.notes || null,
       option4Name: aircraftOptions[3]?.name || '',
       option4Image1: aircraftOptions[3]?.image1 || null,
       option4Image2: aircraftOptions[3]?.image2 || null,
       option4Details: aircraftOptions[3]?.details || null,
-      option4YearOfManufacture: aircraftOptions[0]?.yearOfManufacture || null,  // Added
-      option4Price: aircraftOptions[0]?.price || null,                          // Added
-      option4PaxCapacity: aircraftOptions[0]?.paxCapacity || null,              // Added
-      option4Notes: aircraftOptions[0]?.notes || null,                          // Added
+      option4YearOfManufacture: aircraftOptions[3]?.yearOfManufacture || null,
+      option4Price: aircraftOptions[3]?.price || null,
+      option4PaxCapacity: aircraftOptions[3]?.paxCapacity || null,
+      option4Notes: aircraftOptions[3]?.notes || null,
       option5Name: aircraftOptions[4]?.name || '',
       option5Image1: aircraftOptions[4]?.image1 || null,
       option5Image2: aircraftOptions[4]?.image2 || null,
       option5Details: aircraftOptions[4]?.details || null,
-      option5YearOfManufacture: aircraftOptions[0]?.yearOfManufacture || null,  // Added
-      option5Price: aircraftOptions[0]?.price || null,                          // Added
-      option5PaxCapacity: aircraftOptions[0]?.paxCapacity || null,              // Added
-      option5Notes: aircraftOptions[0]?.notes || null,                          // Added
+      option5YearOfManufacture: aircraftOptions[4]?.yearOfManufacture || null,
+      option5Price: aircraftOptions[4]?.price || null,
+      option5PaxCapacity: aircraftOptions[4]?.paxCapacity || null,
+      option5Notes: aircraftOptions[4]?.notes || null,
     };
   };
 
@@ -176,18 +178,38 @@ useEffect(() => {
               legs={flightLegs}
               onChange={setFlightLegs}
             />
-          
-            {/* Comment section - Single Notes field for all legs */}
-            <div className="mt-4">
-              <textarea
-                id="comment"
-                name="comment"
-                value={basicFormData.comment}
-                onChange={handleBasicInputChange}
-                rows={2}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
-                placeholder="Notes (Pets, special requests etc.)"
-              />
+            
+            {/* Prepared For and Notes fields */}
+            <div className="flex gap-4 items-end mt-4">
+              <div className="w-[300px]">
+                <label htmlFor="customerName" className="block text-sm font-medium text-gray-700 mb-1">
+                  Prepared For
+                </label>
+                <input
+                  type="text"
+                  id="customerName"
+                  name="customerName"
+                  value={basicFormData.customerName}
+                  onChange={handleBasicInputChange}
+                  className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
+                  placeholder="Enter customer name"
+                />
+              </div>
+
+              <div className="w-[500px]">
+                <label htmlFor="comment" className="block text-sm font-medium text-gray-700 mb-1">
+                  Notes
+                </label>
+                <input
+                  type="text"
+                  id="comment"
+                  name="comment"
+                  value={basicFormData.comment}
+                  onChange={handleBasicInputChange}
+                  className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
+                  placeholder="Special requests, pets, todlers, etc."
+                />
+              </div>
             </div>
           </div>
         </div>

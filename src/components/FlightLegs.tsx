@@ -12,8 +12,31 @@ interface FlightLegsProps {
 
 const MAX_LEGS = 4;
 
+const createEmptyLeg = (): FlightLegType => ({
+  id: crypto.randomUUID(),
+  departureDate: '',
+  departureTime: '',
+  departureAirport: '',
+  arrivalAirport: '',
+  airportDetails: {
+    departure: null,
+    arrival: null
+  },
+  coordinates: {
+    departure: { lat: '', lng: '' },
+    arrival: { lat: '', lng: '' }
+  },
+  passengerCount: ''
+});
+
 const FlightLegs: React.FC<FlightLegsProps> = ({ legs, onChange }) => {
-  const addLeg = () => {
+  React.useEffect(() => {
+    if (legs.length === 0) {
+      onChange([createEmptyLeg()]);
+    }
+  }, []);
+
+  const addRoundTripLeg = () => {
     if (legs.length >= MAX_LEGS) return;
 
     const previousLeg = legs[legs.length - 1];
@@ -21,7 +44,6 @@ const FlightLegs: React.FC<FlightLegsProps> = ({ legs, onChange }) => {
       id: crypto.randomUUID(),
       departureDate: '',
       departureTime: '',
-      // Reverse the route from previous leg
       departureAirport: previousLeg?.arrivalAirport || '',
       arrivalAirport: previousLeg?.departureAirport || '',
       airportDetails: {
@@ -47,6 +69,36 @@ const FlightLegs: React.FC<FlightLegsProps> = ({ legs, onChange }) => {
     onChange([...legs, newLeg]);
   };
 
+  const addNewLeg = () => {
+    if (legs.length >= MAX_LEGS) return;
+
+    const previousLeg = legs[legs.length - 1];
+    const newLeg: FlightLegType = {
+      id: crypto.randomUUID(),
+      departureDate: '',
+      departureTime: '',
+      departureAirport: previousLeg?.arrivalAirport || '',
+      arrivalAirport: '',
+      airportDetails: {
+        departure: previousLeg?.airportDetails.arrival || null,
+        arrival: null
+      },
+      coordinates: {
+        departure: previousLeg?.coordinates?.arrival || {
+          lat: '',
+          lng: ''
+        },
+        arrival: {
+          lat: '',
+          lng: ''
+        }
+      },
+      passengerCount: previousLeg?.passengerCount || ''
+    };
+
+    onChange([...legs, newLeg]);
+  };
+
   const updateLeg = (index: number, updatedLeg: FlightLegType) => {
     const newLegs = [...legs];
     newLegs[index] = updatedLeg;
@@ -57,30 +109,39 @@ const FlightLegs: React.FC<FlightLegsProps> = ({ legs, onChange }) => {
     onChange(legs.filter((_, i) => i !== index));
   };
 
-  // FlightLegs.tsx
-return (
-  <div className="space-y-4">
-    {legs.map((leg, index) => (
-      <FlightLeg
-        key={leg.id}
-        legNumber={index + 1}
-        data={leg}
-        onUpdate={(updatedLeg) => updateLeg(index, updatedLeg)}
-        onRemove={index > 0 ? () => removeLeg(index) : undefined}
-      />
-    ))}
+  return (
+    <div className="space-y-4">
+      {legs.map((leg, index) => (
+        <FlightLeg
+          key={leg.id}
+          legNumber={index + 1}
+          data={leg}
+          onUpdate={(updatedLeg) => updateLeg(index, updatedLeg)}
+          onRemove={index > 0 ? () => removeLeg(index) : undefined}
+          previousLegDate={index > 0 ? legs[index - 1].departureDate : undefined}
+        />
+      ))}
 
-    {legs.length < MAX_LEGS && (
-      <button
-        onClick={addLeg}
-        className="mt-2 ml-0 text-sm text-blue-600 hover:text-blue-800 flex items-center"
-      >
-        <Plus className="h-4 w-4 mr-1" />
-        Add Leg
-      </button>
-    )}
-  </div>
-);
+      {legs.length < MAX_LEGS && (
+        <div className="flex space-x-4">
+          <button
+            onClick={addRoundTripLeg}
+            className="mt-2 ml-0 text-sm text-blue-600 hover:text-blue-800 flex items-center"
+          >
+            <Plus className="h-4 w-4 mr-1" />
+            Round Trip
+          </button>
+          <button
+            onClick={addNewLeg}
+            className="mt-2 ml-0 text-sm text-blue-600 hover:text-blue-800 flex items-center"
+          >
+            <Plus className="h-4 w-4 mr-1" />
+            Add Leg
+          </button>
+        </div>
+      )}
+    </div>
+  );
 };
 
 export default FlightLegs;

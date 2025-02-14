@@ -109,7 +109,7 @@ const AirportInput: React.FC<AirportInputProps> = ({
       const airport = airports.find(a => a.icao === value);
       if (airport) {
         setSelectedAirport(airport);
-        const displayText = `${airport.airportName} (${airport.icao})`;
+        const displayText = `${airport.icao}, ${airport.airportName}`;
         setDisplayValue(displayText);
         setInputValue(displayText);
       }
@@ -139,7 +139,7 @@ const AirportInput: React.FC<AirportInputProps> = ({
 
   const handleSelectAirport = (airport: Airport) => {
     setSelectedAirport(airport);
-    const displayText = `${airport.airportName} (${airport.icao})`;
+    const displayText = `${airport.icao}, ${airport.airportName}`;
     setDisplayValue(displayText);
     setInputValue(displayText);
     const fullDetails = `${airport.airportName}, ${airport.country} (${airport.icao})`;
@@ -176,7 +176,7 @@ const AirportInput: React.FC<AirportInputProps> = ({
               setShowSuggestions(false);
             }, 200);
           }}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-800 bg-white pr-10"
+          className="w-full px-3 py-2 border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-800 bg-white pr-10 text-sm"
           placeholder={placeholder}
         />
         {(isLoadingData || isLoadingSuggestions) && (
@@ -187,23 +187,23 @@ const AirportInput: React.FC<AirportInputProps> = ({
       </div>
       
       {showSuggestions && suggestions.length > 0 && (
-        <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
-          {suggestions.map((airport) => (
-            <div
-              key={airport.icao}
-              onClick={() => handleSelectAirport(airport)}
-              className="px-4 py-2 hover:bg-blue-50 cursor-pointer border-b border-gray-100 last:border-0"
-            >
-              <div className="font-medium text-gray-900">
-                {airport.airportName} ({airport.icao})
-              </div>
-              <div className="text-sm text-gray-600">
-                {airport.country}
-              </div>
-            </div>
-          ))}
+  <div className="absolute z-10 w-[130%] -left-[10%] mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
+    {suggestions.map((airport) => (
+      <div
+        key={airport.icao}
+        onClick={() => handleSelectAirport(airport)}
+        className="px-4 py-2 hover:bg-blue-50 cursor-pointer border-b border-gray-100 last:border-0"
+      >
+        <div className="font-medium text-gray-900">
+          {airport.airportName} ({airport.icao})
         </div>
-      )}
+        <div className="text-sm text-gray-600">
+          {airport.country}
+        </div>
+      </div>
+    ))}
+  </div>
+)}
     </div>
   );
 };
