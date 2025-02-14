@@ -1,15 +1,15 @@
+//src/components/PDFDownloadButton.tsx
 "use client";
 import React, { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
-import type { ProposalPDFProps } from '@/components/ProposalPDF';
+import type { ProposalPDFProps, AircraftDetails, AircraftOption } from '@/types/proposal';
 
-// Dynamically import PDFGenerator instead of PDFRenderer
+// Dynamically import PDFGenerator
 const PDFGenerator = dynamic(
   () => import('./PDFGenerator'),
   { ssr: false }
 );
 
-// Update interface to include airportDetails
 interface PDFDownloadButtonProps {
   formData: ProposalPDFProps;
   airportDetails: {
