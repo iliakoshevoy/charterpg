@@ -1,4 +1,5 @@
 //ProposalPDF.tsx
+/* eslint-disable jsx-a11y/alt-text */
 "use client";
 import React, { useState } from 'react';
 import {

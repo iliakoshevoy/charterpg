@@ -92,7 +92,7 @@ const AirportInput: React.FC<AirportInputProps> = ({
     return () => { 
       isMounted = false;
       if (debouncedSearch) {
-        (debouncedSearch as any).cancel?.();
+        (debouncedSearch as ReturnType<typeof debounce>).cancel?.();
       }
     };
   }, [dataInitialized, debouncedSearch]);

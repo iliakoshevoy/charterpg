@@ -44,13 +44,34 @@ const FlightLeg: React.FC<FlightLegProps> = ({
   };
 
   useEffect(() => {
+    const validateDate = (date: string) => {
+      if (!date) return null;
+  
+      const selectedDate = new Date(date);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+  
+      if (selectedDate < today) {
+        return "Date cannot be in the past";
+      }
+  
+      if (previousLegDate) {
+        const prevDate = new Date(previousLegDate);
+        if (selectedDate < prevDate) {
+          return "Date cannot be earlier than previous leg";
+        }
+      }
+  
+      return null;
+    };
+  
     if (data.departureDate) {
       const error = validateDate(data.departureDate);
       setDateError(error);
     } else {
       setDateError(null);
     }
-  }, [data.departureDate, previousLegDate, validateDate]);
+  }, [data.departureDate, previousLegDate]);
 
   const handleInputChange = (field: keyof FlightLegType, value: string) => {
     onUpdate({

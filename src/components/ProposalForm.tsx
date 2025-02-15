@@ -29,8 +29,7 @@ const ProposalForm = () => {
     comment: '',
   });
 
-  // Airport details state
-// Airport details state - used in PDF generation
+// Airport details state - used in PDF generation, don't remove
 const [airportDetails, setAirportDetails] = useState({
   departure: null as string | null,
   arrival: null as string | null
