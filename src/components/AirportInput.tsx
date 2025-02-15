@@ -1,3 +1,4 @@
+//AirportInput.tsx
 "use client";
 import React, { useState, useEffect, useMemo } from 'react';
 import type { Airport } from '@/lib/googleSheets';
@@ -53,15 +54,19 @@ const AirportInput: React.FC<AirportInputProps> = ({
   useEffect(() => {
     let isMounted = true;
     
+    const CACHE_DURATION = 1000 * 60 * 60 * 24; // 24 hours
+
     const initializeData = async () => {
       if (!dataInitialized) {
         setIsLoadingData(true);
         try {
           const cachedData = localStorage.getItem('airportsData');
-          let data;
+          const cacheTimestamp = localStorage.getItem('airportsDataTimestamp');
+          const now = Date.now();
           
-          if (cachedData) {
-            data = JSON.parse(cachedData);
+          // Use cache if it exists and is less than 24 hours old
+          if (cachedData && cacheTimestamp && (now - Number(cacheTimestamp)) < CACHE_DURATION) {
+            const data = JSON.parse(cachedData);
             if (isMounted) {
               setAirports(data);
               setDataInitialized(true);
@@ -69,14 +74,16 @@ const AirportInput: React.FC<AirportInputProps> = ({
             }
           }
           
+          // Fetch fresh data if cache is expired or doesn't exist
           const response = await fetch('/api/airports');
           if (!response.ok) throw new Error('Failed to fetch airports');
-          data = await response.json();
+          const data = await response.json();
           
           if (isMounted) {
             setAirports(data);
             setDataInitialized(true);
             localStorage.setItem('airportsData', JSON.stringify(data));
+            localStorage.setItem('airportsDataTimestamp', String(now));
           }
         } catch (err) {
           console.error('Failed to load airports:', err);

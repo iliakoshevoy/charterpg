@@ -138,19 +138,26 @@ const styles = StyleSheet.create({
     color: '#1E40AF',
     fontWeight: 'bold',
   },
+  noteInnerContainer: {
+    position: 'relative',
+    paddingLeft: 45, // Space for "Notes:" label
+  },
   noteContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
     marginTop: 8,
+    display: 'flex',
   },
   noteLabel: {
     fontSize: 14,
     color: '#1a1a1a',
+    position: 'absolute',
+    left: 0,
+    top: 0,
   },
   noteValue: {
     fontSize: 14,
     color: '#1a1a1a',
+    display: 'flex',
+    flexWrap: 'wrap',
   },
   detailsTitle: {
     fontSize: 14,
@@ -343,12 +350,14 @@ const ProposalPDF: React.FC<ProposalPDFProps> = (props) => {
         <Text style={styles.priceValue}>{option.data.price}</Text>
       </View>
     )}
-    {option.data.notes && (
-      <View style={styles.noteContainer}>
-        <Text style={styles.noteLabel}>Notes:</Text>
-        <Text style={styles.noteValue}>{option.data.notes}</Text>
-      </View>
-    )}
+{option.data.notes && (
+  <View style={styles.noteContainer}>
+    <View style={styles.noteInnerContainer}>
+      <Text style={styles.noteLabel}>Notes:</Text>
+      <Text style={styles.noteValue}>{option.data.notes}</Text>
+    </View>
+  </View>
+)}
   </View>
 
   <View style={styles.optionRightColumn}>

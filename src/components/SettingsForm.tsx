@@ -5,13 +5,17 @@ import Link from 'next/link';
 import type { CompanySettings } from '@/types/settings';
 
 const SettingsForm = () => {
+  const defaultDisclaimer =
+    "Please note: All options are subject to final availability at the time of booking, flight permits, slots, and owner's approval where applicable. Possible de-Icing, WI-FI and other costs are not included and will be invoiced, if occurred, after the flight.";
+
   const [settings, setSettings] = useState<CompanySettings>({
     companyName: '',
     address: '',
     vatNumber: '',
     website: '',
     email: '',
-    phoneNumber: ''
+    phoneNumber: '',
+    disclaimer: defaultDisclaimer
   });
 
   const [isSaving, setIsSaving] = useState(false);
@@ -25,7 +29,7 @@ const SettingsForm = () => {
     }
   }, []);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setSettings(prev => ({
       ...prev,
@@ -108,18 +112,18 @@ const SettingsForm = () => {
               </div>
 
               <div>
-                    <label htmlFor="website" className="block text-sm font-medium text-gray-700 mb-1">
-                        Website
-                    </label>
-                    <input
-                        type="text"
-                        id="website"
-                        name="website"
-                        value={settings.website}
-                        onChange={handleInputChange}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
-                    />
-                    </div>
+                <label htmlFor="website" className="block text-sm font-medium text-gray-700 mb-1">
+                  Website
+                </label>
+                <input
+                  type="text"
+                  id="website"
+                  name="website"
+                  value={settings.website}
+                  onChange={handleInputChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
+                />
+              </div>
 
               <div>
                 <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
@@ -148,6 +152,21 @@ const SettingsForm = () => {
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
                 />
               </div>
+            </div>
+
+            {/* Disclaimer Field */}
+            <div className="sm:col-span-2">
+              <label htmlFor="disclaimer" className="block text-sm font-medium text-gray-700 mb-1">
+                This disclaimer will be added automatically to the generated charter offer at the page bottom
+              </label>
+              <textarea
+                id="disclaimer"
+                name="disclaimer"
+                value={settings.disclaimer}
+                onChange={handleInputChange}
+                rows={4}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
+              />
             </div>
 
             <div className="flex items-center justify-end space-x-4">
