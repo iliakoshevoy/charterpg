@@ -164,16 +164,16 @@ const styles = StyleSheet.create({
   },
   imagesContainer: {
     flexDirection: 'row',
-    gap: 20,
+    gap: 2,
     justifyContent: 'space-between',
-    marginTop: 2,  // Add some spacing from the details above
+    marginTop: 4,  // Add some spacing from the details above
     width: '100%',  // Ensure container takes full width
+    marginBottom: 5, 
   },
   aircraftImage: {
-    width: '100%',
-    height: 300,    // Increased from 200 to 300
-    objectFit: 'contain',
-    marginBottom: 2 // Space between image and caption
+    width: '100%',   // Ensure it takes the full width of the container
+    height: 200,     // Fixed height for consistency
+    objectFit: 'contain', // Preserve aspect ratio
   },
   optionDivider: {
     marginVertical: 20,
@@ -206,14 +206,13 @@ const styles = StyleSheet.create({
   },
   imageWrapper: {
     width: '48%',
-    marginBottom: 0, // Add space for caption
+    alignItems: 'center', // Center the image and text
   },
     imageCaption: {
       fontSize: 10,
       color: '#666666',
       textAlign: 'center',
-      marginTop: 2,
-      width: '100%'   // Ensure caption takes full width
+      marginTop: 2,  // Small spacing from the image
   },
 });
 
@@ -395,25 +394,19 @@ const ProposalPDF: React.FC<ProposalPDFProps> = (props) => {
 <View style={styles.imagesContainer}>
   {option.data.image1 && (
     <View style={styles.imageWrapper}>
-      <Image
-        src={option.data.image1.startsWith('data:image') ? option.data.image1 : `data:image/jpeg;base64,${option.data.image1}`}
-        style={styles.aircraftImage}
-      />
-      {option.data.isImage1Default && (
-        <Text style={styles.imageCaption}>A generic photo</Text>
-      )}
-    </View>
+    <Image src={option.data.image1} style={styles.aircraftImage} />
+    {option.data.isImage1Default && (
+      <Text style={styles.imageCaption}>A generic photo of this model interior</Text>
+    )}
+  </View>
   )}
   {option.data.image2 && (
     <View style={styles.imageWrapper}>
-      <Image
-        src={option.data.image2.startsWith('data:image') ? option.data.image2 : `data:image/jpeg;base64,${option.data.image2}`}
-        style={styles.aircraftImage}
-      />
-      {option.data.isImage2Default && (
-        <Text style={styles.imageCaption}>A generic photo</Text>
-      )}
-    </View>
+    <Image src={option.data.image2} style={styles.aircraftImage} />
+    {option.data.isImage2Default && (
+      <Text style={styles.imageCaption}>A generic photo of this model exterior</Text>
+    )}
+  </View>
   )}
 </View>
               
@@ -430,7 +423,7 @@ const ProposalPDF: React.FC<ProposalPDFProps> = (props) => {
 </View>
 
         <View style={styles.footer}>
-          <Text>Private Jet Charter Proposal • {generationDate}</Text>
+          <Text>Charter Offer • {generationDate}</Text>
         </View>
       </Page>
     </Document>
