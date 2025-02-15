@@ -7,17 +7,23 @@ interface ImageUploadAreaProps {
   onImageUpload: (file: File) => void;
   onImageRemove: () => void;
   previewUrl: string | null;
-  uniqueId: string; // Add uniqueId prop
+  uniqueId: string;
+  imageType: 'interior' | 'exterior';
+  defaultImageUrl?: string | null;
+  isDefault?: boolean;
 }
 
 const ImageUploadArea: React.FC<ImageUploadAreaProps> = ({
   onImageUpload,
   onImageRemove,
   previewUrl,
-  uniqueId
+  uniqueId,
+  imageType,
+  defaultImageUrl,
+  isDefault = false
 }) => {
   const [isDragging, setIsDragging] = useState(false);
-  const inputId = `fileInput-${uniqueId}`; // Create unique input ID
+  const inputId = `fileInput-${uniqueId}`;
 
   const handleDrag = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -57,16 +63,18 @@ const ImageUploadArea: React.FC<ImageUploadAreaProps> = ({
     }
   }, [onImageUpload]);
 
-  if (previewUrl) {
+  const displayUrl = previewUrl || defaultImageUrl;
+
+  if (displayUrl) {
     return (
       <div className="relative w-[120px] h-[120px] flex items-center justify-center bg-gray-50 rounded-md">
         <Image 
-          src={previewUrl} 
-          alt="Preview" 
+          src={displayUrl} 
+          alt={`${imageType} view`}
           fill
           sizes="120px"
           className="object-contain rounded-md"
-          unoptimized // Add this if dealing with local base64 images
+          unoptimized
         />
         <button
           onClick={onImageRemove}
@@ -75,6 +83,11 @@ const ImageUploadArea: React.FC<ImageUploadAreaProps> = ({
         >
           ×
         </button>
+        {isDefault && (
+          <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white text-xs p-1 text-center">
+            A generic photo
+          </div>
+        )}
       </div>
     );
   }

@@ -3,17 +3,14 @@
 import React, { useState, useEffect } from 'react';
 import { Loader2 } from 'lucide-react';
 import type { AircraftModel } from '@/lib/googleSheets';
+import type { AircraftDetails } from '@/types/proposal';
+import { getAircraftImages, imageUrlToBase64 } from '@/utils/aircraftImages';
 
 interface AircraftSelectionProps {
   value: string;
   onChange: (value: string) => void;
   optionNumber: '1' | '2';
-  onAircraftSelect: (details: {
-    cabinWidth: string | null;
-    cabinHeight: string | null;
-    baggageVolume: string | null;
-    passengerCapacity: string;
-  } | null) => void;
+  onAircraftSelect: (details: AircraftDetails | null) => void;
 }
 
 const AircraftSelection: React.FC<AircraftSelectionProps> = ({
@@ -83,15 +80,54 @@ const AircraftSelection: React.FC<AircraftSelectionProps> = ({
     }
   };
 
-  const handleSelectAircraft = (selectedAircraft: AircraftModel) => {
+  const handleSelectAircraft = async (selectedAircraft: AircraftModel) => {
     setInputValue(selectedAircraft.model);
     onChange(selectedAircraft.model);
-    onAircraftSelect({
-      cabinWidth: selectedAircraft.cabinWidth,
-      cabinHeight: selectedAircraft.cabinHeight,
-      baggageVolume: selectedAircraft.baggageVolume,
-      passengerCapacity: selectedAircraft.passengerCapacity
-    });
+    
+    const defaultImages = getAircraftImages(selectedAircraft.model);
+    console.log('Default images paths:', defaultImages);
+    
+    try {
+      let interiorBase64, exteriorBase64;
+      
+      if (defaultImages?.interior) {
+        console.log('Processing interior image...');
+        interiorBase64 = await imageUrlToBase64(defaultImages.interior);
+        console.log('Interior image processed successfully');
+      }
+      
+      if (defaultImages?.exterior) {
+        console.log('Processing exterior image...');
+        exteriorBase64 = await imageUrlToBase64(defaultImages.exterior);
+        console.log('Exterior image processed successfully');
+      }
+      
+      const details = {
+        cabinWidth: selectedAircraft.cabinWidth,
+        cabinHeight: selectedAircraft.cabinHeight,
+        baggageVolume: selectedAircraft.baggageVolume,
+        passengerCapacity: selectedAircraft.passengerCapacity,
+        defaultInteriorImageUrl: interiorBase64,
+        defaultExteriorImageUrl: exteriorBase64
+      };
+      
+      console.log('Sending aircraft details with images:', {
+        ...details,
+        hasInteriorImage: !!interiorBase64,
+        hasExteriorImage: !!exteriorBase64
+      });
+      
+      onAircraftSelect(details);
+    } catch (error) {
+      console.error('Error processing images:', error);
+      onAircraftSelect({
+        cabinWidth: selectedAircraft.cabinWidth,
+        cabinHeight: selectedAircraft.cabinHeight,
+        baggageVolume: selectedAircraft.baggageVolume,
+        passengerCapacity: selectedAircraft.passengerCapacity
+      });
+    }
+    
     setShowSuggestions(false);
   };
 

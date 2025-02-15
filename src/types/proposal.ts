@@ -7,38 +7,45 @@
     name: string;
     image1: string | null;
     image2: string | null;
+    isImage1Default: boolean;
+    isImage2Default: boolean;
     details: AircraftDetails | null;
-    yearOfManufacture: string | null;  // Added
-    price: string | null;              // Added
-    paxCapacity: string | null;        // Added
-    notes: string | null;              // Added
-    yearRefurbishment: string | null; 
+    yearOfManufacture: string | null;
+    yearRefurbishment: string | null;
+    price: string | null;
+    paxCapacity: string | null;
+    notes: string | null;
   }
   
   
 
-export interface AircraftDetails {
-  cabinWidth: string | null;
-  cabinHeight: string | null;
-  baggageVolume: string | null;
-  passengerCapacity: string;
-}
+  export interface AircraftDetails {
+    cabinWidth: string | null;
+    cabinHeight: string | null;
+    baggageVolume: string | null;
+    passengerCapacity: string;
+    defaultInteriorImageUrl?: string;
+    defaultExteriorImageUrl?: string;
+  }
 
 
-export interface AircraftOptionType {
-  id: string;
-  name: string;
-  image1: string | null;
-  image2: string | null;
-  details: AircraftDetails | null;
-  imagePreview1: string | null;
-  imagePreview2: string | null;
-  yearOfManufacture: string | null;
-  price: string | null;
-  paxCapacity: string | null;
-  notes: string | null;
-  yearRefurbishment: string | null;
-}
+
+  export interface AircraftOptionType {
+    id: string;
+    name: string;
+    image1: string | null;
+    image2: string | null;
+    details: AircraftDetails | null;
+    imagePreview1: string | null;
+    imagePreview2: string | null;
+    yearOfManufacture: string | null;
+    yearRefurbishment: string | null;
+    price: string | null;
+    paxCapacity: string | null;
+    notes: string | null;
+    isImage1Default?: boolean;
+    isImage2Default?: boolean;
+  }
 
 export interface ProposalPDFProps {
     airportDetails: {
@@ -94,4 +101,14 @@ export interface ProposalPDFProps {
   option3YearRefurbishment: string | null;
   option4YearRefurbishment: string | null;
   option5YearRefurbishment: string | null;
+  option1IsImage1Default: boolean;  // Add these!
+  option1IsImage2Default: boolean;  // Add these!
+  option2IsImage1Default?: boolean;  // Add these fields
+  option2IsImage2Default?: boolean;  // Add these fields
+  option3IsImage1Default?: boolean;  // Add these fields
+  option3IsImage2Default?: boolean;  // Add these fields
+  option4IsImage1Default?: boolean;  // Add these fields
+  option4IsImage2Default?: boolean;  // Add these fields
+  option5IsImage1Default?: boolean;  // Add these fields
+  option5IsImage2Default?: boolean;  // Add these fields
 }

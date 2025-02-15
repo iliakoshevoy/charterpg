@@ -27,6 +27,8 @@ export interface AircraftModel {
   cabinHeight: string | null;
   baggageVolume: string | null;
   passengerCapacity: string;
+  defaultInteriorImageUrl?: string;
+  defaultExteriorImageUrl?: string;
 }
 
 export interface Airport {

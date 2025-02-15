@@ -97,11 +97,11 @@ const styles = StyleSheet.create({
     borderTopColor: '#e0e0e0',
   },
   optionContainer: {
-    marginBottom: 40,
+    marginBottom: 20,
   },
   optionColumns: {
     flexDirection: 'row',
-    marginBottom: 20,
+    marginBottom: 10,
   },
   optionLeftColumn: {
     width: '60%',
@@ -166,14 +166,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 20,
     justifyContent: 'space-between',
+    marginTop: 2,  // Add some spacing from the details above
+    width: '100%',  // Ensure container takes full width
   },
   aircraftImage: {
-    width: '48%',
-    height: 200,
+    width: '100%',
+    height: 300,    // Increased from 200 to 300
     objectFit: 'contain',
+    marginBottom: 2 // Space between image and caption
   },
   optionDivider: {
-    marginVertical: 40,
+    marginVertical: 20,
     borderTop: 1,
     borderTopColor: '#e0e0e0',
   },
@@ -201,9 +204,30 @@ const styles = StyleSheet.create({
     color: '#6b7280',
     fontSize: 8,
   },
+  imageWrapper: {
+    width: '48%',
+    marginBottom: 0, // Add space for caption
+  },
+    imageCaption: {
+      fontSize: 10,
+      color: '#666666',
+      textAlign: 'center',
+      marginTop: 2,
+      width: '100%'   // Ensure caption takes full width
+  },
 });
 
 const ProposalPDF: React.FC<ProposalPDFProps> = (props) => {
+  console.log('ProposalPDF render:', {
+    option1: {
+      hasImage1: !!props.option1Image1,
+      hasImage2: !!props.option1Image2,
+      isImage1Default: props.option1IsImage1Default,
+      isImage2Default: props.option1IsImage2Default,
+      image1Preview: props.option1Image1?.substring(0, 50),
+      image2Preview: props.option1Image2?.substring(0, 50)
+    }
+  });
   const [generationDate] = useState(() => {
     const d = new Date();
     const months = [
@@ -233,6 +257,8 @@ const ProposalPDF: React.FC<ProposalPDFProps> = (props) => {
       name: props[`${baseName}Name` as keyof ProposalPDFProps] as string,
       image1: props[`${baseName}Image1` as keyof ProposalPDFProps] as string | null,
       image2: props[`${baseName}Image2` as keyof ProposalPDFProps] as string | null,
+      isImage1Default: props[`${baseName}IsImage1Default` as keyof ProposalPDFProps] as boolean,
+      isImage2Default: props[`${baseName}IsImage2Default` as keyof ProposalPDFProps] as boolean,
       details: props[`${baseName}Details` as keyof ProposalPDFProps] as AircraftDetails | null,
       yearOfManufacture: props[`${baseName}YearOfManufacture` as keyof ProposalPDFProps] as string | null,
       yearRefurbishment: props[`${baseName}YearRefurbishment` as keyof ProposalPDFProps] as string | null,
@@ -364,18 +390,30 @@ const ProposalPDF: React.FC<ProposalPDFProps> = (props) => {
   </View>
 </View>
 
+
+
 <View style={styles.imagesContainer}>
   {option.data.image1 && (
-    <Image
-      src={option.data.image1.startsWith('data:image') ? option.data.image1 : `data:image/jpeg;base64,${option.data.image1}`}
-      style={styles.aircraftImage}
-    />
+    <View style={styles.imageWrapper}>
+      <Image
+        src={option.data.image1.startsWith('data:image') ? option.data.image1 : `data:image/jpeg;base64,${option.data.image1}`}
+        style={styles.aircraftImage}
+      />
+      {option.data.isImage1Default && (
+        <Text style={styles.imageCaption}>A generic photo</Text>
+      )}
+    </View>
   )}
   {option.data.image2 && (
-    <Image
-      src={option.data.image2.startsWith('data:image') ? option.data.image2 : `data:image/jpeg;base64,${option.data.image2}`}
-      style={styles.aircraftImage}
-    />
+    <View style={styles.imageWrapper}>
+      <Image
+        src={option.data.image2.startsWith('data:image') ? option.data.image2 : `data:image/jpeg;base64,${option.data.image2}`}
+        style={styles.aircraftImage}
+      />
+      {option.data.isImage2Default && (
+        <Text style={styles.imageCaption}>A generic photo</Text>
+      )}
+    </View>
   )}
 </View>
               

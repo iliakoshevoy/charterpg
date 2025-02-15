@@ -35,6 +35,19 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ formData, airportDetails })
     formData.option1Name
   ]);
 
+  console.log('Detailed formData check:', {
+    rawData: {
+      images: {
+        image1: formData.option1Image1?.substring(0, 100),
+        image2: formData.option1Image2?.substring(0, 100),
+      },
+      flags: {
+        isImage1Default: formData.option1IsImage1Default,
+        isImage2Default: formData.option1IsImage2Default,
+      }
+    }
+  });
+
   const generatePDF = useCallback(async () => {
     if (!hasValidData) return;
     
@@ -42,6 +55,25 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ formData, airportDetails })
       setIsGenerating(true);
       setError(null);
       
+
+console.log('PDF Generation - Detailed Image Data:', {
+  option1: {
+    name: formData.option1Name,
+    image1: {
+      exists: !!formData.option1Image1,
+      isDefault: formData.option1IsImage1Default,
+      dataLength: formData.option1Image1?.length || 0,
+      startsWith: formData.option1Image1?.substring(0, 50) // Show start of the image data
+    },
+    image2: {
+      exists: !!formData.option1Image2,
+      isDefault: formData.option1IsImage2Default,
+      dataLength: formData.option1Image2?.length || 0,
+      startsWith: formData.option1Image2?.substring(0, 50)
+    }
+  }
+});
+
       console.log('Generating PDF with data:', {
         formData: {
           customerName: formData.customerName,
@@ -49,6 +81,8 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ formData, airportDetails })
             name: formData.option1Name,
             hasImage1: Boolean(formData.option1Image1),
             hasImage2: Boolean(formData.option1Image2),
+            isImage1Default: formData.option1IsImage1Default,
+            isImage2Default: formData.option1IsImage2Default,
             details: formData.option1Details,
             yearOfManufacture: formData.option1YearOfManufacture,
             yearRefurbishment: formData.option1YearRefurbishment,
@@ -57,6 +91,8 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ formData, airportDetails })
             name: formData.option2Name,
             hasImage1: Boolean(formData.option2Image1),
             hasImage2: Boolean(formData.option2Image2),
+            isImage1Default: formData.option2IsImage1Default, // Fixed: was using option1
+            isImage2Default: formData.option2IsImage2Default, // Fixed: was using option1
             details: formData.option2Details,
             yearOfManufacture: formData.option2YearOfManufacture,
             yearRefurbishment: formData.option2YearRefurbishment,
@@ -65,6 +101,8 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ formData, airportDetails })
             name: formData.option3Name,
             hasImage1: Boolean(formData.option3Image1),
             hasImage2: Boolean(formData.option3Image2),
+            isImage1Default: formData.option3IsImage1Default, // Fixed: was using option1
+            isImage2Default: formData.option3IsImage2Default, // Fixed: was using option1
             details: formData.option3Details,
             yearOfManufacture: formData.option3YearOfManufacture,
             yearRefurbishment: formData.option3YearRefurbishment,
@@ -73,6 +111,8 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ formData, airportDetails })
             name: formData.option4Name,
             hasImage1: Boolean(formData.option4Image1),
             hasImage2: Boolean(formData.option4Image2),
+            isImage1Default: formData.option4IsImage1Default, // Fixed: was using option1
+            isImage2Default: formData.option4IsImage2Default, // Fixed: was using option1
             details: formData.option4Details,
             yearOfManufacture: formData.option4YearOfManufacture,
             yearRefurbishment: formData.option4YearRefurbishment,
@@ -81,6 +121,8 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ formData, airportDetails })
             name: formData.option5Name,
             hasImage1: Boolean(formData.option5Image1),
             hasImage2: Boolean(formData.option5Image2),
+            isImage1Default: formData.option5IsImage1Default, // Fixed: was using option1
+            isImage2Default: formData.option5IsImage2Default, // Fixed: was using option1
             details: formData.option5Details,
             yearOfManufacture: formData.option5YearOfManufacture,
             yearRefurbishment: formData.option5YearRefurbishment,

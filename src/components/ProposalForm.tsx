@@ -5,7 +5,7 @@ import dynamic from 'next/dynamic';
 import AircraftOption from './AircraftOption';
 import FlightLegs from '@/components/FlightLegs';
 import type { FlightLeg } from '@/types/flight';
-import type { ProposalPDFProps, AircraftOptionType } from '@/types/proposal';
+import type { AircraftDetails, AircraftOptionType, ProposalPDFProps } from '@/types/proposal';
 
 const PDFGenerator = dynamic(() => import('./PDFGenerator'), {
   ssr: false,
@@ -51,6 +51,7 @@ const [airportDetails, setAirportDetails] = useState({
     },
     passengerCount: ''
   }]);
+
 
   // Aircraft options state
   const [aircraftOptions, setAircraftOptions] = useState<AircraftOptionType[]>([
@@ -116,61 +117,80 @@ const [airportDetails, setAirportDetails] = useState({
 
 
   // Convert state to PDF props
-  const getPDFData = (): ProposalPDFProps => {
-    return {
-      airportDetails: {
-        departure: airportDetails.departure,
-        arrival: airportDetails.arrival
-      },
-      ...basicFormData,
-      flightLegs,
-      option1Name: aircraftOptions[0]?.name || '',
-      option1Image1: aircraftOptions[0]?.image1 || null,
-      option1Image2: aircraftOptions[0]?.image2 || null,
-      option1Details: aircraftOptions[0]?.details || null,
-      option1YearOfManufacture: aircraftOptions[0]?.yearOfManufacture || null,
-      option1Price: aircraftOptions[0]?.price || null,
-      option1PaxCapacity: aircraftOptions[0]?.paxCapacity || null,
-      option1Notes: aircraftOptions[0]?.notes || null,
-      option2Name: aircraftOptions[1]?.name || '',
-      option2Image1: aircraftOptions[1]?.image1 || null,
-      option2Image2: aircraftOptions[1]?.image2 || null,
-      option2Details: aircraftOptions[1]?.details || null,
-      option2YearOfManufacture: aircraftOptions[1]?.yearOfManufacture || null,
-      option2Price: aircraftOptions[1]?.price || null,
-      option2PaxCapacity: aircraftOptions[1]?.paxCapacity || null,
-      option2Notes: aircraftOptions[1]?.notes || null,
-      option3Name: aircraftOptions[2]?.name || '',
-      option3Image1: aircraftOptions[2]?.image1 || null,
-      option3Image2: aircraftOptions[2]?.image2 || null,
-      option3Details: aircraftOptions[2]?.details || null,
-      option3YearOfManufacture: aircraftOptions[2]?.yearOfManufacture || null,
-      option3Price: aircraftOptions[2]?.price || null,
-      option3PaxCapacity: aircraftOptions[2]?.paxCapacity || null,
-      option3Notes: aircraftOptions[2]?.notes || null,
-      option4Name: aircraftOptions[3]?.name || '',
-      option4Image1: aircraftOptions[3]?.image1 || null,
-      option4Image2: aircraftOptions[3]?.image2 || null,
-      option4Details: aircraftOptions[3]?.details || null,
-      option4YearOfManufacture: aircraftOptions[3]?.yearOfManufacture || null,
-      option4Price: aircraftOptions[3]?.price || null,
-      option4PaxCapacity: aircraftOptions[3]?.paxCapacity || null,
-      option4Notes: aircraftOptions[3]?.notes || null,
-      option5Name: aircraftOptions[4]?.name || '',
-      option5Image1: aircraftOptions[4]?.image1 || null,
-      option5Image2: aircraftOptions[4]?.image2 || null,
-      option5Details: aircraftOptions[4]?.details || null,
-      option5YearOfManufacture: aircraftOptions[4]?.yearOfManufacture || null,
-      option5Price: aircraftOptions[4]?.price || null,
-      option5PaxCapacity: aircraftOptions[4]?.paxCapacity || null,
-      option5Notes: aircraftOptions[4]?.notes || null,
-      option1YearRefurbishment: aircraftOptions[0]?.yearRefurbishment || null,
+const getPDFData = (): ProposalPDFProps => {
+  return {
+    airportDetails: {
+      departure: airportDetails.departure,
+      arrival: airportDetails.arrival
+    },
+    ...basicFormData,
+    flightLegs,
+    // Option 1
+    option1Name: aircraftOptions[0]?.name || '',
+    option1Image1: aircraftOptions[0]?.details?.defaultInteriorImageUrl || aircraftOptions[0]?.image1 || null,
+    option1Image2: aircraftOptions[0]?.details?.defaultExteriorImageUrl || aircraftOptions[0]?.image2 || null,
+    option1IsImage1Default: !!aircraftOptions[0]?.details?.defaultInteriorImageUrl && !aircraftOptions[0]?.image1,
+    option1IsImage2Default: !!aircraftOptions[0]?.details?.defaultExteriorImageUrl && !aircraftOptions[0]?.image2,
+    option1Details: aircraftOptions[0]?.details || null,
+    option1YearOfManufacture: aircraftOptions[0]?.yearOfManufacture || null,
+    option1Price: aircraftOptions[0]?.price || null,
+    option1PaxCapacity: aircraftOptions[0]?.paxCapacity || null,
+    option1Notes: aircraftOptions[0]?.notes || null,
+    option1YearRefurbishment: aircraftOptions[0]?.yearRefurbishment || null,
+
+    // Option 2
+    option2Name: aircraftOptions[1]?.name || '',
+    option2Image1: aircraftOptions[1]?.details?.defaultInteriorImageUrl || aircraftOptions[1]?.image1 || null,
+    option2Image2: aircraftOptions[1]?.details?.defaultExteriorImageUrl || aircraftOptions[1]?.image2 || null,
+    option2IsImage1Default: !!aircraftOptions[1]?.details?.defaultInteriorImageUrl && !aircraftOptions[1]?.image1,
+    option2IsImage2Default: !!aircraftOptions[1]?.details?.defaultExteriorImageUrl && !aircraftOptions[1]?.image2,
+    option2Details: aircraftOptions[1]?.details || null,
+    option2YearOfManufacture: aircraftOptions[1]?.yearOfManufacture || null,
+    option2Price: aircraftOptions[1]?.price || null,
+    option2PaxCapacity: aircraftOptions[1]?.paxCapacity || null,
+    option2Notes: aircraftOptions[1]?.notes || null,
     option2YearRefurbishment: aircraftOptions[1]?.yearRefurbishment || null,
+
+    // Option 3
+    option3Name: aircraftOptions[2]?.name || '',
+    option3Image1: aircraftOptions[2]?.details?.defaultInteriorImageUrl || aircraftOptions[2]?.image1 || null,
+    option3Image2: aircraftOptions[2]?.details?.defaultExteriorImageUrl || aircraftOptions[2]?.image2 || null,
+    option3IsImage1Default: !!aircraftOptions[2]?.details?.defaultInteriorImageUrl && !aircraftOptions[2]?.image1,
+    option3IsImage2Default: !!aircraftOptions[2]?.details?.defaultExteriorImageUrl && !aircraftOptions[2]?.image2,
+    option3Details: aircraftOptions[2]?.details || null,
+    option3YearOfManufacture: aircraftOptions[2]?.yearOfManufacture || null,
+    option3Price: aircraftOptions[2]?.price || null,
+    option3PaxCapacity: aircraftOptions[2]?.paxCapacity || null,
+    option3Notes: aircraftOptions[2]?.notes || null,
     option3YearRefurbishment: aircraftOptions[2]?.yearRefurbishment || null,
+
+    // Option 4
+    option4Name: aircraftOptions[3]?.name || '',
+    option4Image1: aircraftOptions[3]?.details?.defaultInteriorImageUrl || aircraftOptions[3]?.image1 || null,
+    option4Image2: aircraftOptions[3]?.details?.defaultExteriorImageUrl || aircraftOptions[3]?.image2 || null,
+    option4IsImage1Default: !!aircraftOptions[3]?.details?.defaultInteriorImageUrl && !aircraftOptions[3]?.image1,
+    option4IsImage2Default: !!aircraftOptions[3]?.details?.defaultExteriorImageUrl && !aircraftOptions[3]?.image2,
+    option4Details: aircraftOptions[3]?.details || null,
+    option4YearOfManufacture: aircraftOptions[3]?.yearOfManufacture || null,
+    option4Price: aircraftOptions[3]?.price || null,
+    option4PaxCapacity: aircraftOptions[3]?.paxCapacity || null,
+    option4Notes: aircraftOptions[3]?.notes || null,
     option4YearRefurbishment: aircraftOptions[3]?.yearRefurbishment || null,
+
+    // Option 5
+    option5Name: aircraftOptions[4]?.name || '',
+    option5Image1: aircraftOptions[4]?.details?.defaultInteriorImageUrl || aircraftOptions[4]?.image1 || null,
+    option5Image2: aircraftOptions[4]?.details?.defaultExteriorImageUrl || aircraftOptions[4]?.image2 || null,
+    option5IsImage1Default: !!aircraftOptions[4]?.details?.defaultInteriorImageUrl && !aircraftOptions[4]?.image1,
+    option5IsImage2Default: !!aircraftOptions[4]?.details?.defaultExteriorImageUrl && !aircraftOptions[4]?.image2,
+    option5Details: aircraftOptions[4]?.details || null,
+    option5YearOfManufacture: aircraftOptions[4]?.yearOfManufacture || null,
+    option5Price: aircraftOptions[4]?.price || null,
+    option5PaxCapacity: aircraftOptions[4]?.paxCapacity || null,
+    option5Notes: aircraftOptions[4]?.notes || null,
     option5YearRefurbishment: aircraftOptions[4]?.yearRefurbishment || null,
-    };
   };
+};
 
   return (
     <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md">

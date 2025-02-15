@@ -3,18 +3,13 @@
 import React from 'react';
 import dynamic from 'next/dynamic';
 import ImageUploadArea from '@/components/ImageUploadArea';
+import { getAircraftImages } from '@/utils/aircraftImages';
+import type { AircraftDetails } from '@/types/proposal';
 
 const AircraftSelection = dynamic(() => import('./AircraftSelection'), {
   ssr: false,
   loading: () => <div className="w-full h-10 bg-gray-100 rounded-md animate-pulse" />
 });
-
-interface AircraftDetails {
-  cabinWidth: string | null;
-  cabinHeight: string | null;
-  baggageVolume: string | null;
-  passengerCapacity: string;
-}
 
 interface AircraftOptionProps {
   optionNumber: number;
@@ -68,6 +63,7 @@ const AircraftOption: React.FC<AircraftOptionProps> = ({
   onPaxCapacityChange,
   onNotesChange,
   onRemove,
+  details,
   className = ""
 }) => {
   const hasContent = Boolean(name || image1 || image2 || yearOfManufacture || yearRefurbishment || price || paxCapacity || notes);
@@ -94,16 +90,23 @@ const AircraftOption: React.FC<AircraftOptionProps> = ({
             Aircraft Type
           </label>
           <AircraftSelection
-            value={name}
-            onChange={onNameChange}
-            optionNumber={optionNumber.toString() as '1' | '2'}
-            onAircraftSelect={(newDetails) => {
-              onDetailsChange(newDetails);
-              if (newDetails) {
-                onPaxCapacityChange(newDetails.passengerCapacity);
-              }
-            }}
-          />
+  value={name}
+  onChange={onNameChange}
+  optionNumber={optionNumber.toString() as '1' | '2'}
+  onAircraftSelect={(newDetails) => {
+    onDetailsChange(newDetails);
+    if (newDetails) {
+      const defaultImages = getAircraftImages(name); // Use name instead of details.model
+      if (defaultImages) {
+        onImage1Change(defaultImages.interior);
+        onImage2Change(defaultImages.exterior);
+        onImagePreview1Change(defaultImages.interior);
+        onImagePreview2Change(defaultImages.exterior);
+      }
+      onPaxCapacityChange(newDetails.passengerCapacity);
+    }
+  }}
+/>
         </div>
         <div className="col-span-2">
           <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -145,78 +148,93 @@ const AircraftOption: React.FC<AircraftOptionProps> = ({
 
       {/* Second row - Price and Images */}
       <div className="grid grid-cols-12 gap-4">
-        <div className="col-span-4 space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Price
-            </label>
-            <input
-              type="text"
-              value={price || ''}
-              onChange={(e) => onPriceChange(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
-              placeholder="Price"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Notes
-            </label>
-            <input
-              type="text"
-              value={notes || ''}
-              onChange={(e) => onNotesChange(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
-              placeholder="Notes"
-            />
-            
-          </div>
-        </div>
-        <div className="col-span-4">
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Image 1
-          </label>
-          <ImageUploadArea
-            uniqueId={`option${optionNumber}-image1`}
-            onImageUpload={(file) => {
-              const reader = new FileReader();
-              reader.onloadend = () => {
-                const base64String = reader.result as string;
-                onImage1Change(base64String);
-                onImagePreview1Change(base64String);
-              };
-              reader.readAsDataURL(file);
-            }}
-            onImageRemove={() => {
-              onImage1Change(null);
-              onImagePreview1Change(null);
-            }}
-            previewUrl={imagePreview1}
-          />
-        </div>
-        <div className="col-span-4">
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Image 2
-          </label>
-          <ImageUploadArea
-            uniqueId={`option${optionNumber}-image2`}
-            onImageUpload={(file) => {
-              const reader = new FileReader();
-              reader.onloadend = () => {
-                const base64String = reader.result as string;
-                onImage2Change(base64String);
-                onImagePreview2Change(base64String);
-              };
-              reader.readAsDataURL(file);
-            }}
-            onImageRemove={() => {
-              onImage2Change(null);
-              onImagePreview2Change(null);
-            }}
-            previewUrl={imagePreview2}
-          />
-        </div>
-      </div>
+  <div className="col-span-4 space-y-4">
+    <div>
+      <label className="block text-sm font-medium text-gray-700 mb-1">
+        Price
+      </label>
+      <input
+        type="text"
+        value={price || ''}
+        onChange={(e) => onPriceChange(e.target.value)}
+        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
+        placeholder="Price"
+      />
+    </div>
+    <div>
+      <label className="block text-sm font-medium text-gray-700 mb-1">
+        Notes
+      </label>
+      <input
+        type="text"
+        value={notes || ''}
+        onChange={(e) => onNotesChange(e.target.value)}
+        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
+        placeholder="Notes"
+      />
+    </div>
+  </div>
+  <div className="col-span-4">
+  <label className="block text-sm font-medium text-gray-700 mb-1">
+    Image 1
+  </label>
+  <ImageUploadArea
+    uniqueId={`option${optionNumber}-image1`}
+    imageType="interior"
+    defaultImageUrl={details?.defaultInteriorImageUrl}
+    isDefault={!imagePreview1 && !!details?.defaultInteriorImageUrl}
+    onImageUpload={(file) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64String = reader.result as string;
+        onImage1Change(base64String);
+        onImagePreview1Change(base64String);
+      };
+      reader.readAsDataURL(file);
+    }}
+    onImageRemove={() => {
+      if (details) {
+        const updatedDetails = { ...details };
+        delete updatedDetails.defaultInteriorImageUrl;
+        onDetailsChange(updatedDetails);
+      }
+      onImage1Change(null);
+      onImagePreview1Change(null);
+    }}
+    previewUrl={imagePreview1}
+  />
+</div>
+<div className="col-span-4">
+  <label className="block text-sm font-medium text-gray-700 mb-1">
+    Image 2
+  </label>
+  <ImageUploadArea
+    uniqueId={`option${optionNumber}-image2`}
+    imageType="exterior"
+    defaultImageUrl={details?.defaultExteriorImageUrl}
+    isDefault={!imagePreview2 && !!details?.defaultExteriorImageUrl}
+    onImageUpload={(file) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64String = reader.result as string;
+        onImage2Change(base64String);
+        onImagePreview2Change(base64String);
+      };
+      reader.readAsDataURL(file);
+    }}
+    onImageRemove={() => {
+      if (details) {
+        const updatedDetails = { ...details };
+        delete updatedDetails.defaultExteriorImageUrl;
+        onDetailsChange(updatedDetails);
+      }
+      onImage2Change(null);
+      onImagePreview2Change(null);
+    }}
+    previewUrl={imagePreview2}
+  />
+</div>
+</div>
     </div>
   );
 };
