@@ -43,7 +43,7 @@ const SettingsForm = () => {
       localStorage.setItem('companySettings', JSON.stringify(settings));
       setSaveStatus('success');
       setTimeout(() => setSaveStatus('idle'), 3000);
-    } catch (error) {
+    } catch {
       setSaveStatus('error');
     } finally {
       setIsSaving(false);

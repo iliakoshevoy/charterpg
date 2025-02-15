@@ -21,7 +21,6 @@ interface PDFGeneratorProps {
 }
 
 const PDFGenerator: React.FC<PDFGeneratorProps> = ({ formData, airportDetails }) => {
-  const [mounted, setMounted] = useState(false);
   const [pdfBlob, setPdfBlob] = useState<string | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -112,14 +111,12 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ formData, airportDetails })
 
   // Cleanup on unmount
   useEffect(() => {
-    setMounted(true);
     return () => {
-      setMounted(false);
       if (pdfBlob) {
         URL.revokeObjectURL(pdfBlob);
       }
     };
-  }, []);
+  }, [pdfBlob]);
 
   const handleDownload = () => {
     if (!pdfBlob) return;

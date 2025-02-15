@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import type { Airport } from '@/lib/googleSheets';
 import { Loader2 } from 'lucide-react';
 import debounce from 'lodash/debounce';
@@ -26,14 +26,14 @@ const AirportInput: React.FC<AirportInputProps> = ({
   const [displayValue, setDisplayValue] = useState(value);
   const [dataInitialized, setDataInitialized] = useState(false);
 
-  const debouncedSearch = useCallback(
-    debounce((searchTerm: string, airportsData: Airport[]) => {
+  const debouncedSearch = useMemo(() => {
+    const debouncedFn = debounce((searchTerm: string, airportsData: Airport[]) => {
       if (searchTerm.length < 2) {
         setSuggestions([]);
         setIsLoadingSuggestions(false);
         return;
       }
-
+  
       const term = searchTerm.toLowerCase();
       const filtered = airportsData.filter(airport => 
         airport.icao.toLowerCase().includes(term) ||
@@ -43,9 +43,12 @@ const AirportInput: React.FC<AirportInputProps> = ({
       
       setSuggestions(filtered);
       setIsLoadingSuggestions(false);
-    }, 500),
-    [setSuggestions, setIsLoadingSuggestions]
-  );
+    }, 500);
+  
+    return debouncedFn;
+  }, [setSuggestions, setIsLoadingSuggestions]);
+
+
 
   useEffect(() => {
     let isMounted = true;
@@ -88,7 +91,9 @@ const AirportInput: React.FC<AirportInputProps> = ({
     initializeData();
     return () => { 
       isMounted = false;
-      debouncedSearch.cancel(); 
+      if (debouncedSearch) {
+        (debouncedSearch as any).cancel?.();
+      }
     };
   }, [dataInitialized, debouncedSearch]);
 

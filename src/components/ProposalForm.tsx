@@ -1,12 +1,11 @@
 // src/components/ProposalForm.tsx
 "use client";
-import React, { useState, Suspense, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
-import { Plus } from 'lucide-react'; 
 import AircraftOption from './AircraftOption';
 import FlightLegs from '@/components/FlightLegs';
 import type { FlightLeg } from '@/types/flight';
-import type { ProposalPDFProps, AircraftDetails, AircraftOptionType } from '@/types/proposal';
+import type { ProposalPDFProps, AircraftOptionType } from '@/types/proposal';
 
 const PDFGenerator = dynamic(() => import('./PDFGenerator'), {
   ssr: false,
@@ -17,7 +16,6 @@ const PDFGenerator = dynamic(() => import('./PDFGenerator'), {
   )
 });
 
-const MAX_LEGS = 4;
 
 const ProposalForm = () => {
   // Basic form data
@@ -32,10 +30,11 @@ const ProposalForm = () => {
   });
 
   // Airport details state
-  const [airportDetails, setAirportDetails] = useState({
-    departure: null as string | null,
-    arrival: null as string | null
-  });
+// Airport details state - used in PDF generation
+const [airportDetails, setAirportDetails] = useState({
+  departure: null as string | null,
+  arrival: null as string | null
+});
 
   const [flightLegs, setFlightLegs] = useState<FlightLeg[]>([{
     id: crypto.randomUUID(),

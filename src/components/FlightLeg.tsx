@@ -50,7 +50,7 @@ const FlightLeg: React.FC<FlightLegProps> = ({
     } else {
       setDateError(null);
     }
-  }, [data.departureDate, previousLegDate]);
+  }, [data.departureDate, previousLegDate, validateDate]);
 
   const handleInputChange = (field: keyof FlightLegType, value: string) => {
     onUpdate({

@@ -34,7 +34,7 @@ const FlightLegs: React.FC<FlightLegsProps> = ({ legs, onChange }) => {
     if (legs.length === 0) {
       onChange([createEmptyLeg()]);
     }
-  }, []);
+  }, [legs.length, onChange]);
 
   const addRoundTripLeg = () => {
     if (legs.length >= MAX_LEGS) return;

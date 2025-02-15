@@ -221,7 +221,7 @@ const ProposalPDF: React.FC<ProposalPDFProps> = (props) => {
         'July', 'August', 'September', 'October', 'November', 'December'
       ];
       return `${d.getDate()} ${months[d.getMonth()]}, ${d.getFullYear()}`;
-    } catch (error) {
+    } catch {
       return dateStr;
     }
   };
@@ -297,9 +297,9 @@ const ProposalPDF: React.FC<ProposalPDFProps> = (props) => {
           </View>
         )}
 
-        <View style={styles.mapContainer}>
-          <Image src={mapUrl} style={styles.map} />
-        </View>
+<View style={styles.mapContainer}>
+  <Image src={mapUrl} style={styles.map} />
+</View>
 
         <View style={styles.sectionDivider} />
 
@@ -363,31 +363,32 @@ const ProposalPDF: React.FC<ProposalPDFProps> = (props) => {
   </View>
 </View>
 
-              <View style={styles.imagesContainer}>
-                {option.data.image1 && (
-                  <Image
-                    src={option.data.image1.startsWith('data:image') ? option.data.image1 : `data:image/jpeg;base64,${option.data.image1}`}
-                    style={styles.aircraftImage}
-                  />
-                )}
-                {option.data.image2 && (
-                  <Image
-                    src={option.data.image2.startsWith('data:image') ? option.data.image2 : `data:image/jpeg;base64,${option.data.image2}`}
-                    style={styles.aircraftImage}
-                  />
-                )}
-              </View>
+<View style={styles.imagesContainer}>
+  {option.data.image1 && (
+    <Image
+      src={option.data.image1.startsWith('data:image') ? option.data.image1 : `data:image/jpeg;base64,${option.data.image1}`}
+      style={styles.aircraftImage}
+    />
+  )}
+  {option.data.image2 && (
+    <Image
+      src={option.data.image2.startsWith('data:image') ? option.data.image2 : `data:image/jpeg;base64,${option.data.image2}`}
+      style={styles.aircraftImage}
+    />
+  )}
+</View>
+              
             </View>
           </React.Fragment>
         ))}
 
-        <View style={styles.disclaimer}>
-          <Text style={styles.disclaimerText}>
-            <Text style={styles.disclaimerBold}>Please note: </Text>
-            All options are subject to final availability at the time of booking, flight permits, slots, and owner's approval where applicable.{'\n'}
-            Possible de-Icing, WI-FI and other costs are not included and will be Invoiced, if occurred, after the flight
-          </Text>
-        </View>
+<View style={styles.disclaimer}>
+  <Text style={styles.disclaimerText}>
+    <Text style={styles.disclaimerBold}>Please note: </Text>
+    All options are subject to final availability at the time of booking, flight permits, slots, and owner&apos;s approval where applicable.{'\n'}
+    Possible de-Icing, WI-FI and other costs are not included and will be Invoiced, if occurred, after the flight
+  </Text>
+</View>
 
         <View style={styles.footer}>
           <Text>Private Jet Charter Proposal • {generationDate}</Text>

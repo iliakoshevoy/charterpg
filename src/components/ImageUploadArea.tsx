@@ -1,6 +1,7 @@
 //ImageUploadArea.tsx
 "use client";
 import React, { useCallback, useState } from 'react';
+import Image from 'next/image';
 
 interface ImageUploadAreaProps {
   onImageUpload: (file: File) => void;
@@ -59,14 +60,17 @@ const ImageUploadArea: React.FC<ImageUploadAreaProps> = ({
   if (previewUrl) {
     return (
       <div className="relative w-[120px] h-[120px] flex items-center justify-center bg-gray-50 rounded-md">
-        <img 
+        <Image 
           src={previewUrl} 
           alt="Preview" 
-          className="max-w-full max-h-full object-contain rounded-md"
+          fill
+          sizes="120px"
+          className="object-contain rounded-md"
+          unoptimized // Add this if dealing with local base64 images
         />
         <button
           onClick={onImageRemove}
-          className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center hover:bg-red-600 focus:outline-none text-sm"
+          className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center hover:bg-red-600 focus:outline-none text-sm z-10"
           aria-label="Remove image"
         >
           ×
