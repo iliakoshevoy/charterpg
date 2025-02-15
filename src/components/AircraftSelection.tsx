@@ -24,7 +24,6 @@ const AircraftSelection: React.FC<AircraftSelectionProps> = ({
   const [aircraft, setAircraft] = useState<AircraftModel[]>([]);
   const [isLoadingData, setIsLoadingData] = useState(false);
   const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [suggestions, setSuggestions] = useState<AircraftModel[]>([]);
   const [inputValue, setInputValue] = useState(value);
@@ -42,9 +41,7 @@ const AircraftSelection: React.FC<AircraftSelectionProps> = ({
           setAircraft(data);
         }
       } catch (err) {
-        if (isMounted) {
-          setError(err instanceof Error ? err.message : 'Failed to load aircraft data');
-        }
+        console.error('Failed to load aircraft data:', err);
       } finally {
         if (isMounted) {
           setIsLoadingData(false);

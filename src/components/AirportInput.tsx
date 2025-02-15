@@ -1,4 +1,3 @@
-// src/components/AirportInput.tsx
 "use client";
 import React, { useState, useEffect, useCallback } from 'react';
 import type { Airport } from '@/lib/googleSheets';
@@ -21,15 +20,12 @@ const AirportInput: React.FC<AirportInputProps> = ({
   const [airports, setAirports] = useState<Airport[]>([]);
   const [isLoadingData, setIsLoadingData] = useState(false);
   const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [suggestions, setSuggestions] = useState<Airport[]>([]);
-  const [inputValue, setInputValue] = useState(value);
   const [selectedAirport, setSelectedAirport] = useState<Airport | null>(null);
   const [displayValue, setDisplayValue] = useState(value);
   const [dataInitialized, setDataInitialized] = useState(false);
 
-  // Memoized debounced search function
   const debouncedSearch = useCallback(
     debounce((searchTerm: string, airportsData: Airport[]) => {
       if (searchTerm.length < 2) {
@@ -47,20 +43,17 @@ const AirportInput: React.FC<AirportInputProps> = ({
       
       setSuggestions(filtered);
       setIsLoadingSuggestions(false);
-    }, 500), // 500ms delay
-    []
+    }, 500),
+    [setSuggestions, setIsLoadingSuggestions]
   );
 
-  // Initialize data loading
   useEffect(() => {
     let isMounted = true;
     
     const initializeData = async () => {
-      // Only fetch if we haven't initialized yet
       if (!dataInitialized) {
         setIsLoadingData(true);
         try {
-          // Try to get from localStorage first
           const cachedData = localStorage.getItem('airportsData');
           let data;
           
@@ -73,7 +66,6 @@ const AirportInput: React.FC<AirportInputProps> = ({
             }
           }
           
-          // Fetch fresh data in background
           const response = await fetch('/api/airports');
           if (!response.ok) throw new Error('Failed to fetch airports');
           data = await response.json();
@@ -81,13 +73,10 @@ const AirportInput: React.FC<AirportInputProps> = ({
           if (isMounted) {
             setAirports(data);
             setDataInitialized(true);
-            // Cache the fresh data
             localStorage.setItem('airportsData', JSON.stringify(data));
           }
         } catch (err) {
-          if (isMounted) {
-            setError(err instanceof Error ? err.message : 'Failed to load airports');
-          }
+          console.error('Failed to load airports:', err);
         } finally {
           if (isMounted) {
             setIsLoadingData(false);
@@ -103,7 +92,6 @@ const AirportInput: React.FC<AirportInputProps> = ({
     };
   }, [dataInitialized, debouncedSearch]);
 
-  // Effect to handle initial value and format display
   useEffect(() => {
     if (airports.length > 0 && value) {
       const airport = airports.find(a => a.icao === value);
@@ -111,16 +99,13 @@ const AirportInput: React.FC<AirportInputProps> = ({
         setSelectedAirport(airport);
         const displayText = `${airport.icao}, ${airport.airportName}`;
         setDisplayValue(displayText);
-        setInputValue(displayText);
       }
     }
   }, [airports, value]);
 
-  // Handle input changes
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const input = e.target.value;
     setDisplayValue(input);
-    setInputValue(input);
     
     if (input.length >= 2) {
       setIsLoadingSuggestions(true);
@@ -131,7 +116,6 @@ const AirportInput: React.FC<AirportInputProps> = ({
       setShowSuggestions(false);
     }
 
-    // Handle custom input (not in database)
     if (!selectedAirport) {
       onChange(input, input);
     }
@@ -141,7 +125,6 @@ const AirportInput: React.FC<AirportInputProps> = ({
     setSelectedAirport(airport);
     const displayText = `${airport.icao}, ${airport.airportName}`;
     setDisplayValue(displayText);
-    setInputValue(displayText);
     const fullDetails = `${airport.airportName}, ${airport.country} (${airport.icao})`;
     
     onChange(
@@ -187,23 +170,23 @@ const AirportInput: React.FC<AirportInputProps> = ({
       </div>
       
       {showSuggestions && suggestions.length > 0 && (
-  <div className="absolute z-10 w-[130%] -left-[10%] mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
-    {suggestions.map((airport) => (
-      <div
-        key={airport.icao}
-        onClick={() => handleSelectAirport(airport)}
-        className="px-4 py-2 hover:bg-blue-50 cursor-pointer border-b border-gray-100 last:border-0"
-      >
-        <div className="font-medium text-gray-900">
-          {airport.airportName} ({airport.icao})
+        <div className="absolute z-10 w-[130%] -left-[10%] mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
+          {suggestions.map((airport) => (
+            <div
+              key={airport.icao}
+              onClick={() => handleSelectAirport(airport)}
+              className="px-4 py-2 hover:bg-blue-50 cursor-pointer border-b border-gray-100 last:border-0"
+            >
+              <div className="font-medium text-gray-900">
+                {airport.airportName} ({airport.icao})
+              </div>
+              <div className="text-sm text-gray-600">
+                {airport.country}
+              </div>
+            </div>
+          ))}
         </div>
-        <div className="text-sm text-gray-600">
-          {airport.country}
-        </div>
-      </div>
-    ))}
-  </div>
-)}
+      )}
     </div>
   );
 };
