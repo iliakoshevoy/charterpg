@@ -1,3 +1,4 @@
+//ProposalPDF.tsx
 "use client";
 import React, { useState } from 'react';
 import {
@@ -81,8 +82,8 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   mapContainer: {
-    marginTop: 20,
-    marginBottom: 40,
+    marginTop: 10,
+    marginBottom: 20,
     alignItems: 'center',
   },
   map: {
@@ -119,13 +120,9 @@ const styles = StyleSheet.create({
   aircraftModel: {
     fontSize: 20,
     color: '#1a1a1a',
-    marginBottom: 8,
+    marginBottom: 4,
   },
-  yearManufacture: {
-    fontSize: 12,
-    color: '#4a4a4a',
-    marginBottom: 16,
-  },
+
   priceContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -133,7 +130,8 @@ const styles = StyleSheet.create({
   },
   priceLabel: {
     fontSize: 14,
-    color: '#1a1a1a',
+    color: '#1E40AF',
+    fontWeight: 'bold',
   },
   priceValue: {
     fontSize: 14,
@@ -153,7 +151,6 @@ const styles = StyleSheet.create({
   noteValue: {
     fontSize: 14,
     color: '#1a1a1a',
-    fontWeight: 'bold',
   },
   detailsTitle: {
     fontSize: 14,
@@ -238,6 +235,7 @@ const ProposalPDF: React.FC<ProposalPDFProps> = (props) => {
       image2: props[`${baseName}Image2` as keyof ProposalPDFProps] as string | null,
       details: props[`${baseName}Details` as keyof ProposalPDFProps] as AircraftDetails | null,
       yearOfManufacture: props[`${baseName}YearOfManufacture` as keyof ProposalPDFProps] as string | null,
+      yearRefurbishment: props[`${baseName}YearRefurbishment` as keyof ProposalPDFProps] as string | null,
       price: props[`${baseName}Price` as keyof ProposalPDFProps] as string | null,
       paxCapacity: props[`${baseName}PaxCapacity` as keyof ProposalPDFProps] as string | null,
       notes: props[`${baseName}Notes` as keyof ProposalPDFProps] as string | null,
@@ -259,7 +257,7 @@ const ProposalPDF: React.FC<ProposalPDFProps> = (props) => {
     <Document>
       <Page size={[595.28, 'auto']} style={styles.page}>
         <View style={styles.header}>
-          <Text style={styles.headerText}>Private Jet Charter Proposal</Text>
+          <Text style={styles.headerText}>Charter Offer</Text>
           {props.customerName && (
             <Text style={styles.customerName}>Prepared for: {props.customerName}</Text>
           )}
@@ -271,7 +269,7 @@ const ProposalPDF: React.FC<ProposalPDFProps> = (props) => {
           <View style={styles.tableHeader}>
             <Text style={[styles.tableCellHeader, styles.tableCellWide]}>From</Text>
             <Text style={[styles.tableCellHeader, styles.tableCellWide]}>To</Text>
-            <Text style={[styles.tableCellHeader, styles.tableCellMedium]}>Departure</Text>
+            <Text style={[styles.tableCellHeader, styles.tableCellMedium]}>Departure (local)</Text>
             <Text style={[styles.tableCellHeader, styles.tableCellNarrow]}>Time</Text>
             <Text style={[styles.tableCellHeader, styles.tableCellNarrow]}>Pax</Text>
           </View>
@@ -310,53 +308,61 @@ const ProposalPDF: React.FC<ProposalPDFProps> = (props) => {
           <React.Fragment key={option.number}>
             {index > 0 && <View style={styles.optionDivider} />}
             <View style={styles.optionContainer}>
-              <View style={styles.optionColumns}>
-                <View style={styles.optionLeftColumn}>
-                  <Text style={styles.optionNumber}>Option {option.number}</Text>
-                  <Text style={styles.aircraftModel}>{option.data.name}</Text>
-                  {option.data.yearOfManufacture && (
-                    <Text style={styles.yearManufacture}>
-                      Year of manufacture: {option.data.yearOfManufacture}
-                    </Text>
-                  )}
-                  {option.data.price && (
-                    <View style={styles.priceContainer}>
-                      <Text style={styles.priceLabel}>Price:</Text>
-                      <Text style={styles.priceValue}>{option.data.price}</Text>
-                    </View>
-                  )}
-                  {option.data.notes && (
-                    <View style={styles.noteContainer}>
-                      <Text style={styles.noteLabel}>Notes:</Text>
-                      <Text style={styles.noteValue}>{option.data.notes}</Text>
-                    </View>
-                  )}
-                </View>
+            <View style={styles.optionColumns}>
+  <View style={styles.optionLeftColumn}>
+    <Text style={styles.optionNumber}>Option {option.number}</Text>
+    <Text style={styles.aircraftModel}>{option.data.name}</Text>
+    {option.data.price && (
+      <View style={styles.priceContainer}>
+        <Text style={styles.priceLabel}>Price:</Text>
+        <Text style={styles.priceValue}>{option.data.price}</Text>
+      </View>
+    )}
+    {option.data.notes && (
+      <View style={styles.noteContainer}>
+        <Text style={styles.noteLabel}>Notes:</Text>
+        <Text style={styles.noteValue}>{option.data.notes}</Text>
+      </View>
+    )}
+  </View>
 
-                <View style={styles.optionRightColumn}>
-                  <Text style={styles.detailsTitle}>Aircraft Details:</Text>
-                  {option.data.details?.cabinHeight && (
-                    <Text style={styles.detailsText}>
-                      Cabin Height: {option.data.details.cabinHeight}
-                    </Text>
-                  )}
-                  {option.data.details?.cabinWidth && (
-                    <Text style={styles.detailsText}>
-                      Cabin Width: {option.data.details.cabinWidth}
-                    </Text>
-                  )}
-                  {option.data.details?.passengerCapacity && (
-                    <Text style={styles.detailsText}>
-                      Passenger Capacity: {option.data.details.passengerCapacity}
-                    </Text>
-                  )}
-                  {option.data.details?.baggageVolume && (
-                    <Text style={styles.detailsText}>
-                      Baggage Volume: {option.data.details.baggageVolume}
-                    </Text>
-                  )}
-                </View>
-              </View>
+  <View style={styles.optionRightColumn}>
+    <Text style={styles.detailsTitle}>Aircraft Details:</Text>
+    {option.data.yearOfManufacture && (
+      <Text style={styles.detailsText}>
+        Year of Manufacture: {option.data.yearOfManufacture}
+      </Text>
+    )}
+    {option.data.yearRefurbishment && (
+      <Text style={styles.detailsText}>
+        Year of Refurbishment: {option.data.yearRefurbishment}
+      </Text>
+    )}
+    {option.data.details?.passengerCapacity && (
+      <Text style={styles.detailsText}>
+        Passenger Capacity: {option.data.details.passengerCapacity}
+      </Text>
+    )}
+    {option.data.details?.cabinHeight && (
+      <Text style={styles.detailsText}>
+        Cabin Height: {option.data.details.cabinHeight}
+      </Text>
+    )}
+    {option.data.details?.cabinWidth && (
+      <Text style={styles.detailsText}>
+        Cabin Width: {option.data.details.cabinWidth}
+      </Text>
+    )}
+    
+{/* Disabled temporarily
+{option.data.details?.baggageVolume && (
+  <Text style={styles.detailsText}>
+    Baggage Volume: {option.data.details.baggageVolume}
+  </Text>
+)}
+*/}
+  </View>
+</View>
 
               <View style={styles.imagesContainer}>
                 {option.data.image1 && (

@@ -12,6 +12,7 @@
     price: string | null;              // Added
     paxCapacity: string | null;        // Added
     notes: string | null;              // Added
+    yearRefurbishment: string | null; 
   }
   
   
@@ -36,6 +37,7 @@ export interface AircraftOptionType {
   price: string | null;
   paxCapacity: string | null;
   notes: string | null;
+  yearRefurbishment: string | null;
 }
 
 export interface ProposalPDFProps {
@@ -87,4 +89,9 @@ export interface ProposalPDFProps {
   option5Price: string | null;              // Added
   option5PaxCapacity: string | null;        // Added
   option5Notes: string | null;              // Added
+  option1YearRefurbishment: string | null;
+  option2YearRefurbishment: string | null;
+  option3YearRefurbishment: string | null;
+  option4YearRefurbishment: string | null;
+  option5YearRefurbishment: string | null;
 }

@@ -67,7 +67,8 @@ const ProposalForm = () => {
       yearOfManufacture: null,
       price: null,
       paxCapacity: null,
-      notes: null
+      notes: null,
+      yearRefurbishment: null
     }
   ]);
 
@@ -85,6 +86,7 @@ const ProposalForm = () => {
           imagePreview1: null,
           imagePreview2: null,
           yearOfManufacture: null,
+          yearRefurbishment: null,
           price: null,
           paxCapacity: null,
           notes: null
@@ -112,6 +114,8 @@ const ProposalForm = () => {
   const handleRemoveOption = (index: number) => {
     setAircraftOptions(prev => prev.filter((_, i) => i !== index));
   };
+
+
 
   // Convert state to PDF props
   const getPDFData = (): ProposalPDFProps => {
@@ -162,6 +166,11 @@ const ProposalForm = () => {
       option5Price: aircraftOptions[4]?.price || null,
       option5PaxCapacity: aircraftOptions[4]?.paxCapacity || null,
       option5Notes: aircraftOptions[4]?.notes || null,
+      option1YearRefurbishment: aircraftOptions[0]?.yearRefurbishment || null,
+    option2YearRefurbishment: aircraftOptions[1]?.yearRefurbishment || null,
+    option3YearRefurbishment: aircraftOptions[2]?.yearRefurbishment || null,
+    option4YearRefurbishment: aircraftOptions[3]?.yearRefurbishment || null,
+    option5YearRefurbishment: aircraftOptions[4]?.yearRefurbishment || null,
     };
   };
 
@@ -238,6 +247,8 @@ const ProposalForm = () => {
                   price={option.price}
                   paxCapacity={option.paxCapacity}
                   notes={option.notes}
+                  yearRefurbishment={option.yearRefurbishment}
+                  onYearRefurbishmentChange={(value) => handleOptionUpdate(index, { yearRefurbishment: value })}
                   onNameChange={(value) => handleOptionUpdate(index, { name: value })}
                   onDetailsChange={(details) => handleOptionUpdate(index, { details })}
                   onImage1Change={(image) => handleOptionUpdate(index, { image1: image })}

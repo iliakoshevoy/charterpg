@@ -1,3 +1,4 @@
+//AircraftOption.tsx
 "use client";
 import React from 'react';
 import dynamic from 'next/dynamic';
@@ -24,6 +25,7 @@ interface AircraftOptionProps {
   imagePreview1: string | null;
   imagePreview2: string | null;
   yearOfManufacture: string | null;
+  yearRefurbishment: string | null;
   price: string | null;
   paxCapacity: string | null;
   notes: string | null;
@@ -34,6 +36,7 @@ interface AircraftOptionProps {
   onImagePreview1Change: (preview: string | null) => void;
   onImagePreview2Change: (preview: string | null) => void;
   onYearOfManufactureChange: (value: string | null) => void;
+  onYearRefurbishmentChange: (value: string | null) => void;
   onPriceChange: (value: string | null) => void;
   onPaxCapacityChange: (value: string | null) => void;
   onNotesChange: (value: string | null) => void;
@@ -50,6 +53,7 @@ const AircraftOption: React.FC<AircraftOptionProps> = ({
   imagePreview1,
   imagePreview2,
   yearOfManufacture,
+  yearRefurbishment,
   price,
   paxCapacity,
   notes,
@@ -60,16 +64,18 @@ const AircraftOption: React.FC<AircraftOptionProps> = ({
   onImagePreview1Change,
   onImagePreview2Change,
   onYearOfManufactureChange,
+  onYearRefurbishmentChange,
   onPriceChange,
   onPaxCapacityChange,
   onNotesChange,
   onRemove,
   className = ""
 }) => {
-  const hasContent = Boolean(name || image1 || image2 || yearOfManufacture || price || paxCapacity || notes);
+  const hasContent = Boolean(name || image1 || image2 || yearOfManufacture || yearRefurbishment || price || paxCapacity || notes);
 
   return (
     <div className={`space-y-4 transition-all duration-300 ease-in-out ${className}`}>
+      {/* Header section */}
       <div className="flex justify-between items-center">
         <h3 className="text-lg font-medium text-gray-700">Option {optionNumber}</h3>
         {onRemove && optionNumber > 1 && hasContent && (
@@ -82,9 +88,9 @@ const AircraftOption: React.FC<AircraftOptionProps> = ({
         )}
       </div>
 
-      {/* First row - 4 columns with main details */}
+      {/* First row - Aircraft Type, Year, Refurbished Year, and Pax */}
       <div className="grid grid-cols-12 gap-4">
-        <div className="col-span-5"> {/* Made Aircraft Type field wider */}
+        <div className="col-span-4"> 
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Aircraft Type
           </label>
@@ -112,16 +118,16 @@ const AircraftOption: React.FC<AircraftOptionProps> = ({
             placeholder="Year"
           />
         </div>
-        <div className="col-span-3">
+        <div className="col-span-2">
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            Price
+            Refurbished
           </label>
           <input
             type="text"
-            value={price || ''}
-            onChange={(e) => onPriceChange(e.target.value)}
+            value={yearRefurbishment || ''}
+            onChange={(e) => onYearRefurbishmentChange?.(e.target.value)}
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
-            placeholder="Price"
+            placeholder="Year"
           />
         </div>
         <div className="col-span-2">
@@ -138,32 +144,36 @@ const AircraftOption: React.FC<AircraftOptionProps> = ({
         </div>
       </div>
 
-      {/* Second row - Notes and Images */}
-      <div className="grid grid-cols-3 gap-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Notes
-          </label>
-          <input
-            type="text"
-            value={notes || ''}
-            onChange={(e) => onNotesChange(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
-            placeholder="Notes"
-          />
-          {/* Aircraft details moved below Notes */}
-          {details && (
-            <div className="mt-2 text-sm text-gray-600">
-              {details.cabinWidth && details.cabinHeight && (
-                <p>Cabin: {details.cabinWidth} × {details.cabinHeight}</p>
-              )}
-              {details.baggageVolume && (
-                <p>Baggage Volume: {details.baggageVolume}</p>
-              )}
-            </div>
-          )}
+      {/* Second row - Price and Images */}
+      <div className="grid grid-cols-12 gap-4">
+        <div className="col-span-4 space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Price
+            </label>
+            <input
+              type="text"
+              value={price || ''}
+              onChange={(e) => onPriceChange(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
+              placeholder="Price"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Notes
+            </label>
+            <input
+              type="text"
+              value={notes || ''}
+              onChange={(e) => onNotesChange(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
+              placeholder="Notes"
+            />
+            
+          </div>
         </div>
-        <div>
+        <div className="col-span-4">
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Image 1
           </label>
@@ -185,7 +195,7 @@ const AircraftOption: React.FC<AircraftOptionProps> = ({
             previewUrl={imagePreview1}
           />
         </div>
-        <div>
+        <div className="col-span-4">
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Image 2
           </label>
