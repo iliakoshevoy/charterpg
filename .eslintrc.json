@@ -1,0 +1,23 @@
+{
+    "extends": "next/core-web-vitals",
+    "rules": {
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        {
+          "varsIgnorePattern": "^_",
+          "argsIgnorePattern": "^_",
+          "vars": "all",
+          "args": "after-used",
+          "ignoreRestSiblings": true
+        }
+      ]
+    },
+    "overrides": [
+      {
+        "files": ["src/components/ProposalForm.tsx"],
+        "rules": {
+          "@typescript-eslint/no-unused-vars": "warn"
+        }
+      }
+    ]
+  }
