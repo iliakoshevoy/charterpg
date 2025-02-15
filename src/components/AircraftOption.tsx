@@ -47,7 +47,6 @@ interface AircraftOptionProps {
 const AircraftOption: React.FC<AircraftOptionProps> = ({
   optionNumber,
   name,
-  details,
   image1,
   image2,
   imagePreview1,

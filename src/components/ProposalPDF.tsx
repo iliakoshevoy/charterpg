@@ -10,7 +10,6 @@ import {
   Image,
 } from '@react-pdf/renderer';
 import type { ProposalPDFProps, AircraftDetails, AircraftOption } from '@/types/proposal';
-import type { FlightLeg } from '@/types/flight';
 import { generateStaticMapURL } from '@/utils/mapGenerator';
 
 // Define styles
@@ -222,7 +221,7 @@ const ProposalPDF: React.FC<ProposalPDFProps> = (props) => {
         'July', 'August', 'September', 'October', 'November', 'December'
       ];
       return `${d.getDate()} ${months[d.getMonth()]}, ${d.getFullYear()}`;
-    } catch (e) {
+    } catch (error) {
       return dateStr;
     }
   };

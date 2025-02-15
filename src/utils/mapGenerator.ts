@@ -1,15 +1,7 @@
 // src/utils/mapGenerator.ts
 import type { FlightLeg } from '@/types/flight';
 
-interface Coordinates {
-  lat: string;
-  lng: string;
-}
 
-interface MapStyles {
-  element: string;
-  color: string;
-}
 
 export const generateStaticMapURL = (legs: FlightLeg[]) => {
   const API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;

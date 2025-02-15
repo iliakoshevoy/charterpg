@@ -2,7 +2,7 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
-import type { ProposalPDFProps, AircraftDetails, AircraftOption } from '@/types/proposal';
+import type { ProposalPDFProps } from '@/types/proposal';
 
 // Dynamically import PDFGenerator
 const PDFGenerator = dynamic(
