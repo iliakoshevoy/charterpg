@@ -21,7 +21,18 @@ const styles = StyleSheet.create({
     width: 595.28,
   },
   header: {
-    marginBottom: 30,
+    marginBottom: 2,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',  // This will vertically align items
+  },
+  headerLeft: {
+    flex: 1,
+  },
+  logo: {
+    width: 125,
+    height: 125,
+    objectFit: 'contain',
   },
   headerText: {
     fontSize: 24,
@@ -47,7 +58,7 @@ const styles = StyleSheet.create({
   tableHeader: {
     flexDirection: 'row',
     backgroundColor: '#f5f5f5',
-    padding: 8,
+    padding: 4,
     borderBottom: 1,
     borderBottomColor: '#e0e0e0',
   },
@@ -288,12 +299,20 @@ const ProposalPDF: React.FC<ProposalPDFProps> = (props) => {
   return (
     <Document>
       <Page size={[595.28, 'auto']} style={styles.page}>
-        <View style={styles.header}>
-          <Text style={styles.headerText}>Charter Offer</Text>
-          {props.customerName && (
-            <Text style={styles.customerName}>Prepared for: {props.customerName}</Text>
-          )}
-        </View>
+      <View style={styles.header}>
+  <View style={styles.headerLeft}>
+    <Text style={styles.headerText}>Charter Offer</Text>
+    {props.customerName && (
+      <Text style={styles.customerName}>Prepared for: {props.customerName}</Text>
+    )}
+  </View>
+  {props.companySettings?.logo && (
+    <Image 
+      src={props.companySettings.logo} 
+      style={styles.logo}
+    />
+  )}
+</View>
 
         <Text style={styles.sectionTitle}>Itinerary</Text>
         

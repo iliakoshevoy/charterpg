@@ -42,6 +42,11 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ formData, airportDetails })
       setIsGenerating(true);
       setError(null);
 
+      // Load company settings
+      const savedSettings = localStorage.getItem('companySettings');
+      const companySettings = savedSettings ? JSON.parse(savedSettings) : null;
+
+
       // Enhanced logging for debugging mobile image issues
       console.log('PDF Generation - Detailed Image Data:', JSON.stringify({
         option1: {
@@ -164,7 +169,16 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ formData, airportDetails })
         setPdfBlob(null);
       }
 
-      const document = <ProposalPDF {...formData} airportDetails={airportDetails} />;
+      const document = (
+        <ProposalPDF 
+          {...formData} 
+          airportDetails={airportDetails}
+          companySettings={{
+            logo: companySettings?.logo || null,
+            disclaimer: companySettings?.disclaimer || ''
+          }}
+        />
+      );
       const blob = await pdf(document).toBlob();
       const url = URL.createObjectURL(blob);
       setPdfBlob(url);
