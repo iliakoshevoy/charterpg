@@ -94,25 +94,30 @@ const FlightLeg: React.FC<FlightLegProps> = ({
 
   const paxOptions = Array.from({ length: 100 }, (_, i) => i + 1);
 
-  return (
-    <div className="bg-white rounded-lg">
-      <div className="flex items-center gap-2 mb-4">
-        {legNumber > 1 && onRemove && (
-          <button
-            onClick={onRemove}
-            className="text-blue-800 hover:text-blue-600 transition-colors"
-            title="Remove leg"
-          >
-            <X className="h-5 w-5" />
-          </button>
-        )}
-        <h3 className="text-sm font-medium text-gray-700">
-          {legNumber > 1 ? `Leg #${legNumber}` : ' '}
-        </h3>
-      </div>
 
-      <div className="flex flex-nowrap gap-4 items-end"> 
-        <div className="w-[300px]"> 
+
+return (
+  <div className="bg-white rounded-lg w-full">
+    <div className="flex items-center gap-2 mb-4">
+      {legNumber > 1 && onRemove && (
+        <button
+          onClick={onRemove}
+          className="text-blue-800 hover:text-blue-600 transition-colors"
+          title="Remove leg"
+        >
+          <X className="h-5 w-5" />
+        </button>
+      )}
+      <h3 className="text-sm font-medium text-gray-700">
+        {legNumber > 1 ? `Leg #${legNumber}` : ' '}
+      </h3>
+    </div>
+
+    <div className="flex flex-wrap sm:flex-nowrap gap-4 items-end w-full">
+      {/* First row on mobile / inline on desktop */}
+      <div className="flex w-full sm:w-[45%] gap-4">
+        {/* Airport From */}
+        <div className="w-1/2">
           <AirportInput
             label="From"
             value={data.departureAirport}
@@ -139,7 +144,8 @@ const FlightLeg: React.FC<FlightLegProps> = ({
           />
         </div>
         
-        <div className="w-[300px]">
+        {/* Airport To */}
+        <div className="w-1/2">
           <AirportInput
             label="To"
             value={data.arrivalAirport}
@@ -165,8 +171,12 @@ const FlightLeg: React.FC<FlightLegProps> = ({
             }}
           />
         </div>
+      </div>
 
-        <div className="w-[160px]"> 
+      {/* Second row on mobile / inline on desktop */}
+      <div className="flex w-full sm:w-[55%] gap-4">
+        {/* Date */}
+        <div className="w-[50%] sm:w-[50%]">
           <label htmlFor={`departureDate-${legNumber}`} className="block text-sm font-medium text-gray-700 mb-1">
             Departure (local)
           </label>
@@ -175,9 +185,12 @@ const FlightLeg: React.FC<FlightLegProps> = ({
   type="date"
   id={`departureDate-${legNumber}`}
   value={data.departureDate}
+  data-has-value={!!data.departureDate}
   onChange={(e) => handleInputChange('departureDate', e.target.value)}
   className={`w-full px-3 py-[0.4rem] border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white
-    [&:not(:valid)]:text-gray-400 text-gray-900 h-[38px]
+    text-gray-400
+    data-[has-value=true]:text-gray-900
+    h-[38px]
     ${dateError ? 'border-red-500' : 'border-gray-500'}`}
 />
             {dateError && (
@@ -188,22 +201,24 @@ const FlightLeg: React.FC<FlightLegProps> = ({
           </div>
         </div>
 
-        <div className="w-[100px]">
-  <label htmlFor={`departureTime-${legNumber}`} className="block text-sm font-medium text-gray-700 mb-1">
-    Time
-  </label>
-  <input
-  type="text"
-  id={`departureTime-${legNumber}`}
-  value={data.departureTime}
-  onChange={(e) => handleInputChange('departureTime', e.target.value)}
-  onBlur={(e) => handleInputChange('departureTime', formatTimeInput(e.target.value))}
-  className="w-full px-3 py-[0.4rem] border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
-  placeholder="hh:mm"
-/>
-</div>
+        {/* Time */}
+        <div className="w-[30%] sm:w-[30%]">
+          <label htmlFor={`departureTime-${legNumber}`} className="block text-sm font-medium text-gray-700 mb-1">
+            Time
+          </label>
+          <input
+            type="text"
+            id={`departureTime-${legNumber}`}
+            value={data.departureTime}
+            onChange={(e) => handleInputChange('departureTime', e.target.value)}
+            onBlur={(e) => handleInputChange('departureTime', formatTimeInput(e.target.value))}
+            className="w-full px-3 py-[0.4rem] border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
+            placeholder="hh:mm"
+          />
+        </div>
 
-        <div className="w-[80px]">
+        {/* PAX */}
+        <div className="w-[20%] sm:w-[20%]">
           <label htmlFor={`passengerCount-${legNumber}`} className="block text-sm font-medium text-gray-700 mb-1">
             PAX
           </label>
@@ -221,7 +236,8 @@ const FlightLeg: React.FC<FlightLegProps> = ({
         </div>
       </div>
     </div>
-  );
+  </div>
+);
 };
 
 export default FlightLeg;
