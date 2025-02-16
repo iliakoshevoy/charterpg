@@ -1,8 +1,8 @@
-// src/components/FlightLeg.tsx
 "use client";
 import React, { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
 import AirportInput from '@/components/AirportInput';
+import { useScreenSize } from '@/hooks/useScreenSize';
 import type { FlightLeg as FlightLegType } from '@/types/flight';
 
 interface FlightLegProps {
@@ -20,6 +20,7 @@ const FlightLeg: React.FC<FlightLegProps> = ({
   onRemove,
   previousLegDate
 }) => {
+  const { isMobile } = useScreenSize();
   const [dateError, setDateError] = useState<string | null>(null);
 
   const validateDate = (date: string) => {
@@ -27,7 +28,7 @@ const FlightLeg: React.FC<FlightLegProps> = ({
 
     const selectedDate = new Date(date);
     const today = new Date();
-    today.setHours(0, 0, 0, 0); // Reset time to start of day for fair comparison
+    today.setHours(0, 0, 0, 0);
 
     if (selectedDate < today) {
       return "Date cannot be in the past";
@@ -44,27 +45,6 @@ const FlightLeg: React.FC<FlightLegProps> = ({
   };
 
   useEffect(() => {
-    const validateDate = (date: string) => {
-      if (!date) return null;
-  
-      const selectedDate = new Date(date);
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-  
-      if (selectedDate < today) {
-        return "Date cannot be in the past";
-      }
-  
-      if (previousLegDate) {
-        const prevDate = new Date(previousLegDate);
-        if (selectedDate < prevDate) {
-          return "Date cannot be earlier than previous leg";
-        }
-      }
-  
-      return null;
-    };
-  
     if (data.departureDate) {
       const error = validateDate(data.departureDate);
       setDateError(error);
@@ -94,29 +74,25 @@ const FlightLeg: React.FC<FlightLegProps> = ({
 
   const paxOptions = Array.from({ length: 100 }, (_, i) => i + 1);
 
+  const renderMobileLayout = () => (
+    <>
+      <div className="flex items-center gap-2 mb-4">
+        {legNumber > 1 && onRemove && (
+          <button
+            onClick={onRemove}
+            className="text-blue-800 hover:text-blue-600 transition-colors"
+            title="Remove leg"
+          >
+            <X className="h-5 w-5" />
+          </button>
+        )}
+        <h3 className="text-sm font-medium text-gray-700">
+          {legNumber > 1 ? `Leg #${legNumber}` : ' '}
+        </h3>
+      </div>
 
-
-return (
-  <div className="bg-white rounded-lg w-full">
-    <div className="flex items-center gap-2 mb-4">
-      {legNumber > 1 && onRemove && (
-        <button
-          onClick={onRemove}
-          className="text-blue-800 hover:text-blue-600 transition-colors"
-          title="Remove leg"
-        >
-          <X className="h-5 w-5" />
-        </button>
-      )}
-      <h3 className="text-sm font-medium text-gray-700">
-        {legNumber > 1 ? `Leg #${legNumber}` : ' '}
-      </h3>
-    </div>
-
-    <div className="flex flex-wrap sm:flex-nowrap gap-4 items-end w-full">
-      {/* First row on mobile / inline on desktop */}
-      <div className="flex w-full sm:w-[45%] gap-4">
-        {/* Airport From */}
+      {/* Airports row */}
+      <div className="flex gap-4 mb-4">
         <div className="w-1/2">
           <AirportInput
             label="From"
@@ -134,17 +110,12 @@ return (
                     lat: data.coordinates?.departure?.lat || '',
                     lng: data.coordinates?.departure?.lng || ''
                   },
-                  arrival: data.coordinates?.arrival || {
-                    lat: '',
-                    lng: ''
-                  }
+                  arrival: data.coordinates?.arrival || { lat: '', lng: '' }
                 }
               });
             }}
           />
         </div>
-        
-        {/* Airport To */}
         <div className="w-1/2">
           <AirportInput
             label="To"
@@ -158,10 +129,7 @@ return (
                   arrival: fullDetails
                 },
                 coordinates: {
-                  departure: data.coordinates?.departure || {
-                    lat: '',
-                    lng: ''
-                  },
+                  departure: data.coordinates?.departure || { lat: '', lng: '' },
                   arrival: coordinates || {
                     lat: data.coordinates?.arrival?.lat || '',
                     lng: data.coordinates?.arrival?.lng || ''
@@ -173,26 +141,23 @@ return (
         </div>
       </div>
 
-      {/* Second row on mobile / inline on desktop */}
-      <div className="flex w-full sm:w-[55%] gap-4">
-        {/* Date */}
-        <div className="w-[50%] sm:w-[50%]">
+      {/* Date, Time, Pax row */}
+      <div className="grid grid-cols-12 gap-3">
+        <div className="col-span-5">
           <label htmlFor={`departureDate-${legNumber}`} className="block text-sm font-medium text-gray-700 mb-1">
             Departure (local)
           </label>
           <div className="relative">
-          <input
-  type="date"
-  id={`departureDate-${legNumber}`}
-  value={data.departureDate}
-  data-has-value={!!data.departureDate}
-  onChange={(e) => handleInputChange('departureDate', e.target.value)}
-  className={`w-full px-3 py-[0.4rem] border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white
-    text-gray-400
-    data-[has-value=true]:text-gray-900
-    h-[38px]
-    ${dateError ? 'border-red-500' : 'border-gray-500'}`}
-/>
+            <input
+              type="date"
+              id={`departureDate-${legNumber}`}
+              value={data.departureDate}
+              data-has-value={!!data.departureDate}
+              onChange={(e) => handleInputChange('departureDate', e.target.value)}
+              className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white
+                text-gray-400 data-[has-value=true]:text-gray-900 h-[38px]
+                ${dateError ? 'border-red-500' : 'border-gray-500'}`}
+            />
             {dateError && (
               <div className="absolute left-0 -bottom-6 text-red-500 text-xs">
                 {dateError}
@@ -201,8 +166,7 @@ return (
           </div>
         </div>
 
-        {/* Time */}
-        <div className="w-[30%] sm:w-[30%]">
+        <div className="col-span-4">
           <label htmlFor={`departureTime-${legNumber}`} className="block text-sm font-medium text-gray-700 mb-1">
             Time
           </label>
@@ -212,13 +176,12 @@ return (
             value={data.departureTime}
             onChange={(e) => handleInputChange('departureTime', e.target.value)}
             onBlur={(e) => handleInputChange('departureTime', formatTimeInput(e.target.value))}
-            className="w-full px-3 py-[0.4rem] border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
+            className="w-full px-3 py-2 h-[38px] border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
             placeholder="hh:mm"
           />
         </div>
 
-        {/* PAX */}
-        <div className="w-[20%] sm:w-[20%]">
+        <div className="col-span-3">
           <label htmlFor={`passengerCount-${legNumber}`} className="block text-sm font-medium text-gray-700 mb-1">
             Pax
           </label>
@@ -226,7 +189,7 @@ return (
             id={`passengerCount-${legNumber}`}
             value={data.passengerCount || ''}
             onChange={(e) => handleInputChange('passengerCount', e.target.value)}
-            className="w-full px-3 py-2 border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
+            className="w-full px-3 py-2 h-[38px] border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
           >
             <option value=""></option>
             {paxOptions.map(num => (
@@ -235,9 +198,143 @@ return (
           </select>
         </div>
       </div>
+    </>
+  );
+
+  const renderDesktopLayout = () => (
+    <>
+      <div className="flex items-center gap-2 mb-4">
+        {legNumber > 1 && onRemove && (
+          <button
+            onClick={onRemove}
+            className="text-blue-800 hover:text-blue-600 transition-colors"
+            title="Remove leg"
+          >
+            <X className="h-5 w-5" />
+          </button>
+        )}
+        <h3 className="text-sm font-medium text-gray-700">
+          {legNumber > 1 ? `Leg #${legNumber}` : ' '}
+        </h3>
+      </div>
+
+      <div className="flex gap-4 items-end w-full">
+        {/* Airports section - 45% */}
+        <div className="flex w-[45%] gap-4">
+          <div className="w-1/2">
+            <AirportInput
+              label="From"
+              value={data.departureAirport}
+              onChange={(value, fullDetails, coordinates) => {
+                onUpdate({
+                  ...data,
+                  departureAirport: value,
+                  airportDetails: {
+                    ...data.airportDetails,
+                    departure: fullDetails
+                  },
+                  coordinates: {
+                    departure: coordinates || {
+                      lat: data.coordinates?.departure?.lat || '',
+                      lng: data.coordinates?.departure?.lng || ''
+                    },
+                    arrival: data.coordinates?.arrival || { lat: '', lng: '' }
+                  }
+                });
+              }}
+            />
+          </div>
+          <div className="w-1/2">
+            <AirportInput
+              label="To"
+              value={data.arrivalAirport}
+              onChange={(value, fullDetails, coordinates) => {
+                onUpdate({
+                  ...data,
+                  arrivalAirport: value,
+                  airportDetails: {
+                    ...data.airportDetails,
+                    arrival: fullDetails
+                  },
+                  coordinates: {
+                    departure: data.coordinates?.departure || { lat: '', lng: '' },
+                    arrival: coordinates || {
+                      lat: data.coordinates?.arrival?.lat || '',
+                      lng: data.coordinates?.arrival?.lng || ''
+                    }
+                  }
+                });
+              }}
+            />
+          </div>
+        </div>
+
+        {/* Date, Time, Pax section - 55% */}
+        <div className="flex w-[55%] gap-4">
+          <div className="w-[50%]">
+            <label htmlFor={`departureDate-${legNumber}`} className="block text-sm font-medium text-gray-700 mb-1">
+              Departure (local)
+            </label>
+            <div className="relative">
+              <input
+                type="date"
+                id={`departureDate-${legNumber}`}
+                value={data.departureDate}
+                data-has-value={!!data.departureDate}
+                onChange={(e) => handleInputChange('departureDate', e.target.value)}
+                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white
+                  text-gray-400 data-[has-value=true]:text-gray-900 h-[38px]
+                  ${dateError ? 'border-red-500' : 'border-gray-500'}`}
+              />
+              {dateError && (
+                <div className="absolute left-0 -bottom-6 text-red-500 text-xs">
+                  {dateError}
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className="w-[30%]">
+            <label htmlFor={`departureTime-${legNumber}`} className="block text-sm font-medium text-gray-700 mb-1">
+              Time
+            </label>
+            <input
+              type="text"
+              id={`departureTime-${legNumber}`}
+              value={data.departureTime}
+              onChange={(e) => handleInputChange('departureTime', e.target.value)}
+              onBlur={(e) => handleInputChange('departureTime', formatTimeInput(e.target.value))}
+              className="w-full px-3 py-2 h-[38px] border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
+              placeholder="hh:mm"
+            />
+          </div>
+
+          <div className="w-[20%]">
+            <label htmlFor={`passengerCount-${legNumber}`} className="block text-sm font-medium text-gray-700 mb-1">
+              Pax
+            </label>
+            <select
+              id={`passengerCount-${legNumber}`}
+              value={data.passengerCount || ''}
+              onChange={(e) => handleInputChange('passengerCount', e.target.value)}
+              className="w-full px-3 py-2 h-[38px] border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
+            >
+              <option value=""></option>
+              {paxOptions.map(num => (
+                <option key={num} value={num}>{num}</option>
+              ))}
+            </select>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+
+  return (
+    <div className="bg-white rounded-lg w-full">
+      {isMobile ? renderMobileLayout() : renderDesktopLayout()}
     </div>
-  </div>
-);
+  );
 };
 
 export default FlightLeg;
