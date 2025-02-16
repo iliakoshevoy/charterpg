@@ -1,3 +1,4 @@
+//settings.ts
 export interface CompanySettings {
   companyName: string;
   address: string;
@@ -5,5 +6,6 @@ export interface CompanySettings {
   website: string;
   email: string;
   phoneNumber: string;
-  disclaimer: string; // <-- Add this line
+  disclaimer: string;
+  logo: string | null;
 }

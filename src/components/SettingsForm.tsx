@@ -1,12 +1,14 @@
+//SettingsForm.tsx
 "use client";
 import React, { useState, useEffect } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import type { CompanySettings } from '@/types/settings';
+import ImageUploadArea from '@/components/ImageUploadArea';
+import { compressImage } from '@/utils/imageCompression';
 
 const SettingsForm = () => {
-  const defaultDisclaimer =
-    "Please note: All options are subject to final availability at the time of booking, flight permits, slots, and owner's approval where applicable. Possible de-Icing, WI-FI and other costs are not included and will be invoiced, if occurred, after the flight.";
+  const defaultDisclaimer = "Please note: All options are subject to final availability...";
 
   const [settings, setSettings] = useState<CompanySettings>({
     companyName: '',
@@ -15,17 +17,20 @@ const SettingsForm = () => {
     website: '',
     email: '',
     phoneNumber: '',
-    disclaimer: defaultDisclaimer
+    disclaimer: defaultDisclaimer,
+    logo: null
   });
 
+  const [logoPreview, setLogoPreview] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [saveStatus, setSaveStatus] = useState<'idle' | 'success' | 'error'>('idle');
 
-  // Load saved settings from localStorage on component mount
   useEffect(() => {
     const savedSettings = localStorage.getItem('companySettings');
     if (savedSettings) {
-      setSettings(JSON.parse(savedSettings));
+      const parsed = JSON.parse(savedSettings);
+      setSettings(parsed);
+      setLogoPreview(parsed.logo);
     }
   }, []);
 
@@ -68,6 +73,7 @@ const SettingsForm = () => {
           <h2 className="text-xl font-semibold mb-6 text-gray-800">Company Settings</h2>
           
           <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Company Name and Logo Row */}
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
               <div>
                 <label htmlFor="companyName" className="block text-sm font-medium text-gray-700 mb-1">
@@ -82,6 +88,55 @@ const SettingsForm = () => {
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
                 />
               </div>
+
+              <div>
+  <label className="block text-sm font-medium text-gray-700 mb-1">
+    Company Logo
+  </label>
+  <ImageUploadArea
+    uniqueId="company-logo"
+    imageType="logo"
+    defaultImageUrl={null}
+    isDefault={false}
+    onImageUpload={async (file) => {
+      try {
+        const compressedFile = await compressImage(file);
+        const reader = new FileReader();
+        
+        reader.onloadend = () => {
+          const base64String = reader.result as string;
+          setSettings(prev => ({
+            ...prev,
+            logo: base64String
+          }));
+          setLogoPreview(base64String);
+        };
+
+        reader.onerror = () => {
+          alert('Failed to read logo file');
+        };
+
+        reader.readAsDataURL(compressedFile);
+      } catch (error) {
+        console.error('Error processing logo:', error);
+        alert('Failed to process logo');
+      }
+    }}
+    onImageRemove={() => {
+      setSettings(prev => ({
+        ...prev,
+        logo: null
+      }));
+      setLogoPreview(null);
+    }}
+    previewUrl={logoPreview}
+  />
+  {logoPreview && (
+    <p className="mt-1 text-xs text-gray-500 italic">
+      Note: Image preview appearance of .PNG files may differ from final PDF rendering
+    </p>
+  )}
+</div>
 
               <div className="sm:col-span-2">
                 <label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-1">

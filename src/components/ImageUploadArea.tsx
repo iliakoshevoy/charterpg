@@ -9,7 +9,7 @@ interface ImageUploadAreaProps {
   onImageRemove: () => void;
   previewUrl: string | null;
   uniqueId: string;
-  imageType: 'interior' | 'exterior';
+  imageType: 'interior' | 'exterior' | 'logo';
   defaultImageUrl?: string | null;
   isDefault?: boolean;
 }
@@ -75,13 +75,14 @@ const ImageUploadArea: React.FC<ImageUploadAreaProps> = ({
 
   if (displayUrl) {
     return (
-      <div className="relative w-[120px] h-[120px] flex items-center justify-center bg-gray-50 rounded-md">
+      <div className="relative w-[120px] h-[120px] flex items-center justify-center"> {/* Removed all background styling */}
         <Image 
           src={displayUrl} 
           alt={`${imageType} view`}
           fill
           sizes="120px"
-          className="object-contain rounded-md"
+          className="object-contain"
+          style={{ backgroundColor: 'transparent' }}
           unoptimized
         />
         <button

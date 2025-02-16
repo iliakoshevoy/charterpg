@@ -52,6 +52,10 @@ export interface ProposalPDFProps {
       departure: string | null;
       arrival: string | null;
     };
+    companySettings?: {
+      logo: string | null;
+      disclaimer: string;
+    };
   customerName: string;
   passengerCount: string;
   comment: string;
