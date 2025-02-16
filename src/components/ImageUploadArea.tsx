@@ -59,7 +59,15 @@ const ImageUploadArea: React.FC<ImageUploadAreaProps> = ({
   const handleFileSelect = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files && files.length > 0) {
-      onImageUpload(files[0]);
+      const file = files[0];
+      console.log('File Details:', {
+        name: file.name,
+        type: file.type,
+        size: file.size,
+        lastModified: new Date(file.lastModified).toISOString(),
+        source: 'file-input'
+      });
+      onImageUpload(file);
     }
   }, [onImageUpload]);
 

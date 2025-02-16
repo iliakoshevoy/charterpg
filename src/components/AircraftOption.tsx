@@ -185,11 +185,25 @@ const AircraftOption: React.FC<AircraftOptionProps> = ({
     defaultImageUrl={details?.defaultInteriorImageUrl}
     isDefault={!imagePreview1 && !!details?.defaultInteriorImageUrl}
     onImageUpload={(file) => {
+      console.log('Before FileReader:', {
+        fileName: file.name,
+        fileType: file.type,
+        fileSize: file.size
+      });
+    
       const reader = new FileReader();
       reader.onloadend = () => {
         const base64String = reader.result as string;
+        console.log('After FileReader:', {
+          base64Length: base64String.length,
+          base64Prefix: base64String.substring(0, 50),
+          mimeType: base64String.split(',')[0]
+        });
         onImage1Change(base64String);
         onImagePreview1Change(base64String);
+      };
+      reader.onerror = (error) => {
+        console.error('FileReader error:', error);
       };
       reader.readAsDataURL(file);
     }}
