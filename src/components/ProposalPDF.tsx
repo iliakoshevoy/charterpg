@@ -403,19 +403,27 @@ const ProposalPDF: React.FC<ProposalPDFProps> = (props) => {
 <View style={styles.imagesContainer}>
   {option.data.image1 && (
     <View style={styles.imageWrapper}>
-    <Image src={option.data.image1} style={styles.aircraftImage} />
-    {option.data.isImage1Default && (
-      <Text style={styles.imageCaption}>A generic photo of this model interior</Text>
-    )}
-  </View>
+      <Image 
+        src={option.data.image1} 
+        style={styles.aircraftImage}
+        cache={false}  // Add this
+      />
+      {option.data.isImage1Default && (
+        <Text style={styles.imageCaption}>A generic photo of this model interior</Text>
+      )}
+    </View>
   )}
   {option.data.image2 && (
     <View style={styles.imageWrapper}>
-    <Image src={option.data.image2} style={styles.aircraftImage} />
-    {option.data.isImage2Default && (
-      <Text style={styles.imageCaption}>A generic photo of this model exterior</Text>
-    )}
-  </View>
+      <Image 
+        src={option.data.image2} 
+        style={styles.aircraftImage}
+        cache={false}  // Add this
+      />
+      {option.data.isImage2Default && (
+        <Text style={styles.imageCaption}>A generic photo of this model exterior</Text>
+      )}
+    </View>
   )}
 </View>
               

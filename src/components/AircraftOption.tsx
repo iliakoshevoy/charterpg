@@ -5,7 +5,7 @@ import dynamic from 'next/dynamic';
 import ImageUploadArea from '@/components/ImageUploadArea';
 import { getAircraftImages } from '@/utils/aircraftImages';
 import type { AircraftDetails } from '@/types/proposal';
-import { processImageFile } from '@/utils/aircraftImages';
+import { compressImage } from '@/utils/imageCompression';
 
 const AircraftSelection = dynamic(() => import('./AircraftSelection'), {
   ssr: false,
@@ -177,57 +177,42 @@ const AircraftOption: React.FC<AircraftOptionProps> = ({
     </div>
   </div>
   <div className="col-span-4">
-  <label className="block text-sm font-medium text-gray-700 mb-1">
-    Image 1
-  </label>
-  <ImageUploadArea
+    <label className="block text-sm font-medium text-gray-700 mb-1">
+      Image 1
+    </label>
+
+<ImageUploadArea
     uniqueId={`option${optionNumber}-image1`}
     imageType="interior"
     defaultImageUrl={details?.defaultInteriorImageUrl}
     isDefault={!imagePreview1 && !!details?.defaultInteriorImageUrl}
-    onImageUpload={(file) => {
-      // Add size validation
-      const MAX_SIZE = 10 * 1024 * 1024; // 10MB
-      if (file.size > MAX_SIZE) {
-        alert(`Image size (${Math.round(file.size / 1024 / 1024)}MB) exceeds 10MB limit`);
-        return;
+    onImageUpload={async (file) => {
+      try {
+        console.log('Original File (Image 1):', JSON.stringify({
+          fileName: file.name,
+          fileType: file.type,
+          fileSize: Math.round(file.size / 1024) + 'KB'
+        }, null, 2));
+
+        const compressedFile = await compressImage(file);
+        
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          const base64String = reader.result as string;
+          onImage1Change(base64String);  // For Image 1
+          onImagePreview1Change(base64String);  // For Image 1
+        };
+
+        reader.onerror = (error) => {
+          console.error('FileReader error:', JSON.stringify(error, null, 2));
+          alert('Failed to process image. Please try again.');
+        };
+
+        reader.readAsDataURL(compressedFile);
+      } catch (error) {
+        console.error('Image compression error:', error);
+        alert('Failed to process image. Please try again.');
       }
-
-      // Add type validation
-      if (!file.type.startsWith('image/')) {
-        alert('Please select a valid image file');
-        return;
-      }
-
-      console.log('Before FileReader:', {
-        fileName: file.name,
-        fileType: file.type,
-        fileSize: Math.round(file.size / 1024) + 'KB'
-      });
-    
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const base64String = reader.result as string;
-        console.log('After FileReader:', {
-          base64Length: base64String.length,
-          base64Prefix: base64String.substring(0, 50),
-          mimeType: base64String.split(',')[0]
-        });
-
-        // Validate base64 string
-        if (!base64String.startsWith('data:image/')) {
-          alert('Failed to process image. Please try a different image.');
-          return;
-        }
-
-        onImage1Change(base64String);
-        onImagePreview1Change(base64String);
-      };
-      reader.onerror = (error) => {
-        console.error('FileReader error:', error);
-        alert('Failed to read image file. Please try again.');
-      };
-      reader.readAsDataURL(file);
     }}
     onImageRemove={() => {
       if (details) {
@@ -239,39 +224,46 @@ const AircraftOption: React.FC<AircraftOptionProps> = ({
       onImagePreview1Change(null);
     }}
     previewUrl={imagePreview1}
-  />
+/>
 </div>
+
+{/* Image 2 */}
 <div className="col-span-4">
-  <label className="block text-sm font-medium text-gray-700 mb-1">
-    Image 2
-  </label>
-  <ImageUploadArea
+    <label className="block text-sm font-medium text-gray-700 mb-1">
+      Image 2
+    </label>
+<ImageUploadArea
     uniqueId={`option${optionNumber}-image2`}
     imageType="exterior"
     defaultImageUrl={details?.defaultExteriorImageUrl}
     isDefault={!imagePreview2 && !!details?.defaultExteriorImageUrl}
-    onImageUpload={(file) => {
-      console.log('Before FileReader:', JSON.stringify({
-        fileName: file.name,
-        fileType: file.type,
-        fileSize: Math.round(file.size / 1024) + 'KB'
-      }, null, 2));
-    
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const base64String = reader.result as string;
-        console.log('After FileReader:', JSON.stringify({
-          base64Length: base64String.length,
-          base64Prefix: base64String.substring(0, 100),
-          mimeType: base64String.split(',')[0]
+    onImageUpload={async (file) => {
+      try {
+        console.log('Original File (Image 2):', JSON.stringify({
+          fileName: file.name,
+          fileType: file.type,
+          fileSize: Math.round(file.size / 1024) + 'KB'
         }, null, 2));
-        onImage1Change(base64String);
-        onImagePreview1Change(base64String);
-      };
-      reader.onerror = (error) => {
-        console.error('FileReader error:', JSON.stringify(error, null, 2));
-      };
-      reader.readAsDataURL(file);
+
+        const compressedFile = await compressImage(file);
+        
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          const base64String = reader.result as string;
+          onImage2Change(base64String);  // For Image 2
+          onImagePreview2Change(base64String);  // For Image 2
+        };
+
+        reader.onerror = (error) => {
+          console.error('FileReader error:', JSON.stringify(error, null, 2));
+          alert('Failed to process image. Please try again.');
+        };
+
+        reader.readAsDataURL(compressedFile);
+      } catch (error) {
+        console.error('Image compression error:', error);
+        alert('Failed to process image. Please try again.');
+      }
     }}
     onImageRemove={() => {
       if (details) {
@@ -283,7 +275,7 @@ const AircraftOption: React.FC<AircraftOptionProps> = ({
       onImagePreview2Change(null);
     }}
     previewUrl={imagePreview2}
-  />
+/>
 </div>
 </div>
     </div>

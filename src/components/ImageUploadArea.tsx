@@ -2,6 +2,7 @@
 "use client";
 import React, { useCallback, useState } from 'react';
 import Image from 'next/image';
+import { compressImage } from '@/utils/imageCompression';
 
 interface ImageUploadAreaProps {
   onImageUpload: (file: File) => void;
