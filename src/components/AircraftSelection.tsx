@@ -55,8 +55,9 @@ const AircraftSelection: React.FC<AircraftSelectionProps> = ({
   }, [value]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = e.target.value;
+    const newValue = e.target.value.toUpperCase();
     setInputValue(newValue);
+    onChange(newValue);
 
     if (newValue.length > 0 && aircraft.length > 0) {
       setIsLoadingSuggestions(true);
@@ -74,32 +75,27 @@ const AircraftSelection: React.FC<AircraftSelectionProps> = ({
     } else {
       setSuggestions([]);
       setShowSuggestions(false);
-      onChange('');
       onAircraftSelect(null);
       setIsLoadingSuggestions(false);
     }
   };
 
   const handleSelectAircraft = async (selectedAircraft: AircraftModel) => {
-    setInputValue(selectedAircraft.model);
-    onChange(selectedAircraft.model);
+    const uppercaseModel = selectedAircraft.model.toUpperCase();
+    setInputValue(uppercaseModel);
+    onChange(uppercaseModel);
     
-    const defaultImages = getAircraftImages(selectedAircraft.model);
-    console.log('Default images paths:', defaultImages);
+    const defaultImages = getAircraftImages(uppercaseModel);
     
     try {
       let interiorBase64, exteriorBase64;
       
       if (defaultImages?.interior) {
-        console.log('Processing interior image...');
         interiorBase64 = await imageUrlToBase64(defaultImages.interior);
-        console.log('Interior image processed successfully');
       }
       
       if (defaultImages?.exterior) {
-        console.log('Processing exterior image...');
         exteriorBase64 = await imageUrlToBase64(defaultImages.exterior);
-        console.log('Exterior image processed successfully');
       }
       
       const details = {
@@ -110,12 +106,6 @@ const AircraftSelection: React.FC<AircraftSelectionProps> = ({
         defaultInteriorImageUrl: interiorBase64,
         defaultExteriorImageUrl: exteriorBase64
       };
-      
-      console.log('Sending aircraft details with images:', {
-        ...details,
-        hasInteriorImage: !!interiorBase64,
-        hasExteriorImage: !!exteriorBase64
-      });
       
       onAircraftSelect(details);
     } catch (error) {
@@ -134,29 +124,18 @@ const AircraftSelection: React.FC<AircraftSelectionProps> = ({
   return (
     <div className="relative">
       <div className="relative">
-        <input
-          type="text"
-          value={inputValue}
-          onChange={handleInputChange}
-          onClick={() => {
-            if (inputValue.length > 0 && aircraft.length > 0) {
-              setIsLoadingSuggestions(true);
-              const filtered = aircraft.filter(plane =>
-                plane.model.toLowerCase().includes(inputValue.toLowerCase())
-              );
-              setSuggestions(filtered);
-              setShowSuggestions(true);
-              setIsLoadingSuggestions(false);
-            }
-          }}
-          onBlur={() => {
-            setTimeout(() => {
-              setShowSuggestions(false);
-            }, 200);
-          }}
-          placeholder="Start typing aircraft model..."
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white pr-10"
-        />
+      <input
+  type="text"
+  value={inputValue}
+  onChange={handleInputChange}
+  onBlur={() => {
+    setTimeout(() => {
+      setShowSuggestions(false);
+    }, 200);
+  }}
+  placeholder="Start typing"
+  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white pr-10 [&:not(:placeholder-shown)]:uppercase"
+/>
         {(isLoadingData || isLoadingSuggestions) && (
           <div className="absolute right-3 top-1/2 -translate-y-1/2">
             <Loader2 className="h-4 w-4 animate-spin text-gray-400" />
@@ -172,7 +151,7 @@ const AircraftSelection: React.FC<AircraftSelectionProps> = ({
               onClick={() => handleSelectAircraft(aircraft)}
               className="px-4 py-2 hover:bg-blue-50 cursor-pointer"
             >
-              <div className="font-medium text-black">{aircraft.model}</div>
+              <div className="font-medium text-black uppercase">{aircraft.model}</div>
             </div>
           ))}
         </div>
