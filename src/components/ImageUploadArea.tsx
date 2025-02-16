@@ -60,13 +60,12 @@ const ImageUploadArea: React.FC<ImageUploadAreaProps> = ({
     const files = e.target.files;
     if (files && files.length > 0) {
       const file = files[0];
-      console.log('File Details:', {
+      console.log('File Details:', JSON.stringify({
         name: file.name,
         type: file.type,
         size: file.size,
-        lastModified: new Date(file.lastModified).toISOString(),
-        source: 'file-input'
-      });
+        lastModified: new Date(file.lastModified).toISOString()
+      }, null, 2));
       onImageUpload(file);
     }
   }, [onImageUpload]);

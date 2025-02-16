@@ -35,45 +35,72 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ formData, airportDetails })
     formData.option1Name
   ]);
 
-  console.log('Detailed formData check:', {
-    rawData: {
-      images: {
-        image1: formData.option1Image1?.substring(0, 100),
-        image2: formData.option1Image2?.substring(0, 100),
-      },
-      flags: {
-        isImage1Default: formData.option1IsImage1Default,
-        isImage2Default: formData.option1IsImage2Default,
-      }
-    }
-  });
-
   const generatePDF = useCallback(async () => {
     if (!hasValidData) return;
     
     try {
       setIsGenerating(true);
       setError(null);
-      
 
-console.log('PDF Generation - Detailed Image Data:', {
-  option1: {
-    name: formData.option1Name,
-    image1: {
-      exists: !!formData.option1Image1,
-      isDefault: formData.option1IsImage1Default,
-      dataLength: formData.option1Image1?.length || 0,
-      startsWith: formData.option1Image1?.substring(0, 50) // Show start of the image data
-    },
-    image2: {
-      exists: !!formData.option1Image2,
-      isDefault: formData.option1IsImage2Default,
-      dataLength: formData.option1Image2?.length || 0,
-      startsWith: formData.option1Image2?.substring(0, 50)
-    }
-  }
-});
+      // Enhanced logging for debugging mobile image issues
+      console.log('PDF Generation - Detailed Image Data:', JSON.stringify({
+        option1: {
+          name: formData.option1Name,
+          image1: {
+            exists: !!formData.option1Image1,
+            isDefault: formData.option1IsImage1Default,
+            dataLength: formData.option1Image1?.length || 0,
+            isValidBase64: formData.option1Image1?.startsWith('data:image/'),
+            mimeType: formData.option1Image1?.split(',')[0] || 'none',
+            startsWith: formData.option1Image1?.substring(0, 100),
+            endsWith: formData.option1Image1?.substring(formData.option1Image1?.length - 50 || 0) || 'none'
+          },
+          image2: {
+            exists: !!formData.option1Image2,
+            isDefault: formData.option1IsImage2Default,
+            dataLength: formData.option1Image2?.length || 0,
+            isValidBase64: formData.option1Image2?.startsWith('data:image/'),
+            mimeType: formData.option1Image2?.split(',')[0] || 'none',
+            startsWith: formData.option1Image2?.substring(0, 100),
+            endsWith: formData.option1Image2?.substring(formData.option1Image2?.length - 50 || 0) || 'none'
+          }
+        },
+        validation: {
+          image1: {
+            hasValidPrefix: formData.option1Image1?.startsWith('data:image/'),
+            hasBase64Data: formData.option1Image1?.includes('base64,'),
+            approximateSizeKB: Math.round((formData.option1Image1?.length || 0) * 0.75 / 1024),
+            isLikelyCorrupted: formData.option1Image1?.includes('undefined') || formData.option1Image1?.includes('null')
+          },
+          image2: {
+            hasValidPrefix: formData.option1Image2?.startsWith('data:image/'),
+            hasBase64Data: formData.option1Image2?.includes('base64,'),
+            approximateSizeKB: Math.round((formData.option1Image2?.length || 0) * 0.75 / 1024),
+            isLikelyCorrupted: formData.option1Image2?.includes('undefined') || formData.option1Image2?.includes('null')
+          }
+        },
+        timing: {
+          generationStartTime: new Date().toISOString()
+        }
+      }, null, 2));
 
+      // Pre-generation validation check
+      console.log('Pre-generation Image Validation:', JSON.stringify({
+        option1: {
+          image1: {
+            status: formData.option1Image1 ? 'present' : 'missing',
+            format: formData.option1Image1?.startsWith('data:image/') ? 'valid' : 'invalid',
+            size: `${Math.round((formData.option1Image1?.length || 0) * 0.75 / 1024)}KB`
+          },
+          image2: {
+            status: formData.option1Image2 ? 'present' : 'missing',
+            format: formData.option1Image2?.startsWith('data:image/') ? 'valid' : 'invalid',
+            size: `${Math.round((formData.option1Image2?.length || 0) * 0.75 / 1024)}KB`
+          }
+        }
+      }, null, 2));
+
+      // Regular form data logging
       console.log('Generating PDF with data:', {
         formData: {
           customerName: formData.customerName,
@@ -91,8 +118,8 @@ console.log('PDF Generation - Detailed Image Data:', {
             name: formData.option2Name,
             hasImage1: Boolean(formData.option2Image1),
             hasImage2: Boolean(formData.option2Image2),
-            isImage1Default: formData.option2IsImage1Default, // Fixed: was using option1
-            isImage2Default: formData.option2IsImage2Default, // Fixed: was using option1
+            isImage1Default: formData.option2IsImage1Default,
+            isImage2Default: formData.option2IsImage2Default,
             details: formData.option2Details,
             yearOfManufacture: formData.option2YearOfManufacture,
             yearRefurbishment: formData.option2YearRefurbishment,
@@ -101,8 +128,8 @@ console.log('PDF Generation - Detailed Image Data:', {
             name: formData.option3Name,
             hasImage1: Boolean(formData.option3Image1),
             hasImage2: Boolean(formData.option3Image2),
-            isImage1Default: formData.option3IsImage1Default, // Fixed: was using option1
-            isImage2Default: formData.option3IsImage2Default, // Fixed: was using option1
+            isImage1Default: formData.option3IsImage1Default,
+            isImage2Default: formData.option3IsImage2Default,
             details: formData.option3Details,
             yearOfManufacture: formData.option3YearOfManufacture,
             yearRefurbishment: formData.option3YearRefurbishment,
@@ -111,8 +138,8 @@ console.log('PDF Generation - Detailed Image Data:', {
             name: formData.option4Name,
             hasImage1: Boolean(formData.option4Image1),
             hasImage2: Boolean(formData.option4Image2),
-            isImage1Default: formData.option4IsImage1Default, // Fixed: was using option1
-            isImage2Default: formData.option4IsImage2Default, // Fixed: was using option1
+            isImage1Default: formData.option4IsImage1Default,
+            isImage2Default: formData.option4IsImage2Default,
             details: formData.option4Details,
             yearOfManufacture: formData.option4YearOfManufacture,
             yearRefurbishment: formData.option4YearRefurbishment,
@@ -121,8 +148,8 @@ console.log('PDF Generation - Detailed Image Data:', {
             name: formData.option5Name,
             hasImage1: Boolean(formData.option5Image1),
             hasImage2: Boolean(formData.option5Image2),
-            isImage1Default: formData.option5IsImage1Default, // Fixed: was using option1
-            isImage2Default: formData.option5IsImage2Default, // Fixed: was using option1
+            isImage1Default: formData.option5IsImage1Default,
+            isImage2Default: formData.option5IsImage2Default,
             details: formData.option5Details,
             yearOfManufacture: formData.option5YearOfManufacture,
             yearRefurbishment: formData.option5YearRefurbishment,
