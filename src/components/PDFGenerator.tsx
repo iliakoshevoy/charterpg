@@ -185,7 +185,7 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ formData, airportDetails })
           } : undefined}
         />
       );
-      
+
       const blob = await pdf(document).toBlob();
       const url = URL.createObjectURL(blob);
       setPdfBlob(url);
@@ -214,7 +214,7 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ formData, airportDetails })
     try {
       const link = document.createElement("a");
       link.href = pdfBlob;
-      link.download = `charter-proposal-${formData.customerName || "unnamed"}.pdf`;
+      link.download = `charter-offer-${formData.customerName || " "}.pdf`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
