@@ -131,11 +131,6 @@ const SettingsForm = () => {
     }}
     previewUrl={logoPreview}
   />
-  {logoPreview && (
-    <p className="mt-1 text-xs text-gray-500 italic">
-      Note: Image preview appearance of .PNG files may differ from final PDF rendering
-    </p>
-  )}
 </div>
 
               <div className="sm:col-span-2">
