@@ -112,7 +112,7 @@ const AircraftOption: React.FC<AircraftOptionProps> = ({
         </div>
         <div className="col-span-2 max-sm:col-span-3">
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            Manufactured
+            Year of A/C
           </label>
           <input
             type="text"

@@ -55,7 +55,14 @@ export interface ProposalPDFProps {
     companySettings?: {
       logo: string | null;
       disclaimer: string;
+      companyName: string;
+    address: string;
+    vatNumber: string;
+    website: string;
+    email: string;
+    phoneNumber: string;
     };
+    
   customerName: string;
   passengerCount: string;
   comment: string;

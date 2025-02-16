@@ -16,7 +16,10 @@ import { generateStaticMapURL } from '@/utils/mapGenerator';
 // Define styles
 const styles = StyleSheet.create({
   page: {
-    padding: 40,
+    paddingTop: 20,     // Reduced from 40 to 20 for top only
+    paddingBottom: 40,  // Keep original padding for bottom
+    paddingLeft: 40,    // Keep original padding for sides
+    paddingRight: 40,
     backgroundColor: '#FFFFFF',
     width: 595.28,
   },
@@ -231,6 +234,12 @@ const styles = StyleSheet.create({
       color: '#666666',
       textAlign: 'center',
       marginTop: 2,  // Small spacing from the image
+  },
+  companyInfo: {
+    marginTop: 4,
+    textAlign: 'center',
+    color: '#6b7280',
+    fontSize: 8,
   },
 });
 
@@ -453,14 +462,24 @@ const ProposalPDF: React.FC<ProposalPDFProps> = (props) => {
 <View style={styles.disclaimer}>
   <Text style={styles.disclaimerText}>
     <Text style={styles.disclaimerBold}>Please note: </Text>
-    All options are subject to final availability at the time of booking, flight permits, slots, and owner&apos;s approval where applicable.{'\n'}
-    Possible de-Icing, WI-FI and other costs are not included and will be Invoiced, if occurred, after the flight
+    {props.companySettings?.disclaimer || "All options are subject to final availability at the time of booking, flight permits, slots, and owner's approval where applicable.\nPossible de-Icing, WI-FI and other costs are not included and will be Invoiced, if occurred, after the flight"}
   </Text>
 </View>
 
-        <View style={styles.footer}>
-          <Text>Charter Offer • {generationDate}</Text>
-        </View>
+<View style={styles.footer}>
+  <Text>Charter Offer • {generationDate}</Text>
+  {props.companySettings && (
+    <Text style={styles.companyInfo}>
+      {[
+        props.companySettings.companyName,
+        props.companySettings.address,
+        props.companySettings.vatNumber,
+        props.companySettings.email,
+        props.companySettings.phoneNumber
+      ].filter(Boolean).join(' | ')}
+    </Text>
+  )}
+</View>
       </Page>
     </Document>
   );

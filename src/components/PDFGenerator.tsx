@@ -173,12 +173,19 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ formData, airportDetails })
         <ProposalPDF 
           {...formData} 
           airportDetails={airportDetails}
-          companySettings={{
-            logo: companySettings?.logo || null,
-            disclaimer: companySettings?.disclaimer || ''
-          }}
+          companySettings={companySettings ? {
+            logo: companySettings.logo,
+            disclaimer: companySettings.disclaimer,
+            companyName: companySettings.companyName,
+            address: companySettings.address,
+            vatNumber: companySettings.vatNumber,
+            website: companySettings.website,
+            email: companySettings.email,
+            phoneNumber: companySettings.phoneNumber
+          } : undefined}
         />
       );
+      
       const blob = await pdf(document).toBlob();
       const url = URL.createObjectURL(blob);
       setPdfBlob(url);

@@ -220,7 +220,7 @@ return (
         {/* PAX */}
         <div className="w-[20%] sm:w-[20%]">
           <label htmlFor={`passengerCount-${legNumber}`} className="block text-sm font-medium text-gray-700 mb-1">
-            PAX
+            Pax
           </label>
           <select
             id={`passengerCount-${legNumber}`}
