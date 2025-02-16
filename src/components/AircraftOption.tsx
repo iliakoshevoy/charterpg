@@ -69,7 +69,8 @@ const AircraftOption: React.FC<AircraftOptionProps> = ({
   const hasContent = Boolean(name || image1 || image2 || yearOfManufacture || yearRefurbishment || price || paxCapacity || notes);
 
   return (
-    <div className={`space-y-4 transition-all duration-300 ease-in-out ${className}`}>
+    // Remove or reduce both the default padding and the bg-gray padding
+<div className={`space-y-4 transition-all duration-300 ease-in-out max-sm:px-0 px-6 bg-gray-50 max-sm:p-1 p-6 rounded-md ${className}`}>
       {/* Header section */}
       <div className="flex justify-between items-center">
         <h3 className="text-lg font-medium text-gray-700">Option {optionNumber}</h3>
@@ -82,35 +83,35 @@ const AircraftOption: React.FC<AircraftOptionProps> = ({
           </button>
         )}
       </div>
-
+  
       {/* First row - Aircraft Type, Year, Refurbished Year, and Pax */}
-      <div className="grid grid-cols-12 gap-4">
-        <div className="col-span-4"> 
+      <div className="grid grid-cols-12 gap-2">
+        <div className="col-span-4 max-sm:col-span-4"> 
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            Aircraft Type
+            Aircraft Model
           </label>
           <AircraftSelection
-  value={name}
-  onChange={onNameChange}
-  optionNumber={optionNumber.toString() as '1' | '2'}
-  onAircraftSelect={(newDetails) => {
-    onDetailsChange(newDetails);
-    if (newDetails) {
-      const defaultImages = getAircraftImages(name); // Use name instead of details.model
-      if (defaultImages) {
-        onImage1Change(defaultImages.interior);
-        onImage2Change(defaultImages.exterior);
-        onImagePreview1Change(defaultImages.interior);
-        onImagePreview2Change(defaultImages.exterior);
-      }
-      onPaxCapacityChange(newDetails.passengerCapacity);
-    }
-  }}
-/>
+            value={name}
+            onChange={onNameChange}
+            optionNumber={optionNumber.toString() as '1' | '2'}
+            onAircraftSelect={(newDetails) => {
+              onDetailsChange(newDetails);
+              if (newDetails) {
+                const defaultImages = getAircraftImages(name);
+                if (defaultImages) {
+                  onImage1Change(defaultImages.interior);
+                  onImage2Change(defaultImages.exterior);
+                  onImagePreview1Change(defaultImages.interior);
+                  onImagePreview2Change(defaultImages.exterior);
+                }
+                onPaxCapacityChange(newDetails.passengerCapacity);
+              }
+            }}
+          />
         </div>
-        <div className="col-span-2">
+        <div className="col-span-2 max-sm:col-span-3">
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            Year
+            Manufactured
           </label>
           <input
             type="text"
@@ -120,9 +121,9 @@ const AircraftOption: React.FC<AircraftOptionProps> = ({
             placeholder="Year"
           />
         </div>
-        <div className="col-span-2">
+        <div className="col-span-2 max-sm:col-span-3">
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            Refurbished
+            Refurb
           </label>
           <input
             type="text"
@@ -132,7 +133,7 @@ const AircraftOption: React.FC<AircraftOptionProps> = ({
             placeholder="Year"
           />
         </div>
-        <div className="col-span-2">
+        <div className="col-span-2 max-sm:col-span-2">
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Pax
           </label>
@@ -158,7 +159,7 @@ const AircraftOption: React.FC<AircraftOptionProps> = ({
         value={price || ''}
         onChange={(e) => onPriceChange(e.target.value)}
         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
-        placeholder="Price"
+        placeholder="e.g. 9,000 all in"
       />
     </div>
     <div>
@@ -170,7 +171,7 @@ const AircraftOption: React.FC<AircraftOptionProps> = ({
         value={notes || ''}
         onChange={(e) => onNotesChange(e.target.value)}
         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
-        placeholder="Notes"
+        placeholder="Subj to OA, etc. or leave blank"
       />
     </div>
   </div>
