@@ -106,6 +106,7 @@ const AircraftOption: React.FC<AircraftOptionProps> = ({
                   onImagePreview2Change(defaultImages.exterior);
                 }
                 onPaxCapacityChange(newDetails.passengerCapacity);
+                onYearOfManufactureChange(newDetails.deliveryStart);
               }
             }}
           />
@@ -300,17 +301,17 @@ const AircraftOption: React.FC<AircraftOptionProps> = ({
           />
         </div>
         <div className="col-span-2">
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Manufactured
-          </label>
-          <input
-            type="text"
-            value={yearOfManufacture || ''}
-            onChange={(e) => onYearOfManufactureChange(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
-            placeholder="Year"
-          />
-        </div>
+  <label className="block text-sm font-medium text-gray-700 mb-1">
+    Manufactured
+  </label>
+  <input
+    type="text"
+    value={yearOfManufacture || ''}
+    onChange={(e) => onYearOfManufactureChange(e.target.value)}
+    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
+    placeholder="Year"
+  />
+</div>
         <div className="col-span-2">
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Refurb

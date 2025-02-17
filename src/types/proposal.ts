@@ -24,6 +24,7 @@
     cabinHeight: string | null;
     baggageVolume: string | null;
     passengerCapacity: string;
+    deliveryStart: string; 
     defaultInteriorImageUrl?: string;
     defaultExteriorImageUrl?: string;
   }

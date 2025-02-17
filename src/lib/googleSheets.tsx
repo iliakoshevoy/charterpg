@@ -29,6 +29,7 @@ export interface AircraftModel {
   passengerCapacity: string;
   defaultInteriorImageUrl?: string;
   defaultExteriorImageUrl?: string;
+  deliveryStart: string;
 }
 
 export interface Airport {
@@ -56,7 +57,8 @@ export async function getAircraftData(): Promise<AircraftModel[]> {
       cabinWidth: row.get('width') || null,
       cabinHeight: row.get('height') || null,
       baggageVolume: row.get('bagagge volume') || null,
-      passengerCapacity: row.get('pax number') || ''
+      passengerCapacity: row.get('pax number') || '',
+      deliveryStart: row.get('delivery start') || '' 
     }));
   } catch (error) {
     console.error('Error fetching aircraft data:', error);
