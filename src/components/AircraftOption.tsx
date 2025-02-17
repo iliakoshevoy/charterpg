@@ -98,6 +98,7 @@ const AircraftOption: React.FC<AircraftOptionProps> = ({
             onAircraftSelect={(newDetails) => {
               onDetailsChange(newDetails);
               if (newDetails) {
+                
                 const defaultImages = getAircraftImages(name);
                 if (defaultImages) {
                   onImage1Change(defaultImages.interior);
@@ -105,9 +106,18 @@ const AircraftOption: React.FC<AircraftOptionProps> = ({
                   onImagePreview1Change(defaultImages.interior);
                   onImagePreview2Change(defaultImages.exterior);
                 }
-                onPaxCapacityChange(newDetails.passengerCapacity);
-                onYearOfManufactureChange(newDetails.deliveryStart);
-              }
+                // Explicitly update both fields
+    if (newDetails.passengerCapacity) {
+      onPaxCapacityChange(newDetails.passengerCapacity);
+    }
+    
+    // Add this console.log
+    console.log('Attempting to update year:', newDetails.deliveryStart);
+    
+    // Explicitly update yearOfManufacture
+    onYearOfManufactureChange(newDetails.deliveryStart);
+  }
+
             }}
           />
         </div>
@@ -296,6 +306,7 @@ const AircraftOption: React.FC<AircraftOptionProps> = ({
                   onImagePreview2Change(defaultImages.exterior);
                 }
                 onPaxCapacityChange(newDetails.passengerCapacity);
+                onYearOfManufactureChange(newDetails.deliveryStart);
               }
             }}
           />

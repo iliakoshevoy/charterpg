@@ -51,15 +51,29 @@ export async function getAircraftData(): Promise<AircraftModel[]> {
     const sheet = doc.sheetsByTitle['Airplanes'];
     const rows = await sheet.getRows();
 
-    return rows.map((row: GoogleSpreadsheetRow) => ({
-      jetSize: row.get('jet size') || '',
-      model: row.get('model') || '',
-      cabinWidth: row.get('width') || null,
-      cabinHeight: row.get('height') || null,
-      baggageVolume: row.get('bagagge volume') || null,
-      passengerCapacity: row.get('pax number') || '',
-      deliveryStart: row.get('delivery start') || '' 
-    }));
+    // Log the first row's data using public methods
+    if (rows.length > 0) {
+      console.log('First row data:', {
+        jetSize: rows[0].get('jet size'),
+        model: rows[0].get('model'),
+        deliveryStart: rows[0].get('delivery start'),
+        paxNumber: rows[0].get('pax number')
+      });
+    }
+
+    return rows.map((row: GoogleSpreadsheetRow) => {
+      const aircraftData = {
+        jetSize: row.get('jet size') || '',
+        model: row.get('model') || '',
+        cabinWidth: row.get('width') || null,
+        cabinHeight: row.get('height') || null,
+        baggageVolume: row.get('bagagge volume') || null,
+        passengerCapacity: row.get('pax number') || '',
+        deliveryStart: row.get('delivery start') || ''
+      };
+      console.log('Processed aircraft data:', aircraftData);
+      return aircraftData;
+    });
   } catch (error) {
     console.error('Error fetching aircraft data:', error);
     return [];

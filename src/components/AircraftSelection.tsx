@@ -27,15 +27,33 @@ const AircraftSelection: React.FC<AircraftSelectionProps> = ({
 
   useEffect(() => {
     let isMounted = true;
-
+    const CACHE_DURATION = 1000 * 60 * 60 * 24; // 24 hours
+  
     async function fetchAircraft() {
       setIsLoadingData(true);
       try {
+        // Check cache first
+        const cachedData = localStorage.getItem('aircraftData');
+        const cacheTimestamp = localStorage.getItem('aircraftDataTimestamp');
+        const now = Date.now();
+  
+        if (cachedData && cacheTimestamp && (now - Number(cacheTimestamp)) < CACHE_DURATION) {
+          if (isMounted) {
+            setAircraft(JSON.parse(cachedData));
+            setIsLoadingData(false);
+            return;
+          }
+        }
+  
+        // Fetch fresh data if needed
         const response = await fetch('/api/aircraft');
         if (!response.ok) throw new Error('Failed to fetch aircraft data');
         const data = await response.json();
+        
         if (isMounted) {
           setAircraft(data);
+          localStorage.setItem('aircraftData', JSON.stringify(data));
+          localStorage.setItem('aircraftDataTimestamp', String(now));
         }
       } catch (err) {
         console.error('Failed to load aircraft data:', err);
@@ -45,7 +63,7 @@ const AircraftSelection: React.FC<AircraftSelectionProps> = ({
         }
       }
     }
-
+  
     fetchAircraft();
     return () => { isMounted = false; };
   }, []);
@@ -81,6 +99,7 @@ const AircraftSelection: React.FC<AircraftSelectionProps> = ({
   };
 
   const handleSelectAircraft = async (selectedAircraft: AircraftModel) => {
+    console.log('Selected aircraft full data:', selectedAircraft); // Add this line
     const uppercaseModel = selectedAircraft.model.toUpperCase();
     setInputValue(uppercaseModel);
     onChange(uppercaseModel);
@@ -107,7 +126,7 @@ const AircraftSelection: React.FC<AircraftSelectionProps> = ({
         defaultExteriorImageUrl: exteriorBase64,
         deliveryStart: selectedAircraft.deliveryStart
       };
-      
+      console.log('Details being sent to parent:', details); // Add this line
       onAircraftSelect(details);
     } catch (error) {
       console.error('Error processing images:', error);

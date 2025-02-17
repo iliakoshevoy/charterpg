@@ -103,6 +103,12 @@ const [airportDetails, setAirportDetails] = useState({
   };
 
   const handleOptionUpdate = (index: number, updates: Partial<AircraftOptionType>) => {
+    console.log('Updating aircraft option:', {
+      index,
+      updates,
+      currentOptions: aircraftOptions[index],
+      updateType: Object.keys(updates)[0]
+    });
     setAircraftOptions(prev => {
       const newOptions = [...prev];
       newOptions[index] = { ...newOptions[index], ...updates };
