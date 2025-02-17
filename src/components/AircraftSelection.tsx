@@ -104,7 +104,8 @@ const AircraftSelection: React.FC<AircraftSelectionProps> = ({
         baggageVolume: selectedAircraft.baggageVolume,
         passengerCapacity: selectedAircraft.passengerCapacity,
         defaultInteriorImageUrl: interiorBase64,
-        defaultExteriorImageUrl: exteriorBase64
+        defaultExteriorImageUrl: exteriorBase64,
+        deliveryStart: selectedAircraft.deliveryStart
       };
       
       onAircraftSelect(details);
@@ -114,7 +115,8 @@ const AircraftSelection: React.FC<AircraftSelectionProps> = ({
         cabinWidth: selectedAircraft.cabinWidth,
         cabinHeight: selectedAircraft.cabinHeight,
         baggageVolume: selectedAircraft.baggageVolume,
-        passengerCapacity: selectedAircraft.passengerCapacity
+        passengerCapacity: selectedAircraft.passengerCapacity,
+        deliveryStart: selectedAircraft.deliveryStart 
       });
     }
     
