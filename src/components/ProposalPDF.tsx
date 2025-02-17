@@ -49,7 +49,8 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     color: '#1a1a1a',
-    marginBottom: 15,
+    marginBottom: 5,
+    marginTop: 20,
     paddingBottom: 8,
     borderBottom: 1,
     borderBottomColor: '#e0e0e0',
@@ -92,12 +93,12 @@ const styles = StyleSheet.create({
     width: '10%',
   },
   notesSection: {
-    marginTop: 10,
-    marginBottom: 20,
+    marginTop: 3,
+    marginBottom: 8,
   },
   mapContainer: {
     marginTop: 10,
-    marginBottom: 20,
+    marginBottom: 10,
     alignItems: 'center',
   },
   map: {
@@ -143,18 +144,18 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   priceLabel: {
-    fontSize: 14,
+    fontSize: 16,
     color: '#1E40AF',
     fontWeight: 'bold',
   },
   priceValue: {
-    fontSize: 14,
+    fontSize: 16,
     color: '#1E40AF',
     fontWeight: 'bold',
   },
   noteInnerContainer: {
     position: 'relative',
-    paddingLeft: 45, // Space for "Notes:" label
+    paddingLeft: 50, // Space for "Notes:" label
   },
   noteContainer: {
     marginTop: 8,
@@ -187,9 +188,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 2,
     justifyContent: 'space-between',
-    marginTop: 4,  // Add some spacing from the details above
+    marginTop: 30,  // Add some spacing from the details above
     width: '100%',  // Ensure container takes full width
-    marginBottom: 5, 
+    marginBottom: 0, 
   },
   aircraftImage: {
     width: '100%',   // Ensure it takes the full width of the container

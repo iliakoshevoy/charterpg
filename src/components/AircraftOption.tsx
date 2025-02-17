@@ -165,9 +165,9 @@ const AircraftOption: React.FC<AircraftOptionProps> = ({
         </div>
       </div>
 
-{/* Third row - Notes and Images */}
+{/* Third row - Notes only */}
 <div className="grid grid-cols-12 gap-2 mt-4">
-  <div className="col-span-5">
+  <div className="col-span-12">
     <label className="block text-sm font-medium text-gray-700 mb-1">
       Notes
     </label>
@@ -176,83 +176,85 @@ const AircraftOption: React.FC<AircraftOptionProps> = ({
       onChange={(e) => onNotesChange(e.target.value)}
       className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white resize-none"
       placeholder="Subject to OA, etc. or leave blank if no comm"
-      rows={2}
+      rows={1}
     />
   </div>
-        <div className="col-span-6 grid grid-cols-2 gap-2">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Image 1
-            </label>
-            <ImageUploadArea
-              uniqueId={`option${optionNumber}-image1`}
-              imageType="interior"
-              defaultImageUrl={details?.defaultInteriorImageUrl}
-              isDefault={!imagePreview1 && !!details?.defaultInteriorImageUrl}
-              onImageUpload={async (file) => {
-                try {
-                  const compressedFile = await compressImage(file);
-                  const reader = new FileReader();
-                  reader.onloadend = () => {
-                    const base64String = reader.result as string;
-                    onImage1Change(base64String);
-                    onImagePreview1Change(base64String);
-                  };
-                  reader.readAsDataURL(compressedFile);
-                } catch (error) {
-                  console.error('Image compression error:', error);
-                  alert('Failed to process image. Please try again.');
-                }
-              }}
-              onImageRemove={() => {
-                if (details) {
-                  const updatedDetails = { ...details };
-                  delete updatedDetails.defaultInteriorImageUrl;
-                  onDetailsChange(updatedDetails);
-                }
-                onImage1Change(null);
-                onImagePreview1Change(null);
-              }}
-              previewUrl={imagePreview1}
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Image 2
-            </label>
-            <ImageUploadArea
-              uniqueId={`option${optionNumber}-image2`}
-              imageType="exterior"
-              defaultImageUrl={details?.defaultExteriorImageUrl}
-              isDefault={!imagePreview2 && !!details?.defaultExteriorImageUrl}
-              onImageUpload={async (file) => {
-                try {
-                  const compressedFile = await compressImage(file);
-                  const reader = new FileReader();
-                  reader.onloadend = () => {
-                    const base64String = reader.result as string;
-                    onImage2Change(base64String);
-                    onImagePreview2Change(base64String);
-                  };
-                  reader.readAsDataURL(compressedFile);
-                } catch (error) {
-                  console.error('Image compression error:', error);
-                  alert('Failed to process image. Please try again.');
-                }
-              }}
-              onImageRemove={() => {
-                if (details) {
-                  const updatedDetails = { ...details };
-                  delete updatedDetails.defaultExteriorImageUrl;
-                  onDetailsChange(updatedDetails);
-                }
-                onImage2Change(null);
-                onImagePreview2Change(null);
-              }}
-              previewUrl={imagePreview2}
-            />
-          </div>
-        </div>
+</div>
+
+{/* Fourth row - Images */}
+<div className="grid grid-cols-12 gap-2 mt-4">
+  <div className="col-span-6">
+    <label className="block text-sm font-medium text-gray-700 mb-1">
+      Image 1
+    </label>
+    <ImageUploadArea
+      uniqueId={`option${optionNumber}-image1`}
+      imageType="interior"
+      defaultImageUrl={details?.defaultInteriorImageUrl}
+      isDefault={!imagePreview1 && !!details?.defaultInteriorImageUrl}
+      onImageUpload={async (file) => {
+        try {
+          const compressedFile = await compressImage(file);
+          const reader = new FileReader();
+          reader.onloadend = () => {
+            const base64String = reader.result as string;
+            onImage1Change(base64String);
+            onImagePreview1Change(base64String);
+          };
+          reader.readAsDataURL(compressedFile);
+        } catch (error) {
+          console.error('Image compression error:', error);
+          alert('Failed to process image. Please try again.');
+        }
+      }}
+      onImageRemove={() => {
+        if (details) {
+          const updatedDetails = { ...details };
+          delete updatedDetails.defaultInteriorImageUrl;
+          onDetailsChange(updatedDetails);
+        }
+        onImage1Change(null);
+        onImagePreview1Change(null);
+      }}
+      previewUrl={imagePreview1}
+    />
+  </div>
+  <div className="col-span-6">
+    <label className="block text-sm font-medium text-gray-700 mb-1">
+      Image 2
+    </label>
+    <ImageUploadArea
+      uniqueId={`option${optionNumber}-image2`}
+      imageType="exterior"
+      defaultImageUrl={details?.defaultExteriorImageUrl}
+      isDefault={!imagePreview2 && !!details?.defaultExteriorImageUrl}
+      onImageUpload={async (file) => {
+        try {
+          const compressedFile = await compressImage(file);
+          const reader = new FileReader();
+          reader.onloadend = () => {
+            const base64String = reader.result as string;
+            onImage2Change(base64String);
+            onImagePreview2Change(base64String);
+          };
+          reader.readAsDataURL(compressedFile);
+        } catch (error) {
+          console.error('Image compression error:', error);
+          alert('Failed to process image. Please try again.');
+        }
+      }}
+      onImageRemove={() => {
+        if (details) {
+          const updatedDetails = { ...details };
+          delete updatedDetails.defaultExteriorImageUrl;
+          onDetailsChange(updatedDetails);
+        }
+        onImage2Change(null);
+        onImagePreview2Change(null);
+      }}
+      previewUrl={imagePreview2}
+    />
+  </div>
       </div>
     </>
   );

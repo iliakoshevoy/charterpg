@@ -8,7 +8,7 @@ import ImageUploadArea from '@/components/ImageUploadArea';
 import { compressImage } from '@/utils/imageCompression';
 
 const SettingsForm = () => {
-  const defaultDisclaimer = "Please note: All options are subject to final availability...";
+  const defaultDisclaimer = "All options are subject to final availability at the time of booking, flight permits, slots, and owner's approval where applicable. Possible de-Icing, WI-FI and other costs are not included and will be Invoiced, if occurred, after the flight";
 
   const [settings, setSettings] = useState<CompanySettings>({
     companyName: '',
