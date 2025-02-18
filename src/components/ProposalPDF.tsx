@@ -52,8 +52,6 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     marginTop: 20,
     paddingBottom: 8,
-    borderBottom: 1,
-    borderBottomColor: '#e0e0e0',
   },
   table: {
     width: '100%',
@@ -97,7 +95,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   mapContainer: {
-    marginTop: 10,
+    marginTop: 5,
     marginBottom: 5,
     alignItems: 'center',
   },
@@ -128,7 +126,7 @@ const styles = StyleSheet.create({
     paddingTop: 28,
   },
   optionNumber: {
-    fontSize: 16,
+    fontSize: 18,
     color: '#1a1a1a',
     marginBottom: 8,
   },
@@ -323,6 +321,14 @@ const ProposalPDF: React.FC<ProposalPDFProps> = (props) => {
     />
   )}
 </View>
+
+{/* Add a header divider with minimal margin */}
+<View style={{
+  borderBottom: 1,
+  borderBottomColor: '#e0e0e0',
+  marginTop: 2,
+  marginBottom: 20
+}} />
 
 
 {props.showMap !== false && (
