@@ -63,6 +63,7 @@ export interface ProposalPDFProps {
     email: string;
     phoneNumber: string;
     };
+    showMap?: boolean;
     
   customerName: string;
   passengerCount: string;

@@ -8,6 +8,8 @@ import type { FlightLeg as FlightLegType } from '@/types/flight';
 interface FlightLegsProps {
   legs: FlightLegType[];
   onChange: (legs: FlightLegType[]) => void;
+  showMap?: boolean; // Add new prop
+  onShowMapChange?: (showMap: boolean) => void; // Add new prop
 }
 
 const MAX_LEGS = 4;
@@ -29,7 +31,12 @@ const createEmptyLeg = (): FlightLegType => ({
   passengerCount: ''
 });
 
-const FlightLegs: React.FC<FlightLegsProps> = ({ legs, onChange }) => {
+const FlightLegs: React.FC<FlightLegsProps> = ({ 
+  legs, 
+  onChange,
+  showMap = true, // Default to true 
+  onShowMapChange
+}) => {
   React.useEffect(() => {
     if (legs.length === 0) {
       onChange([createEmptyLeg()]);
@@ -123,7 +130,7 @@ const FlightLegs: React.FC<FlightLegsProps> = ({ legs, onChange }) => {
       ))}
 
       {legs.length < MAX_LEGS && (
-        <div className="flex space-x-4">
+        <div className="flex space-x-4 items-center">
           <button
             onClick={addRoundTripLeg}
             className="mt-2 ml-0 text-sm text-blue-600 hover:text-blue-800 flex items-center"
@@ -138,6 +145,22 @@ const FlightLegs: React.FC<FlightLegsProps> = ({ legs, onChange }) => {
             <Plus className="h-4 w-4 mr-1" />
             Add Leg
           </button>
+          
+          {/* Map Checkbox */}
+          {onShowMapChange && (
+            <div className="flex items-center ml-4">
+              <input
+                type="checkbox"
+                id="generateMap"
+                checked={showMap}
+                onChange={(e) => onShowMapChange(e.target.checked)}
+                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+              />
+              <label htmlFor="generateMap" className="ml-2 text-sm text-gray-700">
+                Generate Flight Map in .pdf
+              </label>
+            </div>
+          )}
         </div>
       )}
     </div>

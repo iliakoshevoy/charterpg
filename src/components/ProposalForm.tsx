@@ -131,6 +131,7 @@ const getPDFData = (): ProposalPDFProps => {
     },
     ...basicFormData,
     flightLegs,
+    showMap,
     // Option 1
     option1Name: aircraftOptions[0]?.name || '',
     option1Image1: aircraftOptions[0]?.details?.defaultInteriorImageUrl || aircraftOptions[0]?.image1 || null,
@@ -198,6 +199,8 @@ const getPDFData = (): ProposalPDFProps => {
   };
 };
 
+const [showMap, setShowMap] = useState(true);
+
   return (
     <div className="max-w-4xl mx-auto max-sm:p-2 p-6 bg-white rounded-lg shadow-md">
       <div className="space-y-6">
@@ -207,10 +210,12 @@ const getPDFData = (): ProposalPDFProps => {
           
           {/* Flight Legs */}
           <div className="space-y-4">
-            <FlightLegs
-              legs={flightLegs}
-              onChange={setFlightLegs}
-            />
+          <FlightLegs
+  legs={flightLegs}
+  onChange={setFlightLegs}
+  showMap={showMap}
+  onShowMapChange={setShowMap}
+/>
             
             {/* Prepared For and Notes fields */}
             <div className="flex gap-4 items-end mt-4">

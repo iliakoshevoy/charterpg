@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
   },
   mapContainer: {
     marginTop: 10,
-    marginBottom: 10,
+    marginBottom: 5,
     alignItems: 'center',
   },
   map: {
@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
     objectFit: 'contain',
   },
   sectionDivider: {
-    marginVertical: 30,
+    marginVertical: 15,
     borderTop: 1,
     borderTopColor: '#e0e0e0',
   },
@@ -324,6 +324,14 @@ const ProposalPDF: React.FC<ProposalPDFProps> = (props) => {
   )}
 </View>
 
+
+{props.showMap !== false && (
+  <View style={styles.mapContainer}>
+    <Image src={mapUrl} style={styles.map} />
+  </View>
+)}
+ <View style={styles.sectionDivider} />
+
         <Text style={styles.sectionTitle}>Itinerary</Text>
         
         <View style={styles.table}>
@@ -359,9 +367,7 @@ const ProposalPDF: React.FC<ProposalPDFProps> = (props) => {
           </View>
         )}
 
-<View style={styles.mapContainer}>
-  <Image src={mapUrl} style={styles.map} />
-</View>
+
 
         <View style={styles.sectionDivider} />
 
