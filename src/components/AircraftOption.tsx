@@ -1,11 +1,11 @@
 "use client";
-import React from 'react';
 import dynamic from 'next/dynamic';
 import ImageUploadArea from '@/components/ImageUploadArea';
 import { getAircraftImages } from '@/utils/aircraftImages';
 import type { AircraftDetails } from '@/types/proposal';
 import { compressImage } from '@/utils/imageCompression';
 import { useScreenSize } from '@/hooks/useScreenSize';
+import React, { useState, useRef } from 'react';
 
 const AircraftSelection = dynamic(() => import('./AircraftSelection'), {
   ssr: false,
@@ -69,6 +69,36 @@ const AircraftOption: React.FC<AircraftOptionProps> = ({
 }) => {
   const { isMobile } = useScreenSize();
   const hasContent = Boolean(name || image1 || image2 || yearOfManufacture || yearRefurbishment || price || paxCapacity || notes);
+
+// Add these after const hasContent
+const notesSuggestions = [
+  "Subject to Owner Approval.",
+  "Empty Leg Condition apply."
+];
+const [showSuggestions, setShowSuggestions] = useState(false);
+const [filteredSuggestions, setFilteredSuggestions] = useState<string[]>([]);
+const notesInputRef = useRef<HTMLInputElement | HTMLTextAreaElement>(null);
+
+const handleNotesChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const value = e.target.value;
+  onNotesChange(value);
+  
+  if (value) {
+    const filtered = notesSuggestions.filter(
+      suggestion => suggestion.toLowerCase().startsWith(value.toLowerCase())
+    );
+    setFilteredSuggestions(filtered);
+    setShowSuggestions(filtered.length > 0);
+  } else {
+    setShowSuggestions(false);
+  }
+};
+
+const handleSelectSuggestion = (suggestion: string) => {
+  onNotesChange(suggestion);
+  setShowSuggestions(false);
+};
+
 
   const renderMobileLayout = () => (
     <>
@@ -178,17 +208,41 @@ const AircraftOption: React.FC<AircraftOptionProps> = ({
 
 {/* Third row - Notes only */}
 <div className="grid grid-cols-12 gap-2 mt-4">
-  <div className="col-span-12">
+  <div className="col-span-12 relative">
     <label className="block text-sm font-medium text-gray-700 mb-1">
       Notes
     </label>
     <textarea
+      ref={notesInputRef as React.RefObject<HTMLTextAreaElement>}
       value={notes || ''}
-      onChange={(e) => onNotesChange(e.target.value)}
+      onChange={handleNotesChange}
+      onFocus={() => {
+        if (notes && notes.length >= 1) {
+          setShowSuggestions(true);
+        }
+      }}
+      onBlur={() => {
+        setTimeout(() => {
+          setShowSuggestions(false);
+        }, 200);
+      }}
       className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white resize-none"
       placeholder="Subject to OA, etc. or leave blank if no comm"
       rows={1}
     />
+    {showSuggestions && filteredSuggestions.length > 0 && (
+      <div className="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
+        {filteredSuggestions.map((suggestion, index) => (
+          <div
+            key={index}
+            onClick={() => handleSelectSuggestion(suggestion)}
+            className="px-3 py-2 hover:bg-blue-50 cursor-pointer text-gray-900"
+          >
+            {suggestion}
+          </div>
+        ))}
+      </div>
+    )}
   </div>
 </div>
 
@@ -365,18 +419,42 @@ const AircraftOption: React.FC<AircraftOptionProps> = ({
         placeholder="e.g. 9,000 all in"
       />
     </div>
-    <div>
-      <label className="block text-sm font-medium text-gray-700 mb-1">
-        Notes
-      </label>
-      <input
-        type="text"
-        value={notes || ''}
-        onChange={(e) => onNotesChange(e.target.value)}
-        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
-        placeholder="Subj to OA, etc. or leave blank"
-      />
+    <div className="relative">
+  <label className="block text-sm font-medium text-gray-700 mb-1">
+    Notes
+  </label>
+  <input
+    ref={notesInputRef as React.RefObject<HTMLInputElement>}
+    type="text"
+    value={notes || ''}
+    onChange={handleNotesChange}
+    onFocus={() => {
+      if (notes && notes.length >= 1) {
+        setShowSuggestions(true);
+      }
+    }}
+    onBlur={() => {
+      setTimeout(() => {
+        setShowSuggestions(false);
+      }, 200);
+    }}
+    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
+    placeholder="Subj to OA, etc. or leave blank"
+  />
+  {showSuggestions && filteredSuggestions.length > 0 && (
+    <div className="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
+      {filteredSuggestions.map((suggestion, index) => (
+        <div
+          key={index}
+          onClick={() => handleSelectSuggestion(suggestion)}
+          className="px-3 py-2 hover:bg-blue-50 cursor-pointer text-gray-900"
+        >
+          {suggestion}
+        </div>
+      ))}
     </div>
+  )}
+</div>
   </div>
         <div className="col-span-2">
           <label className="block text-sm font-medium text-gray-700 mb-1">
