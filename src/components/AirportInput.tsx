@@ -27,6 +27,14 @@ const AirportInput: React.FC<AirportInputProps> = ({
   const [displayValue, setDisplayValue] = useState(value);
   const [dataInitialized, setDataInitialized] = useState(false);
 
+  // Helper function to format airport codes
+  const formatAirportCodes = (airport: Airport): string => {
+    if (airport.iata) {
+      return `${airport.icao}/${airport.iata}`;
+    }
+    return airport.icao;
+  };
+
   const debouncedSearch = useMemo(() => {
     const debouncedFn = debounce((searchTerm: string, airportsData: Airport[]) => {
       if (searchTerm.length < 2) {
@@ -34,22 +42,20 @@ const AirportInput: React.FC<AirportInputProps> = ({
         setIsLoadingSuggestions(false);
         return;
       }
-  
+
       const term = searchTerm.toLowerCase();
       const filtered = airportsData.filter(airport => 
         airport.icao.toLowerCase().includes(term) ||
-        airport.airportName.toLowerCase().includes(term) ||
-        airport.country.toLowerCase().includes(term)
+        (airport.iata?.toLowerCase().includes(term)) ||
+        airport.airportName.toLowerCase().includes(term)
       );
       
       setSuggestions(filtered);
       setIsLoadingSuggestions(false);
     }, 500);
-  
+
     return debouncedFn;
-  }, [setSuggestions, setIsLoadingSuggestions]);
-
-
+  }, []);
 
   useEffect(() => {
     let isMounted = true;
@@ -64,7 +70,6 @@ const AirportInput: React.FC<AirportInputProps> = ({
           const cacheTimestamp = localStorage.getItem('airportsDataTimestamp');
           const now = Date.now();
           
-          // Use cache if it exists and is less than 24 hours old
           if (cachedData && cacheTimestamp && (now - Number(cacheTimestamp)) < CACHE_DURATION) {
             const data = JSON.parse(cachedData);
             if (isMounted) {
@@ -74,7 +79,6 @@ const AirportInput: React.FC<AirportInputProps> = ({
             }
           }
           
-          // Fetch fresh data if cache is expired or doesn't exist
           const response = await fetch('/api/airports');
           if (!response.ok) throw new Error('Failed to fetch airports');
           const data = await response.json();
@@ -109,7 +113,7 @@ const AirportInput: React.FC<AirportInputProps> = ({
       const airport = airports.find(a => a.icao === value);
       if (airport) {
         setSelectedAirport(airport);
-        const displayText = `${airport.icao}, ${airport.airportName}`;
+        const displayText = `${formatAirportCodes(airport)}, ${airport.airportName}`;
         setDisplayValue(displayText);
       }
     }
@@ -135,13 +139,12 @@ const AirportInput: React.FC<AirportInputProps> = ({
 
   const handleSelectAirport = (airport: Airport) => {
     setSelectedAirport(airport);
-    const displayText = `${airport.icao}, ${airport.airportName}`;
+    const displayText = `${formatAirportCodes(airport)}, ${airport.airportName}`;
     setDisplayValue(displayText);
-    const fullDetails = `${airport.airportName}, ${airport.country} (${airport.icao})`;
     
     onChange(
       airport.icao, 
-      fullDetails,
+      displayText,
       airport.latitude && airport.longitude ? {
         lat: airport.latitude,
         lng: airport.longitude
@@ -189,11 +192,11 @@ const AirportInput: React.FC<AirportInputProps> = ({
               onClick={() => handleSelectAirport(airport)}
               className="px-4 py-2 hover:bg-blue-50 cursor-pointer border-b border-gray-100 last:border-0"
             >
-              <div className="font-medium text-gray-900">
-                {airport.airportName} ({airport.icao})
+              <div className="font-bold text-gray-900">
+                {formatAirportCodes(airport)}
               </div>
-              <div className="text-sm text-gray-600">
-                {airport.country}
+              <div className="text-sm text-gray-500">
+                {airport.airportName}
               </div>
             </div>
           ))}

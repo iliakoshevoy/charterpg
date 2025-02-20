@@ -38,6 +38,7 @@ export interface Airport {
   airportName: string;
   latitude: string;  // Add these
   longitude: string; // Add these
+  iata: string | null;
 }
 
 // Aircraft Data Functions
@@ -97,7 +98,8 @@ export async function getAirportsData(): Promise<Airport[]> {
       country: row.get('country') || '',
       airportName: row.get('airport name') || '',
       latitude: row.get('latitude') || '',  // Add these fields
-      longitude: row.get('longitude') || '' // Add these fields
+      longitude: row.get('longitude') || '', // Add these fields
+      iata: row.get('iata') || null 
     })).filter(airport => airport.icao);
   } catch (error) {
     console.error('Error fetching airports data:', error);
