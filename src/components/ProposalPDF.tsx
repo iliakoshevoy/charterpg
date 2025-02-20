@@ -334,9 +334,10 @@ const ProposalPDF: React.FC<ProposalPDFProps> = (props) => {
 {props.showMap !== false && (
   <View style={styles.mapContainer}>
     <Image src={mapUrl} style={styles.map} />
+    <View style={styles.sectionDivider} />
   </View>
 )}
- <View style={styles.sectionDivider} />
+
 
         <Text style={styles.sectionTitle}>Itinerary</Text>
         

@@ -113,7 +113,7 @@ const AirportInput: React.FC<AirportInputProps> = ({
       const airport = airports.find(a => a.icao === value);
       if (airport) {
         setSelectedAirport(airport);
-        const displayText = `${formatAirportCodes(airport)}, ${airport.airportName}`;
+        const displayText = `${airport.airportName} (${formatAirportCodes(airport)})`;
         setDisplayValue(displayText);
       }
     }
@@ -139,7 +139,7 @@ const AirportInput: React.FC<AirportInputProps> = ({
 
   const handleSelectAirport = (airport: Airport) => {
     setSelectedAirport(airport);
-    const displayText = `${formatAirportCodes(airport)}, ${airport.airportName}`;
+    const displayText = `${airport.airportName} (${formatAirportCodes(airport)})`;
     setDisplayValue(displayText);
     
     onChange(
