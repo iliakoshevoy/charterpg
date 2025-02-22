@@ -38,7 +38,9 @@ const SettingsForm = () => {
         setIsLoading(false);
         return;
       }
-
+  
+      setIsLoading(true);
+  
       try {
         console.log('Fetching settings for user:', user.id);
         
@@ -47,13 +49,13 @@ const SettingsForm = () => {
           .select('*')
           .eq('user_id', user.id)
           .single();
-
-        if (error && error.code !== 'PGRST116') {
+  
+        if (error) {
           console.error('Error fetching settings:', error);
-          setError('Failed to load settings');
+          setError(error.code !== 'PGRST116' ? 'Failed to load settings' : null);
           return;
         }
-
+  
         if (data) {
           console.log('Settings loaded:', data);
           setSettings({
@@ -75,7 +77,7 @@ const SettingsForm = () => {
         setIsLoading(false);
       }
     };
-
+  
     fetchSettings();
   }, [user, defaultDisclaimer]);
 

@@ -1,4 +1,3 @@
-// src/contexts/AuthContext.tsx
 "use client";
 
 import React, { createContext, useState, useEffect, useContext } from 'react';
@@ -23,71 +22,53 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     const fetchUser = async () => {
-      console.log('Fetching user session...');
-      const { data: { session } } = await supabase.auth.getSession();
-      
-      if (session?.user) {
-        console.log('User session found:', session.user.id);
-        const { data: profileData, error: profileError } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', session.user.id)
-          .single();
-        
-        if (profileError) {
-          console.error('Error fetching profile:', profileError);
+      try {
+        console.log('Fetching user session...');
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+
+        if (sessionError) {
+          console.error('Session fetch error:', sessionError);
+          return;
         }
-        
-        if (profileData) {
-          console.log('Profile data found:', profileData);
-          setUser({
-            id: profileData.id,
-            email: profileData.email,
-            firstName: profileData.first_name,
-            lastName: profileData.last_name
-          });
+
+        if (session?.user) {
+          console.log('User session found:', session.user.id);
+          const { data: profileData, error: profileError } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('id', session.user.id)
+            .single();
+
+          if (profileError) {
+            console.error('Error fetching profile:', profileError);
+            return;
+          }
+
+          if (profileData) {
+            setUser({
+              id: profileData.id,
+              email: profileData.email,
+              firstName: profileData.first_name,
+              lastName: profileData.last_name
+            });
+          } else {
+            console.log('No profile data found for user');
+          }
         } else {
-          console.log('No profile data found for user');
+          console.log('No user session found');
         }
-      } else {
-        console.log('No user session found');
+      } catch (error) {
+        console.error('Error in fetchUser:', error);
+      } finally {
+        setIsLoading(false); // Ensure loading state is updated
       }
-      
-      setIsLoading(false);
     };
 
     fetchUser();
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (event === 'SIGNED_IN' && session) {
-        const { data: profileData } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', session.user.id)
-          .single();
-        
-        if (profileData) {
-          setUser({
-            id: profileData.id,
-            email: profileData.email,
-            firstName: profileData.first_name,
-            lastName: profileData.last_name
-          });
-        }
-      } else if (event === 'SIGNED_OUT') {
-        setUser(null);
-        router.push('/');
-      }
-    });
-
-    return () => {
-      subscription.unsubscribe();
-    };
   }, [router]);
 
   const register = async (email: string, password: string, firstName: string, lastName: string) => {
     try {
-      // Sign up the user with metadata
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
@@ -104,15 +85,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         return { error };
       }
 
-      // Check if user was created
       if (!data.user) {
         console.error('No user data returned from signup');
         return { error: new Error('Failed to create user account') };
       }
 
       console.log('User created:', data.user.id);
-      
-      // The database triggers will handle profile and company settings creation
       return { error: null };
     } catch (error) {
       console.error('Registration process error:', error);
@@ -122,7 +100,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const login = async (email: string, password: string) => {
     try {
-      console.log('Attempting login for:', email);
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
@@ -139,23 +116,17 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       }
 
       console.log('Login successful, fetching profile for user:', data.user.id);
-      
-      // Fetch user profile data
       const { data: profileData, error: profileError } = await supabase
         .from('profiles')
         .select('id, email, first_name, last_name')
         .eq('id', data.user.id)
         .single();
 
-      console.log('Profile query result:', { profileData, profileError });
-
       if (profileError) {
         console.error('Error fetching profile:', profileError);
-        // Don't return error here, still allow login if profile fetch fails
       }
 
       if (profileData) {
-        console.log('Setting user state with profile:', profileData);
         setUser({
           id: profileData.id,
           email: profileData.email,
@@ -163,7 +134,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           lastName: profileData.last_name
         });
       } else {
-        // If no profile found, set minimal user data
         console.log('No profile found, setting minimal user data');
         setUser({
           id: data.user.id,
@@ -181,8 +151,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const logout = async () => {
+    console.log("Logging out...");
     await supabase.auth.signOut();
     setUser(null);
+    router.push("/login");
   };
 
   return (
