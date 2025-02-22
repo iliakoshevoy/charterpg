@@ -2,28 +2,37 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-// This client has admin privileges
+if (!supabaseUrl || !supabaseServiceKey) {
+  throw new Error('Missing Supabase environment variables. Ensure SUPABASE_SERVICE_ROLE_KEY is set.');
+}
+
+// This client has admin privileges (DO NOT expose service key in frontend)
 const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey);
 
 export async function POST(request: Request) {
   try {
     const { email } = await request.json();
 
+    if (!email) {
+      return NextResponse.json({ error: 'Email is required' }, { status: 400 });
+    }
+
     // Check if the user exists in Supabase auth
     const { data: users, error: authError } = await supabaseAdmin.auth.admin.listUsers({
       page: 1,
-      perPage: 10,
+      perPage: 100, // Increased limit in case of pagination issues
     });
 
     if (authError) {
-      return NextResponse.json({ error: authError.message }, { status: 400 });
+      console.error('Supabase Auth Error:', authError);
+      return NextResponse.json({ error: authError.message }, { status: 500 });
     }
 
     // Find the user with the given email
-    const user = users.users.find(u => u.email === email);
+    const user = users.users.find((u) => u.email === email);
 
     if (!user) {
       return NextResponse.json({ exists: false, message: 'User not found in auth' });
@@ -37,7 +46,8 @@ export async function POST(request: Request) {
       .single();
 
     if (profileError && profileError.code !== 'PGRST116') {
-      return NextResponse.json({ error: profileError.message }, { status: 400 });
+      console.error('Supabase Profile Error:', profileError);
+      return NextResponse.json({ error: profileError.message }, { status: 500 });
     }
 
     // Return user status information
@@ -48,7 +58,6 @@ export async function POST(request: Request) {
       created_at: user.created_at,
       last_sign_in: user.last_sign_in_at,
       profile_exists: !!profileData,
-      has_profile: !!profileData,
     });
   } catch (error) {
     console.error('Error checking registration:', error);
