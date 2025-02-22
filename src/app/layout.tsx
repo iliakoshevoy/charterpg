@@ -1,7 +1,8 @@
 // src/app/layout.tsx
-import type { Metadata } from 'next'
+import { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
+import { RootLayoutClient } from '@/components/RootLayoutClient'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -16,8 +17,12 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className={inter.className} suppressHydrationWarning>{children}</body>
+    <html lang="en">
+      <body className={inter.className}>
+        <RootLayoutClient>
+          {children}
+        </RootLayoutClient>
+      </body>
     </html>
   )
 }

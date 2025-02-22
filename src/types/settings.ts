@@ -1,4 +1,4 @@
-//settings.ts
+//src/types/settings.ts
 export interface CompanySettings {
   companyName: string;
   address: string;
