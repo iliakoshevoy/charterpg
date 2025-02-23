@@ -224,14 +224,17 @@ const [showMap, setShowMap] = useState(true);
                   Prepared For
                 </label>
                 <input
-                  type="text"
-                  id="customerName"
-                  name="customerName"
-                  value={basicFormData.customerName}
-                  onChange={handleBasicInputChange}
-                  className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
-                  placeholder="Enter customer name"
-                />
+  type="text"
+  id="customerName"
+  name="customerName"
+  value={basicFormData.customerName}
+  onChange={handleBasicInputChange}
+  inputMode="text"
+  autoComplete="off"
+  autoCapitalize="words"
+  className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
+  placeholder="Enter customer name"
+/>
               </div>
 
               <div className="w-[500px]">
@@ -239,14 +242,16 @@ const [showMap, setShowMap] = useState(true);
                   Notes
                 </label>
                 <input
-                  type="text"
-                  id="comment"
-                  name="comment"
-                  value={basicFormData.comment}
-                  onChange={handleBasicInputChange}
-                  className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
-                  placeholder="Special requests, pets, todlers, etc."
-                />
+  type="text"
+  id="comment"
+  name="comment"
+  value={basicFormData.comment}
+  onChange={handleBasicInputChange}
+  inputMode="text"
+  autoComplete="off"
+  className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
+  placeholder="Special requests, pets, todlers, etc."
+/>
               </div>
             </div>
           </div>

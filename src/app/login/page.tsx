@@ -92,14 +92,17 @@ export default function Login() {
               Email
             </label>
             <input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
-              placeholder="your@email.com"
-            />
+  id="email"
+  type="email"
+  value={email}
+  onChange={(e) => setEmail(e.target.value)}
+  required
+  inputMode="email"
+  autoComplete="email"
+  autoCapitalize="off"
+  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
+  placeholder="your@email.com"
+/>
           </div>
           
           <div>
@@ -107,14 +110,15 @@ export default function Login() {
               Password
             </label>
             <input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
-              placeholder="••••••••"
-            />
+  id="password"
+  type="password"
+  value={password}
+  onChange={(e) => setPassword(e.target.value)}
+  required
+  autoComplete="current-password"
+  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
+  placeholder="••••••••"
+/>
           </div>
           
           <button

@@ -95,6 +95,9 @@ export default function RegisterPage() {
   value={firstName}
   onChange={(e) => handleNameChange(e, setFirstName)}
   required
+  inputMode="text"
+  autoComplete="given-name"
+  autoCapitalize="words"
   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
   placeholder="John"
 />
@@ -110,6 +113,9 @@ export default function RegisterPage() {
   value={lastName}
   onChange={(e) => handleNameChange(e, setLastName)}
   required
+  inputMode="text"
+  autoComplete="family-name"
+  autoCapitalize="words"
   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
   placeholder="Doe"
 />
@@ -121,14 +127,17 @@ export default function RegisterPage() {
                   Email
                 </label>
                 <input
-                  id="email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
-                  placeholder="your@email.com"
-                />
+  id="email"
+  type="email"
+  value={email}
+  onChange={(e) => setEmail(e.target.value)}
+  required
+  inputMode="email"
+  autoComplete="email"
+  autoCapitalize="off"
+  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
+  placeholder="your@email.com"
+/>
               </div>
 
               <div>
@@ -136,14 +145,15 @@ export default function RegisterPage() {
                   Password
                 </label>
                 <input
-                  id="password"
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
-                  placeholder="••••••••"
-                />
+  id="password"
+  type="password"
+  value={password}
+  onChange={(e) => setPassword(e.target.value)}
+  required
+  autoComplete="new-password"
+  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
+  placeholder="••••••••"
+/>
                 <p className="mt-1 text-xs text-gray-500">
                   Must be at least 8 characters with 1 letter and 1 number
                 </p>

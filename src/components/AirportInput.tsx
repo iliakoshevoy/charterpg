@@ -160,23 +160,29 @@ const AirportInput: React.FC<AirportInputProps> = ({
         {label}
       </label>
       <div className="relative">
-        <input
-          type="text"
-          value={displayValue}
-          onChange={handleInputChange}
-          onFocus={() => {
-            if (displayValue.length >= 2) {
-              setShowSuggestions(true);
-            }
-          }}
-          onBlur={() => {
-            setTimeout(() => {
-              setShowSuggestions(false);
-            }, 200);
-          }}
-          className="w-full px-3 py-2 border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-800 bg-white pr-10 text-sm"
-          placeholder={placeholder}
-        />
+      // Only update the input element within AirportInput.tsx
+<input
+  type="text"
+  value={displayValue}
+  onChange={handleInputChange}
+  onFocus={() => {
+    if (displayValue.length >= 2) {
+      setShowSuggestions(true);
+    }
+  }}
+  onBlur={() => {
+    setTimeout(() => {
+      setShowSuggestions(false);
+    }, 200);
+  }}
+  inputMode="text"
+  autoComplete="off"
+  autoCapitalize="off"
+  autoCorrect="off"
+  spellCheck="false"
+  className="w-full px-3 py-2 border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-800 bg-white pr-10 text-sm"
+  placeholder={placeholder}
+/>
         {(isLoadingData || isLoadingSuggestions) && (
           <div className="absolute right-3 top-1/2 -translate-y-1/2">
             <Loader2 className="h-4 w-4 animate-spin text-gray-400" />

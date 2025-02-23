@@ -180,13 +180,16 @@ const SettingsForm = () => {
                   Company Name
                 </label>
                 <input
-                  type="text"
-                  id="companyName"
-                  name="companyName"
-                  value={settings.companyName}
-                  onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
-                />
+  type="text"
+  id="companyName"
+  name="companyName"
+  value={settings.companyName}
+  onChange={handleInputChange}
+  inputMode="text"
+  autoComplete="off"
+  autoCapitalize="words"
+  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
+/>
               </div>
 
               <div>
@@ -238,13 +241,16 @@ const SettingsForm = () => {
                   Address
                 </label>
                 <input
-                  type="text"
-                  id="address"
-                  name="address"
-                  value={settings.address}
-                  onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
-                />
+  type="text"
+  id="address"
+  name="address"
+  value={settings.address}
+  onChange={handleInputChange}
+  inputMode="text"
+  autoComplete="street-address"
+  autoCapitalize="words"
+  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
+/>
               </div>
 
               <div>
@@ -252,13 +258,16 @@ const SettingsForm = () => {
                   VAT Number
                 </label>
                 <input
-                  type="text"
-                  id="vatNumber"
-                  name="vatNumber"
-                  value={settings.vatNumber}
-                  onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
-                />
+  type="text"
+  id="vatNumber"
+  name="vatNumber"
+  value={settings.vatNumber}
+  onChange={handleInputChange}
+  inputMode="text"
+  autoComplete="off"
+  autoCapitalize="characters"
+  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
+/>
               </div>
 
               <div>
@@ -280,13 +289,16 @@ const SettingsForm = () => {
                   Main Email
                 </label>
                 <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={settings.email}
-                  onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
-                />
+  type="email"
+  id="email"
+  name="email"
+  value={settings.email}
+  onChange={handleInputChange}
+  inputMode="email"
+  autoComplete="email"
+  autoCapitalize="off"
+  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
+/>
               </div>
 
               <div>
@@ -294,13 +306,15 @@ const SettingsForm = () => {
                   Phone Number
                 </label>
                 <input
-                  type="tel"
-                  id="phoneNumber"
-                  name="phoneNumber"
-                  value={settings.phoneNumber}
-                  onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
-                />
+  type="tel"
+  id="phoneNumber"
+  name="phoneNumber"
+  value={settings.phoneNumber}
+  onChange={handleInputChange}
+  inputMode="tel"
+  autoComplete="tel"
+  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
+/>
               </div>
             </div>
 
@@ -309,13 +323,16 @@ const SettingsForm = () => {
                 This disclaimer will be added automatically to the generated charter offer at the page bottom
               </label>
               <textarea
-                id="disclaimer"
-                name="disclaimer"
-                value={settings.disclaimer}
-                onChange={handleInputChange}
-                rows={4}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
-              />
+  id="disclaimer"
+  name="disclaimer"
+  value={settings.disclaimer}
+  onChange={handleInputChange}
+  rows={4}
+  inputMode="text"
+  autoComplete="off"
+  autoCapitalize="sentences"
+  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
+/>
             </div>
 
             <div className="flex items-center justify-end space-x-4">
