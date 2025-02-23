@@ -11,6 +11,8 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<{ error: any | null }>;
   register: (email: string, password: string, firstName: string, lastName: string) => Promise<{ error: any | null }>;
   logout: () => Promise<void>;
+  resetPassword: (email: string) => Promise<{ error: any | null }>;
+  updatePassword: (newPassword: string) => Promise<{ error: any | null }>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -19,6 +21,42 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
+
+  const resetPassword = async (email: string) => {
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/reset-password/update`,
+      });
+  
+      if (error) {
+        console.error('Reset password error:', error);
+        return { error };
+      }
+  
+      return { error: null };
+    } catch (error) {
+      console.error('Reset password process error:', error);
+      return { error };
+    }
+  };
+  
+  const updatePassword = async (newPassword: string) => {
+    try {
+      const { error } = await supabase.auth.updateUser({
+        password: newPassword
+      });
+  
+      if (error) {
+        console.error('Update password error:', error);
+        return { error };
+      }
+  
+      return { error: null };
+    } catch (error) {
+      console.error('Update password process error:', error);
+      return { error };
+    }
+  };
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -158,7 +196,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, isLoading, login, register, logout }}>
+    <AuthContext.Provider value={{ 
+      user, 
+      isLoading, 
+      login, 
+      register, 
+      logout,
+      resetPassword,
+      updatePassword 
+    }}>
       {children}
     </AuthContext.Provider>
   );

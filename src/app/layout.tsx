@@ -7,7 +7,7 @@ import { RootLayoutClient } from '@/components/RootLayoutClient'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Charter Proposal Generator',
+  title: 'Charter Offer Generator',
   description: 'Generate private jet charter proposals',
 }
 

@@ -2,12 +2,15 @@
 "use client";
 
 import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
 import Layout from '@/components/Layout';
 
 export default function Login() {
+  const searchParams = useSearchParams();
+  const message = searchParams.get('message');
+  
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -46,6 +49,12 @@ export default function Login() {
             {error}
           </div>
         )}
+
+        {message && (
+          <div className="mb-4 p-4 bg-green-50 border border-green-200 rounded-md text-green-600">
+            {message}
+          </div>
+        )}
         
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
@@ -73,7 +82,7 @@ export default function Login() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
               placeholder="••••••••"
             />
           </div>
@@ -97,7 +106,17 @@ export default function Login() {
             </Link>
           </p>
         </div>
+        <div className="mt-4 text-center">
+            <div />{/* Empty div for spacing */}
+            <Link 
+              href="/reset-password" 
+              className="text-sm text-blue-600 hover:text-blue-800"
+            >
+              Forgot password?
+            </Link>
+          </div>
       </div>
+      
     </Layout>
   );
 }
