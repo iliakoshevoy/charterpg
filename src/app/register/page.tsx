@@ -6,6 +6,10 @@ import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
 import Layout from "@/components/Layout";
 
+const capitalizeFirstLetter = (string: string) => {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+};
+
 export default function RegisterPage() {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -80,14 +84,14 @@ export default function RegisterPage() {
                     First Name
                   </label>
                   <input
-                    id="firstName"
-                    type="text"
-                    value={firstName}
-                    onChange={(e) => setFirstName(e.target.value)}
-                    required
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
-                    placeholder="John"
-                  />
+  id="firstName"
+  type="text"
+  value={firstName}
+  onChange={(e) => setFirstName(capitalizeFirstLetter(e.target.value))}
+  required // already here
+  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
+  placeholder="John"
+/>
                 </div>
 
                 <div>
@@ -95,14 +99,13 @@ export default function RegisterPage() {
                     Last Name
                   </label>
                   <input
-                    id="lastName"
-                    type="text"
-                    value={lastName}
-                    onChange={(e) => setLastName(e.target.value)}
-                    required
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
-                    placeholder="Doe"
-                  />
+  id="lastName"
+  type="text"
+  value={lastName}
+  onChange={(e) => setLastName(capitalizeFirstLetter(e.target.value))}
+  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
+  placeholder="Doe"
+/>
                 </div>
               </div>
 
