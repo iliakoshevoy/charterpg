@@ -71,28 +71,24 @@ const [airportDetails, setAirportDetails] = useState({
     }
   ]);
 
-  useEffect(() => {
-    const lastOption = aircraftOptions[aircraftOptions.length - 1];
-    if (lastOption?.name && aircraftOptions.length < 5) {
-      setAircraftOptions(prev => [
-        ...prev,
-        {
-          id: String(prev.length + 1),
-          name: '',
-          image1: null,
-          image2: null,
-          details: null,
-          imagePreview1: null,
-          imagePreview2: null,
-          yearOfManufacture: null,
-          yearRefurbishment: null,
-          price: null,
-          paxCapacity: null,
-          notes: null
-        }
-      ]);
+  const handleAddOption = () => {
+    if (aircraftOptions.length < 5) {
+      setAircraftOptions(prev => [...prev, {
+        id: String(prev.length + 1),
+        name: '',
+        image1: null,
+        image2: null,
+        details: null,
+        imagePreview1: null,
+        imagePreview2: null,
+        yearOfManufacture: null,
+        yearRefurbishment: null,
+        price: null,
+        paxCapacity: null,
+        notes: null
+      }]);
     }
-  }, [aircraftOptions]);
+  };
 
   const handleBasicInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -299,7 +295,33 @@ const [showMap, setShowMap] = useState(true);
               </div>
             ))}
           </div>
-        </div>
+
+
+{/* Add button - now with responsive styling */}
+{aircraftOptions.length < 5 && (
+    <div className="mt-4 px-0 sm:px-6"> {/* Added padding control for mobile */}
+      <button
+        onClick={handleAddOption}
+        className="w-full sm:w-auto flex items-center justify-center gap-2 text-blue-600 hover:text-blue-800 transition-colors py-3 sm:py-2 border border-blue-200 rounded-md hover:bg-blue-50 sm:border-0"
+      >
+        <svg 
+          className="w-5 h-5" 
+          fill="none" 
+          stroke="currentColor" 
+          viewBox="0 0 24 24"
+        >
+          <path 
+            strokeLinecap="round" 
+            strokeLinejoin="round" 
+            strokeWidth={2} 
+            d="M12 6v6m0 0v6m0-6h6m-6 0H6" 
+          />
+        </svg>
+        <span>Add additional aircraft option</span>
+      </button>
+    </div>
+  )}
+</div>
 
         {/* Generate PDF Button */}
         <div className="mt-6">

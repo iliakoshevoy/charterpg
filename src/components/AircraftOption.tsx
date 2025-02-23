@@ -73,7 +73,8 @@ const AircraftOption: React.FC<AircraftOptionProps> = ({
 
 const notesSuggestions = [
   "Subject to Owner Approval.",
-  "Empty Leg Condition apply."
+  "Empty Leg Condition apply.",
+  "Various airplanes in the fleet and the exact airplane to be assigned a few days before the flight."
 ];
 const [showSuggestions, setShowSuggestions] = useState(false);
 const [filteredSuggestions, setFilteredSuggestions] = useState<string[]>([]);
@@ -105,7 +106,7 @@ const handleSelectSuggestion = (suggestion: string) => {
       {/* Header section */}
       <div className="flex justify-between items-center">
         <h3 className="text-lg font-medium text-gray-700">Option {optionNumber}</h3>
-        {onRemove && optionNumber > 1 && hasContent && (
+        {onRemove && optionNumber > 1 && (
           <button
             onClick={onRemove}
             className="text-red-500 hover:text-red-700 text-sm"
@@ -329,7 +330,7 @@ const handleSelectSuggestion = (suggestion: string) => {
       {/* Header section */}
       <div className="flex justify-between items-center">
         <h3 className="text-lg font-medium text-gray-700">Option {optionNumber}</h3>
-        {onRemove && optionNumber > 1 && hasContent && (
+        {onRemove && optionNumber > 1 && (
           <button
             onClick={onRemove}
             className="text-red-500 hover:text-red-700 text-sm"
