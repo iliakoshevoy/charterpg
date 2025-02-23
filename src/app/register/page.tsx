@@ -6,8 +6,9 @@ import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
 import Layout from "@/components/Layout";
 
-const capitalizeFirstLetter = (string: string) => {
-  return string.charAt(0).toUpperCase() + string.slice(1);
+const capitalizeFirstLetter = (str: string) => {
+  if (!str) return str;
+  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
 };
 
 export default function RegisterPage() {
@@ -18,6 +19,11 @@ export default function RegisterPage() {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isRegistered, setIsRegistered] = useState(false); // New state for success message
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>, setFunction: React.Dispatch<React.SetStateAction<string>>) => {
+    const words = e.target.value.split(' ');
+    const capitalizedWords = words.map(word => capitalizeFirstLetter(word));
+    setFunction(capitalizedWords.join(' '));
+  };
   
   const { register } = useAuth();
 
@@ -87,8 +93,8 @@ export default function RegisterPage() {
   id="firstName"
   type="text"
   value={firstName}
-  onChange={(e) => setFirstName(capitalizeFirstLetter(e.target.value))}
-  required // already here
+  onChange={(e) => handleNameChange(e, setFirstName)}
+  required
   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
   placeholder="John"
 />
@@ -102,7 +108,8 @@ export default function RegisterPage() {
   id="lastName"
   type="text"
   value={lastName}
-  onChange={(e) => setLastName(capitalizeFirstLetter(e.target.value))}
+  onChange={(e) => handleNameChange(e, setLastName)}
+  required
   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
   placeholder="Doe"
 />
