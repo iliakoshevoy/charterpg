@@ -6,6 +6,7 @@ import AircraftOption from './AircraftOption';
 import FlightLegs from '@/components/FlightLegs';
 import type { FlightLeg } from '@/types/flight';
 import type { AircraftDetails, AircraftOptionType, ProposalPDFProps } from '@/types/proposal';
+import RecentSetupsPopover from './RecentSetupsPopover';
 
 const PDFGenerator = dynamic(() => import('./PDFGenerator'), {
   ssr: false,
@@ -202,7 +203,19 @@ const [showMap, setShowMap] = useState(true);
       <div className="space-y-6">
         {/* Flight Information */}
         <div className="bg-white-50 p-6 rounded-md">
-          <h2 className="text-xl font-semibold mb-4 text-gray-800">Flight Details</h2>
+  <div className="flex justify-between items-center mb-4">
+    <h2 className="text-xl font-semibold text-gray-800">Flight Details</h2>
+    <RecentSetupsPopover
+      onSetupSelect={(setup) => {
+        setFlightLegs(setup.flightLegs);
+        setBasicFormData(prev => ({
+          ...prev,
+          customerName: setup.customerName,
+          comment: setup.comment
+        }));
+      }}
+    />
+  </div>
           
           {/* Flight Legs */}
           <div className="space-y-4">

@@ -1,4 +1,4 @@
-//src/components/PDFGenerator.tsx
+// src/components/PDFGenerator.tsx
 "use client";
 
 import React, { useState, useEffect, useMemo, useCallback } from "react";
@@ -7,6 +7,7 @@ import ProposalPDF from "./ProposalPDF";
 import type { ProposalPDFProps } from '@/types/proposal';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/lib/supabase';
+import { saveSetup } from '@/utils/setupStorage'; // Add this import
 
 export interface AirportDetailsProps {
   departure: string | null;
@@ -49,8 +50,6 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ formData, airportDetails })
         console.error('Error fetching company settings:', settingsError);
       }
 
-      console.log('Fetched company settings:', companySettings);
-
       // Debug logs for checking data
       console.log('PDF Generation - Form Data:', {
         customerName: formData.customerName,
@@ -61,22 +60,6 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ formData, airportDetails })
           details: formData.option1Details
         },
         airportDetails
-      });
-
-      // Image validation logging
-      console.log('Image Validation:', {
-        option1: {
-          image1: {
-            exists: !!formData.option1Image1,
-            isDefault: formData.option1IsImage1Default,
-            length: formData.option1Image1?.length || 0
-          },
-          image2: {
-            exists: !!formData.option1Image2,
-            isDefault: formData.option1IsImage2Default,
-            length: formData.option1Image2?.length || 0
-          }
-        }
       });
 
       // Reset existing blob
@@ -106,7 +89,14 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ formData, airportDetails })
       const url = URL.createObjectURL(blob);
       setPdfBlob(url);
       
-      console.log('PDF Generated successfully with company settings');
+      // After successful PDF generation, save the setup
+      saveSetup(
+        formData.customerName,
+        formData.flightLegs,
+        formData.comment || ''
+      );
+      
+      console.log('PDF Generated successfully and setup saved');
     } catch (err) {
       console.error('Error generating PDF:', err);
       setError('Failed to generate PDF');
