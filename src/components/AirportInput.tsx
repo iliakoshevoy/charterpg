@@ -160,7 +160,7 @@ const AirportInput: React.FC<AirportInputProps> = ({
         {label}
       </label>
       <div className="relative">
-      // Only update the input element within AirportInput.tsx
+      
 <input
   type="text"
   value={displayValue}
