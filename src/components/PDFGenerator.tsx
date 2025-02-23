@@ -1,14 +1,12 @@
+//src/components/PDFGenerator.tsx
 "use client";
-/*
-  PDFGenerator Component
-  Handles PDF generation for charter proposals
-  Provides separate buttons for generation and download
-*/
 
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { pdf } from "@react-pdf/renderer";
 import ProposalPDF from "./ProposalPDF";
 import type { ProposalPDFProps } from '@/types/proposal';
+import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/lib/supabase';
 
 export interface AirportDetailsProps {
   departure: string | null;
@@ -21,6 +19,7 @@ interface PDFGeneratorProps {
 }
 
 const PDFGenerator: React.FC<PDFGeneratorProps> = ({ formData, airportDetails }) => {
+  const { user } = useAuth();
   const [pdfBlob, setPdfBlob] = useState<string | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -30,140 +29,57 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ formData, airportDetails })
                                 Boolean(formData.flightLegs[0]?.arrivalAirport);
     const hasAtLeastOneOption = Boolean(formData.option1Name);
     return hasAtLeastOneAirport && hasAtLeastOneOption;
-  }, [
-    formData.flightLegs,
-    formData.option1Name
-  ]);
+  }, [formData.flightLegs, formData.option1Name]);
 
   const generatePDF = useCallback(async () => {
-    if (!hasValidData) return;
+    if (!hasValidData || !user) return;
     
     try {
       setIsGenerating(true);
       setError(null);
 
-      // Load company settings
-      const savedSettings = localStorage.getItem('companySettings');
-      const companySettings = savedSettings ? JSON.parse(savedSettings) : null;
+      // Fetch company settings from Supabase
+      const { data: companySettings, error: settingsError } = await supabase
+        .from('company_settings')
+        .select('*')
+        .eq('user_id', user.id)
+        .single();
 
+      if (settingsError) {
+        console.error('Error fetching company settings:', settingsError);
+      }
 
-      // Enhanced logging for debugging mobile image issues
-      console.log('PDF Generation - Detailed Image Data:', JSON.stringify({
+      console.log('Fetched company settings:', companySettings);
+
+      // Debug logs for checking data
+      console.log('PDF Generation - Form Data:', {
+        customerName: formData.customerName,
         option1: {
           name: formData.option1Name,
+          hasImage1: Boolean(formData.option1Image1),
+          hasImage2: Boolean(formData.option1Image2),
+          details: formData.option1Details
+        },
+        airportDetails
+      });
+
+      // Image validation logging
+      console.log('Image Validation:', {
+        option1: {
           image1: {
             exists: !!formData.option1Image1,
             isDefault: formData.option1IsImage1Default,
-            dataLength: formData.option1Image1?.length || 0,
-            isValidBase64: formData.option1Image1?.startsWith('data:image/'),
-            mimeType: formData.option1Image1?.split(',')[0] || 'none',
-            startsWith: formData.option1Image1?.substring(0, 100),
-            endsWith: formData.option1Image1?.substring(formData.option1Image1?.length - 50 || 0) || 'none'
+            length: formData.option1Image1?.length || 0
           },
           image2: {
             exists: !!formData.option1Image2,
             isDefault: formData.option1IsImage2Default,
-            dataLength: formData.option1Image2?.length || 0,
-            isValidBase64: formData.option1Image2?.startsWith('data:image/'),
-            mimeType: formData.option1Image2?.split(',')[0] || 'none',
-            startsWith: formData.option1Image2?.substring(0, 100),
-            endsWith: formData.option1Image2?.substring(formData.option1Image2?.length - 50 || 0) || 'none'
-          }
-        },
-        validation: {
-          image1: {
-            hasValidPrefix: formData.option1Image1?.startsWith('data:image/'),
-            hasBase64Data: formData.option1Image1?.includes('base64,'),
-            approximateSizeKB: Math.round((formData.option1Image1?.length || 0) * 0.75 / 1024),
-            isLikelyCorrupted: formData.option1Image1?.includes('undefined') || formData.option1Image1?.includes('null')
-          },
-          image2: {
-            hasValidPrefix: formData.option1Image2?.startsWith('data:image/'),
-            hasBase64Data: formData.option1Image2?.includes('base64,'),
-            approximateSizeKB: Math.round((formData.option1Image2?.length || 0) * 0.75 / 1024),
-            isLikelyCorrupted: formData.option1Image2?.includes('undefined') || formData.option1Image2?.includes('null')
-          }
-        },
-        timing: {
-          generationStartTime: new Date().toISOString()
-        }
-      }, null, 2));
-
-      // Pre-generation validation check
-      console.log('Pre-generation Image Validation:', JSON.stringify({
-        option1: {
-          image1: {
-            status: formData.option1Image1 ? 'present' : 'missing',
-            format: formData.option1Image1?.startsWith('data:image/') ? 'valid' : 'invalid',
-            size: `${Math.round((formData.option1Image1?.length || 0) * 0.75 / 1024)}KB`
-          },
-          image2: {
-            status: formData.option1Image2 ? 'present' : 'missing',
-            format: formData.option1Image2?.startsWith('data:image/') ? 'valid' : 'invalid',
-            size: `${Math.round((formData.option1Image2?.length || 0) * 0.75 / 1024)}KB`
+            length: formData.option1Image2?.length || 0
           }
         }
-      }, null, 2));
-
-      // Regular form data logging
-      console.log('Generating PDF with data:', {
-        formData: {
-          customerName: formData.customerName,
-          option1: {
-            name: formData.option1Name,
-            hasImage1: Boolean(formData.option1Image1),
-            hasImage2: Boolean(formData.option1Image2),
-            isImage1Default: formData.option1IsImage1Default,
-            isImage2Default: formData.option1IsImage2Default,
-            details: formData.option1Details,
-            yearOfManufacture: formData.option1YearOfManufacture,
-            yearRefurbishment: formData.option1YearRefurbishment,
-          },
-          option2: {
-            name: formData.option2Name,
-            hasImage1: Boolean(formData.option2Image1),
-            hasImage2: Boolean(formData.option2Image2),
-            isImage1Default: formData.option2IsImage1Default,
-            isImage2Default: formData.option2IsImage2Default,
-            details: formData.option2Details,
-            yearOfManufacture: formData.option2YearOfManufacture,
-            yearRefurbishment: formData.option2YearRefurbishment,
-          },
-          option3: {
-            name: formData.option3Name,
-            hasImage1: Boolean(formData.option3Image1),
-            hasImage2: Boolean(formData.option3Image2),
-            isImage1Default: formData.option3IsImage1Default,
-            isImage2Default: formData.option3IsImage2Default,
-            details: formData.option3Details,
-            yearOfManufacture: formData.option3YearOfManufacture,
-            yearRefurbishment: formData.option3YearRefurbishment,
-          },
-          option4: {
-            name: formData.option4Name,
-            hasImage1: Boolean(formData.option4Image1),
-            hasImage2: Boolean(formData.option4Image2),
-            isImage1Default: formData.option4IsImage1Default,
-            isImage2Default: formData.option4IsImage2Default,
-            details: formData.option4Details,
-            yearOfManufacture: formData.option4YearOfManufacture,
-            yearRefurbishment: formData.option4YearRefurbishment,
-          },
-          option5: {
-            name: formData.option5Name,
-            hasImage1: Boolean(formData.option5Image1),
-            hasImage2: Boolean(formData.option5Image2),
-            isImage1Default: formData.option5IsImage1Default,
-            isImage2Default: formData.option5IsImage2Default,
-            details: formData.option5Details,
-            yearOfManufacture: formData.option5YearOfManufacture,
-            yearRefurbishment: formData.option5YearRefurbishment,
-          }
-        },
-        airportDetails
       });
-      
-      // Reset the blob URL before generating new one
+
+      // Reset existing blob
       if (pdfBlob) {
         URL.revokeObjectURL(pdfBlob);
         setPdfBlob(null);
@@ -176,12 +92,12 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ formData, airportDetails })
           companySettings={companySettings ? {
             logo: companySettings.logo,
             disclaimer: companySettings.disclaimer,
-            companyName: companySettings.companyName,
+            companyName: companySettings.company_name,
             address: companySettings.address,
-            vatNumber: companySettings.vatNumber,
+            vatNumber: companySettings.vat_number,
             website: companySettings.website,
             email: companySettings.email,
-            phoneNumber: companySettings.phoneNumber
+            phoneNumber: companySettings.phone_number
           } : undefined}
         />
       );
@@ -190,14 +106,14 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ formData, airportDetails })
       const url = URL.createObjectURL(blob);
       setPdfBlob(url);
       
-      console.log('PDF Generated successfully');
+      console.log('PDF Generated successfully with company settings');
     } catch (err) {
       console.error('Error generating PDF:', err);
       setError('Failed to generate PDF');
     } finally {
       setIsGenerating(false);
     }
-  }, [formData, airportDetails, hasValidData, pdfBlob]);
+  }, [formData, airportDetails, hasValidData, pdfBlob, user]);
 
   // Cleanup on unmount
   useEffect(() => {
@@ -227,7 +143,7 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ formData, airportDetails })
   const generateButtonText = (() => {
     if (isGenerating) return "Preparing PDF...";
     if (error) return "Error";
-    if (!hasValidData) return "Please fill required fields";
+    if (!hasValidData) return "Please add airports and 1 option";
     return "Generate Proposal";
   })();
 

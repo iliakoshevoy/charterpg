@@ -160,7 +160,7 @@ const handleSelectSuggestion = (suggestion: string) => {
             value={price || ''}
             onChange={(e) => onPriceChange(e.target.value)}
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
-            placeholder="e.g. 9,000 all in"
+            placeholder="ex 9,000 ALL IN"
           />
         </div>
       </div>

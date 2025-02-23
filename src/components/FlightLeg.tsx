@@ -145,7 +145,7 @@ const FlightLeg: React.FC<FlightLegProps> = ({
       <div className="grid grid-cols-12 gap-3">
         <div className="col-span-5">
           <label htmlFor={`departureDate-${legNumber}`} className="block text-sm font-medium text-gray-700 mb-1">
-            Departure (local)
+            Departure Date 
           </label>
           <div className="relative">
             <input
@@ -168,7 +168,7 @@ const FlightLeg: React.FC<FlightLegProps> = ({
 
         <div className="col-span-4">
   <label htmlFor={`departureTime-${legNumber}`} className="block text-sm font-medium text-gray-700 mb-1">
-    Time
+    Time (local)
   </label>
   <input
     type="text"
