@@ -13,6 +13,7 @@ interface AuthContextType {
   logout: () => Promise<void>;
   resetPassword: (email: string) => Promise<{ error: any | null }>;
   updatePassword: (newPassword: string) => Promise<{ error: any | null }>;
+  resendConfirmation: (email: string) => Promise<{ error: any | null }>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -21,6 +22,19 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
+  const resendConfirmation = async (email: string) => {
+    try {
+      const { error } = await supabase.auth.resend({
+        type: 'signup',
+        email: email
+      });
+      return { error };
+    } catch (error) {
+      console.error('Error resending confirmation:', error);
+      return { error };
+    }
+  };
+  
 
   const resetPassword = async (email: string) => {
     try {
@@ -142,8 +156,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         email,
         password,
       });
-
+  
       if (error) {
+        // Check if the error is due to unconfirmed email
+        if (error.message?.toLowerCase().includes('email not confirmed')) {
+          return { error: new Error('Please verify your email before logging in. Check your inbox for the confirmation link.') };
+        }
         console.error('Login error:', error);
         return { error };
       }
@@ -203,7 +221,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       register, 
       logout,
       resetPassword,
-      updatePassword 
+      updatePassword,
+      resendConfirmation 
     }}>
       {children}
     </AuthContext.Provider>

@@ -1,27 +1,42 @@
 // src/app/login/page.tsx
-"use client";
+'use client';
 
-import React, { useState } from 'react';
+import React, { useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
 import Layout from '@/components/Layout';
 
-export default function Login() {
+// Create a separate component for the message display
+function MessageDisplay() {
   const searchParams = useSearchParams();
   const message = searchParams.get('message');
-  
+
+  if (!message) return null;
+
+  return (
+    <div className="mb-4 p-4 bg-green-50 border border-green-200 rounded-md text-green-600">
+      {message}
+    </div>
+  );
+}
+
+export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [showResend, setShowResend] = useState(false);
+  const [resendSuccess, setResendSuccess] = useState(false);
   
-  const { login } = useAuth();
+  const { login, resendConfirmation } = useAuth();
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+    setShowResend(false);
+    setResendSuccess(false);
     setIsLoading(true);
 
     console.log('Login form submitted for:', email);
@@ -30,12 +45,29 @@ export default function Login() {
     if (error) {
       console.error('Login error in form:', error);
       setError(error.message || 'Failed to login');
+      // Show resend option if email not confirmed
+      if (error.message?.toLowerCase().includes('verify your email')) {
+        setShowResend(true);
+      }
       setIsLoading(false);
     } else {
       console.log('Login successful, redirecting to home');
-      setIsLoading(false); // Set loading to false before redirect
+      setIsLoading(false);
       router.push('/');
-      router.refresh(); // Force a refresh of the page
+      router.refresh();
+    }
+  };
+
+  const handleResendConfirmation = async () => {
+    setIsLoading(true);
+    const { error } = await resendConfirmation(email);
+    setIsLoading(false);
+    
+    if (error) {
+      setError('Failed to resend confirmation email. Please try again.');
+    } else {
+      setResendSuccess(true);
+      setError(null);
     }
   };
 
@@ -50,11 +82,9 @@ export default function Login() {
           </div>
         )}
 
-        {message && (
-          <div className="mb-4 p-4 bg-green-50 border border-green-200 rounded-md text-green-600">
-            {message}
-          </div>
-        )}
+        <Suspense fallback={null}>
+          <MessageDisplay />
+        </Suspense>
         
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
@@ -96,6 +126,23 @@ export default function Login() {
           >
             {isLoading ? 'Logging in...' : 'Login'}
           </button>
+          {showResend && (
+    <div className="text-center mt-4">
+      <button
+        type="button"
+        onClick={handleResendConfirmation}
+        className="text-sm text-blue-600 hover:text-blue-800 underline"
+      >
+        Resend confirmation email
+      </button>
+    </div>
+  )}
+  
+  {resendSuccess && (
+    <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-md text-green-600 text-sm">
+      Confirmation email has been resent. Please check your inbox.
+    </div>
+  )}
         </form>
         
         <div className="mt-6 text-center">
