@@ -14,7 +14,7 @@ export const viewport: Viewport = {
 }
 
 export const metadata: Metadata = {
-  title: 'Charter Offer Generator',
+  title: 'Charter Proposal Generator',
   description: 'Generate private jet charter proposals',
   manifest: '/manifest.json',
   icons: {

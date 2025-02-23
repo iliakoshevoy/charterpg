@@ -116,11 +116,11 @@ const handleSelectSuggestion = (suggestion: string) => {
         )}
       </div>
 
-      {/* First row - Aircraft Model and Price */}
+      {/* First row - Aircraft  and Price */}
       <div className="grid grid-cols-12 gap-2">
         <div className="col-span-7">
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            Aircraft Model
+            Aircraft
           </label>
           <AircraftSelection
             value={name}
@@ -344,7 +344,7 @@ const handleSelectSuggestion = (suggestion: string) => {
       <div className="grid grid-cols-12 gap-2">
         <div className="col-span-4">
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            Aircraft Model
+            Aircraft
           </label>
           <AircraftSelection
             value={name}
@@ -417,7 +417,7 @@ const handleSelectSuggestion = (suggestion: string) => {
         value={price || ''}
         onChange={(e) => onPriceChange(e.target.value)}
         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
-        placeholder="e.g. 9,000 all in"
+        placeholder="ex 20,000 all in"
       />
     </div>
     <div className="relative">
@@ -440,7 +440,7 @@ const handleSelectSuggestion = (suggestion: string) => {
       }, 200);
     }}
     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
-    placeholder="Subj to OA, etc. or leave blank"
+    placeholder="Subj to OA, Empty Leg, etc."
   />
   {showSuggestions && filteredSuggestions.length > 0 && (
     <div className="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">

@@ -133,7 +133,7 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ formData, airportDetails })
   const generateButtonText = (() => {
     if (isGenerating) return "Preparing PDF...";
     if (error) return "Error";
-    if (!hasValidData) return "Please add airports and 1 option";
+    if (!hasValidData) return "Add Airports and airplane";
     return "Generate Proposal";
   })();
 
