@@ -450,9 +450,7 @@ const ProposalPDF: React.FC<ProposalPDFProps> = (props) => {
         style={styles.aircraftImage}
         cache={false}  // Add this
       />
-      {option.data.isImage1Default && (
-        <Text style={styles.imageCaption}>A generic photo of this model interior</Text>
-      )}
+      
     </View>
   )}
   {option.data.image2 && (
@@ -462,9 +460,6 @@ const ProposalPDF: React.FC<ProposalPDFProps> = (props) => {
         style={styles.aircraftImage}
         cache={false}  // Add this
       />
-      {option.data.isImage2Default && (
-        <Text style={styles.imageCaption}>A generic photo of this model exterior</Text>
-      )}
     </View>
   )}
 </View>

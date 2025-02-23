@@ -70,7 +70,7 @@ const AircraftOption: React.FC<AircraftOptionProps> = ({
   const { isMobile } = useScreenSize();
   const hasContent = Boolean(name || image1 || image2 || yearOfManufacture || yearRefurbishment || price || paxCapacity || notes);
 
-// Add these after const hasContent
+
 const notesSuggestions = [
   "Subject to Owner Approval.",
   "Empty Leg Condition apply."
@@ -136,15 +136,15 @@ const handleSelectSuggestion = (suggestion: string) => {
                   onImagePreview1Change(defaultImages.interior);
                   onImagePreview2Change(defaultImages.exterior);
                 }
-                // Explicitly update both fields
+              
     if (newDetails.passengerCapacity) {
       onPaxCapacityChange(newDetails.passengerCapacity);
     }
     
-    // Add this console.log
+  
     console.log('Attempting to update year:', newDetails.deliveryStart);
     
-    // Explicitly update yearOfManufacture
+  
     onYearOfManufactureChange(newDetails.deliveryStart);
   }
 

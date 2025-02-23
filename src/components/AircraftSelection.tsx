@@ -99,7 +99,7 @@ const AircraftSelection: React.FC<AircraftSelectionProps> = ({
   };
 
   const handleSelectAircraft = async (selectedAircraft: AircraftModel) => {
-    console.log('Selected aircraft full data:', selectedAircraft); // Add this line
+    console.log('Selected aircraft full data:', selectedAircraft); 
     const uppercaseModel = selectedAircraft.model.toUpperCase();
     setInputValue(uppercaseModel);
     onChange(uppercaseModel);

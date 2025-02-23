@@ -7,17 +7,53 @@ interface AircraftImageMapping {
 
 const aircraftImageMapping: AircraftImageMapping = {
   'CHALLENGER 605': {
-    interior: '/aircraft-images/interior/CL605interior.png',
-    exterior: '/aircraft-images/exterior/CL605exterior.png'
+    interior: '/aircraft-images/interior/CL605interior.jpg',
+    exterior: ''
   },
   'CHALLENGER 650': {
-    interior: '/aircraft-images/interior/CL605interior.png',
-    exterior: '/aircraft-images/exterior/CL605exterior.png'
+    interior: '/aircraft-images/interior/CL605interior.jpg',
+    exterior: ''
   },
   'CHALLENGER 604': {
-    interior: '/aircraft-images/interior/CL605interior.png',
-    exterior: '/aircraft-images/exterior/CL605exterior.png'
-  }
+    interior: '/aircraft-images/interior/CL605interior.jpg',
+    exterior: ''
+  },
+'CHALLENGER 300': {
+    interior: '/aircraft-images/interior/CL300interior.jpg',
+    exterior: ''
+  },
+  'CHALLENGER 350': {
+      interior: '/aircraft-images/interior/CL300interior.jpg',
+      exterior: ''
+    },
+  'PHENOM 100': {
+      interior: '/aircraft-images/interior/Phenom100interior.jpg',
+      exterior: ''
+    },
+    'PHENOM 100E': {
+        interior: '/aircraft-images/interior/Phenom100interior.jpg',
+        exterior: ''
+      },
+      'PHENOM 100EV': {
+          interior: '/aircraft-images/interior/Phenom100interior.jpg',
+          exterior: ''
+        },
+        'PHENOM 100EX': {
+            interior: '/aircraft-images/interior/Phenom100interior.jpg',
+            exterior: ''
+          },
+          'PILATUS PC-24': {
+              interior: '/aircraft-images/interior/PC-24interior.jpg',
+              exterior: ''
+            },
+            'PILATUS PC-12': {
+                interior: '/aircraft-images/interior/PC-12interior.jpg',
+                exterior: ''
+              },
+              'PILATUS PC-12NGX': {
+                  interior: '/aircraft-images/interior/PC-12NGXinterior.jpeg',
+                  exterior: ''
+                }
 };
 
 export const getAircraftImages = (modelName: string) => {
