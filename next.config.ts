@@ -1,18 +1,40 @@
-// next.config.ts
 import type { NextConfig } from 'next'
+import type { Configuration as WebpackConfig } from 'webpack'
+import withPWA from '@ducanh2912/next-pwa'
 
-const nextConfig: NextConfig = {
-  reactStrictMode: false, // This can help with hydration issues
+const nextConfig = withPWA({
+  dest: 'public',
+  register: true,
+  disable: process.env.NODE_ENV === 'development'
+})({
+  reactStrictMode: false,
   eslint: {
-    ignoreDuringBuilds: true, // Disable ESLint errors during build
+    ignoreDuringBuilds: true,
   },
-  webpack: (config) => {
-    config.resolve.alias = {
-      ...config.resolve.alias,
+  webpack: (config: WebpackConfig) => {
+    config.resolve!.alias = {
+      ...config.resolve!.alias,
       '@react-pdf/renderer': '@react-pdf/renderer/lib/react-pdf.js',
     };
     return config;
   },
-};
+  async headers() {
+    return [
+      {
+        source: '/manifest.json',
+        headers: [
+          {
+            key: 'Access-Control-Allow-Origin',
+            value: '*'
+          },
+          {
+            key: 'Content-Type',
+            value: 'application/manifest+json'
+          }
+        ]
+      }
+    ]
+  }
+} as NextConfig);
 
 export default nextConfig;

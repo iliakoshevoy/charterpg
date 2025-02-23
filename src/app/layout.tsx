@@ -1,16 +1,30 @@
-// src/app/layout.tsx
-import { Metadata } from 'next'
+import { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
 import { RootLayoutClient } from '@/components/RootLayoutClient'
 
 const inter = Inter({ subsets: ['latin'] })
 
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  themeColor: '#3B82F6',
+}
+
 export const metadata: Metadata = {
   title: 'Charter Offer Generator',
   description: 'Generate private jet charter proposals',
+  manifest: '/manifest.json',
   icons: {
-    icon: '/favicon.png', // Add your favicon here
+    icon: '/icons/icon-512x512.png',
+    apple: '/icons/apple-touch-icon.png',
+  },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'Charter App',
   },
 }
 
@@ -21,6 +35,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head>
+        <link rel="manifest" href="/manifest.json" />
+        <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+      </head>
       <body className={inter.className}>
         <RootLayoutClient>
           {children}
