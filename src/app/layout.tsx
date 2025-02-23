@@ -9,6 +9,9 @@ const inter = Inter({ subsets: ['latin'] })
 export const metadata: Metadata = {
   title: 'Charter Offer Generator',
   description: 'Generate private jet charter proposals',
+  icons: {
+    icon: '/favicon.png', // Add your favicon here
+  },
 }
 
 export default function RootLayout({
