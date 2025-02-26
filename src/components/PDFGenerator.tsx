@@ -132,9 +132,7 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ formData, airportDetails })
         
         try {
           await navigator.share({
-            files: [file],
-            title: 'Charter Proposal',
-            text: `Charter proposal for ${formData.customerName || "client"}`
+            files: [file]
           });
           return; // Exit if sharing was successful
         } catch (shareError) {
