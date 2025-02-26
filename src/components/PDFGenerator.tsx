@@ -114,18 +114,48 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ formData, airportDetails })
     };
   }, [pdfBlob]);
 
-  const handleDownload = () => {
+  const handleDownload = async () => {
     if (!pdfBlob) return;
     
     try {
+      // Get the actual blob, not just the URL
+      const response = await fetch(pdfBlob);
+      const blobData = await response.blob();
+      
+      // Create proper filename
+      const filename = `charter-offer-${formData.customerName || "proposal"}.pdf`;
+      
+      // Check if we're in a mobile context and Web Share API is available
+      if (navigator.share && /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+        // Create a File object (more compatible than raw Blob)
+        const file = new File([blobData], filename, { type: 'application/pdf' });
+        
+        try {
+          await navigator.share({
+            files: [file],
+            title: 'Charter Proposal',
+            text: `Charter proposal for ${formData.customerName || "client"}`
+          });
+          return; // Exit if sharing was successful
+        } catch (shareError) {
+          console.log('Sharing failed, falling back to download', shareError);
+          // Fall back to download if sharing fails
+        }
+      }
+      
+      // Desktop or fallback approach - create and click download link
       const link = document.createElement("a");
-      link.href = pdfBlob;
-      link.download = `charter-offer-${formData.customerName || " "}.pdf`;
+      // Create a NEW blob URL from our blob data (don't use the cached one)
+      const downloadUrl = URL.createObjectURL(blobData);
+      link.href = downloadUrl;
+      link.download = filename;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
+      // Clean up the temporary URL
+      URL.revokeObjectURL(downloadUrl);
     } catch (downloadError) {
-      console.error('Error downloading PDF:', downloadError);
+      console.error('Error handling PDF:', downloadError);
       setError('Error downloading PDF');
     }
   };
