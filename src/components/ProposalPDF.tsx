@@ -33,8 +33,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   logo: {
-    width: 125,
-    height: 125,
+    width: 100,
+    height: 100,
     objectFit: 'contain',
   },
   headerText: {
@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: '#1a1a1a',
     marginBottom: 5,
-    marginTop: 20,
+    marginTop: 10,
     paddingBottom: 8,
   },
   table: {
@@ -92,11 +92,11 @@ const styles = StyleSheet.create({
   },
   notesSection: {
     marginTop: 3,
-    marginBottom: 8,
+    marginBottom: 5,
   },
   mapContainer: {
-    marginTop: 5,
-    marginBottom: 5,
+    marginTop: 2,
+    marginBottom: 2,
     alignItems: 'center',
   },
   map: {
@@ -199,6 +199,7 @@ const styles = StyleSheet.create({
     marginVertical: 20,
     borderTop: 1,
     borderTopColor: '#e0e0e0',
+    marginTop: 20,
   },
   disclaimer: {
     marginTop: 40,

@@ -36,7 +36,7 @@ export const generateStaticMapURL = (legs: FlightLeg[]) => {
 
   // Create URLSearchParams with initial parameters
   const params = new URLSearchParams();
-  params.append('size', '620x300');
+  params.append('size', '520x300');
   params.append('maptype', 'roadmap');
   params.append('path', path);
 
