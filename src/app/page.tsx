@@ -47,7 +47,7 @@ export default function LandingPage() {
           <div className="bg-white p-6 rounded-lg shadow-md">
             <div className="text-blue-600 mb-4">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-  <path stroke-linecap="round" stroke-linejoin="round" d="M9 6.75V15m6-6v8.25m.503 3.498 4.875-2.437c.381-.19.622-.58.622-1.006V4.82c0-.836-.88-1.38-1.628-1.006l-3.869 1.934c-.317.159-.69.159-1.006 0L9.503 3.252a1.125 1.125 0 0 0-1.006 0L3.622 5.689C3.24 5.88 3 6.27 3 6.695V19.18c0 .836.88 1.38 1.628 1.006l3.869-1.934c.317-.159.69-.159 1.006 0l4.994 2.497c.317.158.69.158 1.006 0Z" />
+  <path strokeLinecap="round" strokeLinejoin="round" d="M9 6.75V15m6-6v8.25m.503 3.498 4.875-2.437c.381-.19.622-.58.622-1.006V4.82c0-.836-.88-1.38-1.628-1.006l-3.869 1.934c-.317.159-.69.159-1.006 0L9.503 3.252a1.125 1.125 0 0 0-1.006 0L3.622 5.689C3.24 5.88 3 6.27 3 6.695V19.18c0 .836.88 1.38 1.628 1.006l3.869-1.934c.317-.159.69-.159 1.006 0l4.994 2.497c.317.158.69.158 1.006 0Z" />
 </svg>
             </div>
             <h3 className="text-xl font-semibold text-gray-900 mb-2">Flight Map</h3>
@@ -58,8 +58,8 @@ export default function LandingPage() {
         {/* HOW IT LOOKS Section */}
         <div className="mt-20 mb-20">
           <h2 className="text-3xl font-bold text-center text-gray-900 mb-10">HOW INTERFACE LOOKS LIKE</h2>
-          <h3 className="text-lg text-center font-bold mb-8 text-blue-600">
-          CPG was designed to simplify the process for brokers, <br /> 
+          <h3 className="text-lg sm:text-xl md:text-2xl font-bold mb-8 text-blue-600 max-w-3xl mx-auto text-center leading-relaxed">
+          CPG was designed to simplify the process for brokers,
           making proposal generation quicker, easier AND ON THE GO!
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">

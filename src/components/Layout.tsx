@@ -150,10 +150,24 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       </main>
 
       <footer className="bg-gray-100 py-6">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-gray-700 text-sm">
-          &copy; {new Date().getFullYear()} Charter Proposal Generator
-        </div>
-      </footer>
+  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-gray-700 text-sm">
+    <p className="flex justify-center space-x-4">
+      <span>
+        &copy; {new Date().getFullYear()} Charter Proposal Generator
+      </span>
+      <span>
+        <a href="mailto:info@charterpropgen.com" className="text-blue-600 hover:underline">
+          Contact Us: info@charterpropgen.com
+        </a>
+      </span>
+      <span>
+        <Link href="/terms-of-use" className="text-blue-600 hover:underline">
+          Terms of Use
+        </Link>
+      </span>
+    </p>
+  </div>
+</footer>
     </div>
   );
 };
