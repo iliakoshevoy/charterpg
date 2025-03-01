@@ -16,9 +16,11 @@ export default function RegisterPage() {
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [termsAccepted, setTermsAccepted] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isRegistered, setIsRegistered] = useState(false); // New state for success message
+  
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>, setFunction: React.Dispatch<React.SetStateAction<string>>) => {
     const words = e.target.value.split(' ');
     const capitalizedWords = words.map(word => capitalizeFirstLetter(word));
@@ -37,6 +39,11 @@ export default function RegisterPage() {
     
     if (!validatePassword(password)) {
       setError('Password must be at least 8 characters with at least 1 letter and 1 number');
+      return;
+    }
+    
+    if (!termsAccepted) {
+      setError('You must accept the Terms of Use to register');
       return;
     }
     
@@ -63,13 +70,16 @@ export default function RegisterPage() {
       <div className="max-w-md mx-auto bg-white p-8 rounded-lg shadow-md mt-12">
         {isRegistered ? (
           <div className="text-center">
-            <h2 className="text-2xl font-bold text-gray-800">Registration Successful</h2>
+            <h2 className="text-2xl font-bold text-gray-800">Verify your email</h2>
             <p className="mt-4 text-gray-600">
-              Please check your email inbox to verify your email address.
+              We sent an email to <span className="font-medium">{email}</span> with a link to verify your registration.
             </p>
-            <Link href="/login">
-              <button className="mt-6 bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md">
-                Go to Login
+            <p className="mt-2 text-gray-600">
+              Please check your <span className="font-semibold">spam folder</span> if you don't see it in your inbox.
+            </p>
+            <Link href="/">
+              <button className="mt-20 bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md">
+                Go to main page
               </button>
             </Link>
           </div>
@@ -90,17 +100,17 @@ export default function RegisterPage() {
                     First Name
                   </label>
                   <input
-  id="firstName"
-  type="text"
-  value={firstName}
-  onChange={(e) => handleNameChange(e, setFirstName)}
-  required
-  inputMode="text"
-  autoComplete="given-name"
-  autoCapitalize="words"
-  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
-  placeholder="John"
-/>
+                    id="firstName"
+                    type="text"
+                    value={firstName}
+                    onChange={(e) => handleNameChange(e, setFirstName)}
+                    required
+                    inputMode="text"
+                    autoComplete="given-name"
+                    autoCapitalize="words"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
+                    placeholder="John"
+                  />
                 </div>
 
                 <div>
@@ -108,17 +118,17 @@ export default function RegisterPage() {
                     Last Name
                   </label>
                   <input
-  id="lastName"
-  type="text"
-  value={lastName}
-  onChange={(e) => handleNameChange(e, setLastName)}
-  required
-  inputMode="text"
-  autoComplete="family-name"
-  autoCapitalize="words"
-  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
-  placeholder="Doe"
-/>
+                    id="lastName"
+                    type="text"
+                    value={lastName}
+                    onChange={(e) => handleNameChange(e, setLastName)}
+                    required
+                    inputMode="text"
+                    autoComplete="family-name"
+                    autoCapitalize="words"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
+                    placeholder="Doe"
+                  />
                 </div>
               </div>
 
@@ -127,17 +137,17 @@ export default function RegisterPage() {
                   Email
                 </label>
                 <input
-  id="email"
-  type="email"
-  value={email}
-  onChange={(e) => setEmail(e.target.value)}
-  required
-  inputMode="email"
-  autoComplete="email"
-  autoCapitalize="off"
-  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
-  placeholder="your@email.com"
-/>
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  inputMode="email"
+                  autoComplete="email"
+                  autoCapitalize="off"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
+                  placeholder="your@email.com"
+                />
               </div>
 
               <div>
@@ -145,18 +155,39 @@ export default function RegisterPage() {
                   Password
                 </label>
                 <input
-  id="password"
-  type="password"
-  value={password}
-  onChange={(e) => setPassword(e.target.value)}
-  required
-  autoComplete="new-password"
-  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
-  placeholder="••••••••"
-/>
+                  id="password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  autoComplete="new-password"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900"
+                  placeholder="••••••••"
+                />
                 <p className="mt-1 text-xs text-gray-500">
                   Must be at least 8 characters with 1 letter and 1 number
                 </p>
+              </div>
+
+              <div className="flex items-start">
+                <div className="flex items-center h-5">
+                  <input
+                    id="terms"
+                    name="terms"
+                    type="checkbox"
+                    checked={termsAccepted}
+                    onChange={(e) => setTermsAccepted(e.target.checked)}
+                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                  />
+                </div>
+                <div className="ml-3 text-sm">
+                  <label htmlFor="terms" className="font-medium text-gray-700">
+                    I accept the{' '}
+                    <Link href="/terms" className="text-blue-600 hover:text-blue-800 underline">
+                      Terms of Use
+                    </Link>
+                  </label>
+                </div>
               </div>
 
               <button
