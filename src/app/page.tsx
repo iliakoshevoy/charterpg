@@ -13,7 +13,7 @@ export default function LandingPage() {
         {/* Hero Section */}
         <div className="text-center mb-10">
           <h1 className="text-4xl font-bold text-gray-900 sm:text-3xl mb-3">
-            Easily Generate PDF. Proposals From Your Phone or Laptop
+            Easily Generate PDF Proposals From Your Phone or Laptop
           </h1>
           <div className="mt-10">
             <a href="/templates/CHARTER_OFFER_EXAMPLE.pdf" download className="px-6 py-3 bg-blue-600 text-white text-lg font-medium rounded-md shadow-md hover:bg-blue-700 transition">
@@ -57,11 +57,14 @@ export default function LandingPage() {
       
         {/* HOW IT LOOKS Section */}
         <div className="mt-20 mb-20">
-          <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">HOW INTERFACE LOOKS LIKE</h2>
-          
+          <h2 className="text-3xl font-bold text-center text-gray-900 mb-10">HOW INTERFACE LOOKS LIKE</h2>
+          <h3 className="text-lg text-center font-bold mb-8 text-blue-600">
+          CPG was designed to simplify the process for brokers, <br /> 
+          making proposal generation quicker, easier AND ON THE GO!
+          </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
             <div className="text-center">
-              <h3 className="text-lg font-semibold mb-8 text-blue-600">On Mobile</h3>
+              <h3 className="text-lg font-semibold mb-8 text-black">On Mobile</h3>
               <div className="rounded-xl overflow-hidden shadow-lg flex justify-center">
                 <Image 
                   src="/templates/CPG_mobile.gif" 
@@ -73,7 +76,7 @@ export default function LandingPage() {
               </div>
             </div>
             <div className="text-center">
-              <h3 className="text-lg font-semibold mb-8 text-blue-600">On Desktop</h3>
+              <h3 className="text-lg font-semibold mb-8 text-black">On Desktop</h3>
               <div className="rounded-xl overflow-hidden shadow-lg flex justify-center">
                 <Image 
                   src="/templates/chartergenprop_interface.png" 
