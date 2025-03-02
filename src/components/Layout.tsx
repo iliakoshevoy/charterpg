@@ -161,7 +161,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         </a>
       </span>
       <span>
-        <Link href="/terms-of-use" className="text-blue-600 hover:underline">
+        <Link href="/terms" className="text-blue-600 hover:underline">
           Terms of Use
         </Link>
       </span>

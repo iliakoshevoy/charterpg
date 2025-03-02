@@ -5,12 +5,37 @@ import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import Layout from "@/components/Layout";
+import { useAuth } from "@/contexts/AuthContext";
+import ProposalForm from "@/components/ProposalForm";
 
-export default function LandingPage() {
+export default function Page() {
+  const { user, isLoading } = useAuth();
+
+  // Loading state
+  if (isLoading) {
+    return (
+      <Layout>
+        <div className="flex justify-center items-center min-h-screen">
+          <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
+        </div>
+      </Layout>
+    );
+  }
+
+  // Authenticated users see ProposalForm wrapped in Layout
+  if (user) {
+    return (
+      <Layout>
+        <ProposalForm />
+      </Layout>
+    );
+  }
+
+  // Unauthenticated users see LandingPage
   return (
     <Layout>
       <div className="max-w-6xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
-        {/* Hero Section */}
+        {/* Your existing landing page content */}
         <div className="text-center mb-10">
           <h1 className="text-4xl font-bold text-gray-900 sm:text-3xl mb-3">
             Easily Generate PDF Proposals From Your Phone or Laptop
