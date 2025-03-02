@@ -7,7 +7,8 @@ import ProposalPDF from "./ProposalPDF";
 import type { ProposalPDFProps } from '@/types/proposal';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/lib/supabase';
-import { saveSetup } from '@/utils/setupStorage'; // Add this import
+import { saveSetup } from '@/utils/setupStorage'; 
+import { incrementProposalCount, getUserStats } from '@/utils/userStats';
 
 export interface AirportDetailsProps {
   departure: string | null;
@@ -25,6 +26,27 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ formData, airportDetails, r
   const [pdfBlob, setPdfBlob] = useState<string | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [userStats, setUserStats] = useState<{ 
+    proposal_count: number, 
+    last_generated_at: string 
+  } | null>(null);
+
+  // Add a function to fetch user stats
+  const fetchUserStats = useCallback(async () => {
+    if (!user) return;
+    
+    const stats = await getUserStats(user.id);
+    if (stats) {
+      setUserStats(stats);
+    }
+  }, [user]);
+
+  // Call this when the component mounts
+  useEffect(() => {
+    if (user) {
+      fetchUserStats();
+    }
+  }, [user, fetchUserStats]);
 
   // Reset PDF state when resetTrigger changes
   useEffect(() => {
@@ -109,6 +131,13 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ formData, airportDetails, r
         formData.flightLegs,
         formData.comment || ''
       );
+
+      // Track this proposal generation
+      if (user) {
+        await incrementProposalCount(user.id);
+        // Refresh the stats after increment
+        fetchUserStats();
+      }
       
       console.log('PDF Generated successfully and setup saved');
     } catch (err) {
@@ -117,7 +146,7 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ formData, airportDetails, r
     } finally {
       setIsGenerating(false);
     }
-  }, [formData, airportDetails, hasValidData, pdfBlob, user]);
+  }, [formData, airportDetails, hasValidData, pdfBlob, user, fetchUserStats]);
 
   // Cleanup on unmount
   useEffect(() => {
@@ -180,52 +209,62 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ formData, airportDetails, r
   })();
 
   return (
-    <div className="flex gap-3 items-center">
-      <button
-        onClick={generatePDF}
-        disabled={isGenerating || Boolean(error) || !hasValidData}
-        className={`px-4 py-2 rounded-md ${
-          isGenerating || !hasValidData || error
-            ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-            : "bg-blue-500 text-white hover:bg-blue-600 transition-colors"
-        }`}
-      >
-        {generateButtonText}
-      </button>
-  
-      {pdfBlob && !isGenerating && (
-        <div className="flex items-center gap-2 text-gray-600">
-          <button
-            onClick={handleDownload}
-            className="flex items-center gap-2 px-3 py-2 rounded-md text-blue-600 hover:text-blue-800 hover:bg-blue-50 transition-colors"
-          >
-            <svg 
-              className="w-5 h-5" 
-              fill="none" 
-              stroke="currentColor" 
-              viewBox="0 0 24 24"
+    <div className="flex flex-col gap-2">
+      <div className="flex gap-3 items-center">
+        <button
+          onClick={generatePDF}
+          disabled={isGenerating || Boolean(error) || !hasValidData}
+          className={`px-4 py-2 rounded-md ${
+            isGenerating || !hasValidData || error
+              ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+              : "bg-blue-500 text-white hover:bg-blue-600 transition-colors"
+          }`}
+        >
+          {generateButtonText}
+        </button>
+        
+        {pdfBlob && !isGenerating && (
+          <div className="flex items-center gap-2 text-gray-600">
+            <button
+              onClick={handleDownload}
+              className="flex items-center gap-2 px-3 py-2 rounded-md text-blue-600 hover:text-blue-800 hover:bg-blue-50 transition-colors"
             >
-              <path 
-                strokeLinecap="round" 
-                strokeLinejoin="round" 
-                strokeWidth={2} 
-                d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" 
-              />
-            </svg>
-            <span>
-              Download proposal
-              {formData.customerName && ` for ${formData.customerName}`}
+              <svg 
+                className="w-5 h-5" 
+                fill="none" 
+                stroke="currentColor" 
+                viewBox="0 0 24 24"
+              >
+                <path 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round" 
+                  strokeWidth={2} 
+                  d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" 
+                />
+              </svg>
+              <span>
+                Download proposal
+                {formData.customerName && ` for ${formData.customerName}`}
+              </span>
+            </button>
+            <span className="text-sm text-gray-400">
+              Generated at {new Date().toLocaleTimeString()}
             </span>
-          </button>
-          <span className="text-sm text-gray-400">
-            Generated at {new Date().toLocaleTimeString()}
-          </span>
-        </div>
-      )}
-  
-      {error && (
-        <div className="mt-2 text-sm text-red-600">
-          {error}
+          </div>
+        )}
+    
+        {error && (
+          <div className="mt-2 text-sm text-red-600">
+            {error}
+          </div>
+        )}
+      </div>
+      
+      {/* User stats display */}
+      {userStats && userStats.proposal_count > 0 && (
+        <div className="text-sm text-gray-500 mt-1">
+          You've generated {userStats.proposal_count} proposal in total{userStats.proposal_count !== 1 ? 's' : ''}
+          {userStats.last_generated_at && userStats.proposal_count > 1 }
         </div>
       )}
     </div>
