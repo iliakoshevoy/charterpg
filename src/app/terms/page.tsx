@@ -21,7 +21,7 @@ export default function TermsOfUsePage() {
         <section className="mb-6">
           <h2 className="text-xl font-semibold text-gray-800 mb-3">2. Description of Service</h2>
           <p className="text-gray-700">
-            The App allows users to create charter flight proposals in PDF format based on user-provided information, including flight details, private jet options, and company information.
+            The App allows users to create charter flight proposals in PDF format based on user-provided information, including flight details, private jet options, and company information. It's scope is to facilitate the life of brokers. It is a hobby project rather than a commercial one. All code is written by a non-sophisticated coder although using its best efforts. 
           </p>
         </section>
 
@@ -35,7 +35,7 @@ export default function TermsOfUsePage() {
 
           <h3 className="text-lg font-medium text-gray-800 mt-4 mb-2">3.2 Data Access</h3>
           <p className="text-gray-700">
-            <strong>The developer does not have access to the content of proposals generated through the App.</strong> The PDF generation process occurs locally within your browser, and completed proposals are not stored on our servers unless you explicitly save them to your account.
+            <strong>The developer does not have access to the content of proposals generated through the App.</strong> The PDF generation process occurs locally within your browser, and completed proposals are not stored on our servers.
           </p>
 
           <h3 className="text-lg font-medium text-gray-800 mt-4 mb-2">3.3 Supabase Data Storage</h3>
@@ -45,7 +45,7 @@ export default function TermsOfUsePage() {
 
           <h3 className="text-lg font-medium text-gray-800 mt-4 mb-2">3.4 Email Communications</h3>
           <p className="text-gray-700">
-            The App uses Resend for sending verification and password reset emails. Email addresses provided for this purpose will only be used for account-related communications.
+            The App uses Resend for sending verification and password reset emails. Email addresses provided for this purpose will only be used for account-related communications. The user gives authorization to also send a welcome email and any other IMPORTANT communications from which the user can easily opt-out.
           </p>
         </section>
 
@@ -54,7 +54,7 @@ export default function TermsOfUsePage() {
           
           <h3 className="text-lg font-medium text-gray-800 mt-4 mb-2">4.1 Account Creation</h3>
           <p className="text-gray-700">
-            You are responsible for maintaining the confidentiality of your account credentials and for all activities that occur under your account.
+            You are responsible for maintaining the confidentiality of your account credentials and for choosing a secured password and for all activities that occur under your account.
           </p>
 
           <h3 className="text-lg font-medium text-gray-800 mt-4 mb-2">4.2 Account Termination</h3>
@@ -107,7 +107,7 @@ export default function TermsOfUsePage() {
         <section className="mb-6">
           <h2 className="text-xl font-semibold text-gray-800 mb-3">10. Governing Law</h2>
           <p className="text-gray-700">
-            These Terms of Use shall be governed by and construed in accordance with the laws of [Your Jurisdiction], without regard to its conflict of law provisions.
+            These Terms of Use shall be governed by and construed in accordance with the English law, without regard to its conflict of law provisions.
           </p>
         </section>
 

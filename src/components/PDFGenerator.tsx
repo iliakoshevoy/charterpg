@@ -17,13 +17,27 @@ export interface AirportDetailsProps {
 interface PDFGeneratorProps {
   formData: ProposalPDFProps;
   airportDetails: AirportDetailsProps;
+  resetTrigger?: number; // Optional reset trigger
 }
 
-const PDFGenerator: React.FC<PDFGeneratorProps> = ({ formData, airportDetails }) => {
+const PDFGenerator: React.FC<PDFGeneratorProps> = ({ formData, airportDetails, resetTrigger }) => {
   const { user } = useAuth();
   const [pdfBlob, setPdfBlob] = useState<string | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Reset PDF state when resetTrigger changes
+  useEffect(() => {
+    if (resetTrigger !== undefined) {
+      // Clear PDF blob and related states
+      if (pdfBlob) {
+        URL.revokeObjectURL(pdfBlob);
+      }
+      setPdfBlob(null);
+      setIsGenerating(false);
+      setError(null);
+    }
+  }, [resetTrigger]);
 
   const hasValidData = useMemo(() => {
     const hasAtLeastOneAirport = Boolean(formData.flightLegs[0]?.departureAirport) && 

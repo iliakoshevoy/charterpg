@@ -117,6 +117,63 @@ const [airportDetails, setAirportDetails] = useState({
     setAircraftOptions(prev => prev.filter((_, i) => i !== index));
   };
 
+  const [pdfResetTrigger, setPdfResetTrigger] = useState(0);
+
+  const resetForm = () => {
+    // Reset basic form data
+    setBasicFormData({
+      customerName: '',
+      departureDate: '',
+      departureTime: '',
+      departureAirport: '',
+      arrivalAirport: '',
+      passengerCount: '',
+      comment: '',
+    });
+  
+    // Reset flight legs to initial state
+    setFlightLegs([{
+      id: crypto.randomUUID(),
+      departureDate: '',
+      departureTime: '',
+      departureAirport: '',
+      arrivalAirport: '',
+      airportDetails: {
+        departure: null,
+        arrival: null
+      },
+      coordinates: {
+        departure: { lat: '', lng: '' },
+        arrival: { lat: '', lng: '' }
+      },
+      passengerCount: ''
+    }]);
+  
+    // Reset airport details
+    setAirportDetails({
+      departure: null,
+      arrival: null
+    });
+  
+    // Reset aircraft options to initial state
+    setAircraftOptions([{
+      id: '1',
+      name: '',
+      image1: null,
+      image2: null,
+      details: null,
+      imagePreview1: null,
+      imagePreview2: null,
+      yearOfManufacture: null,
+      price: null,
+      paxCapacity: null,
+      notes: null,
+      yearRefurbishment: null
+    }]);
+    setPdfResetTrigger(prev => prev + 1);
+    // Reset show map to default
+    setShowMap(true);
+  };
 
 
   // Convert state to PDF props
@@ -203,8 +260,9 @@ const [showMap, setShowMap] = useState(true);
       <div className="space-y-6">
         {/* Flight Information */}
         <div className="bg-white-50 p-6 rounded-md">
-  <div className="flex justify-between items-center mb-4">
-    <h2 className="text-xl font-semibold text-gray-800">Flight Details</h2>
+        <div className="flex justify-between items-center mb-4">
+  <h2 className="text-xl font-semibold text-gray-800">Flight Details</h2>
+  <div className="flex items-center space-x-2">
     <RecentSetupsPopover
       onSetupSelect={(setup) => {
         setFlightLegs(setup.flightLegs);
@@ -215,7 +273,28 @@ const [showMap, setShowMap] = useState(true);
         }));
       }}
     />
+    <button
+      onClick={resetForm}
+      className="p-1 hover:bg-gray-50 rounded-full"
+      title="Reset Form"
+    >
+      <svg 
+        xmlns="http://www.w3.org/2000/svg" 
+        className="w-8 h-8 text-gray-600 hover:text-gray-800"
+        fill="none" 
+        viewBox="0 0 24 24" 
+        stroke="currentColor"
+      >
+        <path 
+          strokeLinecap="round" 
+          strokeLinejoin="round" 
+          strokeWidth={1.5} 
+          d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" 
+        />
+      </svg>
+    </button>
   </div>
+</div>
           
           {/* Flight Legs */}
           <div className="space-y-4">
@@ -341,6 +420,7 @@ const [showMap, setShowMap] = useState(true);
           <PDFGenerator 
             formData={getPDFData()} 
             airportDetails={airportDetails}
+            resetTrigger={pdfResetTrigger}
           />
         </div>
       </div>
