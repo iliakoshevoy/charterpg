@@ -1,3 +1,4 @@
+//register.tsx
 "use client"; // Ensure this is at the top of the file
 
 import React, { useState } from "react";
@@ -51,12 +52,19 @@ export default function RegisterPage() {
 
     try {
       const { error: registrationError } = await register(email, password, firstName, lastName);
-
+    
       if (registrationError) {
-        setError(registrationError.message || 'Failed to register');
+        // Check specifically for email already exists error
+        if (registrationError.message?.includes('email already registered') || 
+            registrationError.message?.includes('already exists') ||
+            registrationError.message?.includes('already taken')) {
+          setError('This email address is already registered. Please use a different email or try logging in.');
+        } else {
+          setError(registrationError.message || 'Failed to register');
+        }
         return;
       }
-
+    
       setIsRegistered(true); // Show success message
     } catch (err) {
       setError('An unexpected error occurred');
