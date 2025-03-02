@@ -1,6 +1,5 @@
-// /api/webhooks/add-to-audience.ts
-
-import { NextApiRequest, NextApiResponse } from 'next';
+// src/app/api/webhooks/add-to-audience/route.ts
+import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
 import { createClient } from '@supabase/supabase-js';
 
@@ -17,27 +16,24 @@ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  // Only allow POST requests
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
-  }
-
+export async function POST(request: Request) {
+  console.log('Webhook received');
+  
   try {
-    // Optional: Verify webhook secret (if you decide to use one)
-    // const webhookSecret = req.headers['x-webhook-secret'];
-    // if (webhookSecret !== process.env.SUPABASE_WEBHOOK_SECRET) {
-    //   return res.status(401).json({ error: 'Unauthorized' });
-    // }
-
-    // Get user data from the webhook payload
-    const { record } = req.body;
+    // Parse the request body
+    const body = await request.json();
+    console.log('Webhook payload:', JSON.stringify(body));
     
-    // For INSERT webhook, we don't need to check old_record
-    // We just verify this is a user with confirmed email
+    // Get user data from the webhook payload
+    const { record } = body;
+    
+    // For INSERT webhook, we just verify this is a user with confirmed email
     if (!record.email_confirmed_at) {
-      return res.status(200).json({ message: 'User email not confirmed yet' });
+      console.log('User email not confirmed yet:', record.email);
+      return NextResponse.json({ message: 'User email not confirmed yet' }, { status: 200 });
     }
+    
+    console.log('Processing confirmed user:', record.email);
     
     // Get user's name from profiles table
     const { data: userData, error } = await supabase
@@ -49,14 +45,22 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (error) {
       console.error('Error fetching user profile:', error);
     }
+    
+    console.log('User profile data:', userData);
 
     const firstName = userData?.first_name || '';
     const lastName = userData?.last_name || '';
     
     // Try to add the user to Resend audience
     try {
+      console.log('Adding to Resend audience:', {
+        email: record.email,
+        firstName,
+        lastName
+      });
+      
       // Add user to Resend audience with their name
-      await resend.contacts.create({
+      const result = await resend.contacts.create({
         audienceId: AUDIENCE_ID,
         email: record.email,
         firstName: firstName,
@@ -64,20 +68,23 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         unsubscribed: false
       });
       
-      console.log(`Added user ${record.email} to confirmed users audience`);
+      console.log('Added user to audience, result:', result);
       
-      return res.status(200).json({ 
+      return NextResponse.json({ 
         message: 'User added to confirmed users audience successfully',
         data: {
           email: record.email,
           firstName: firstName
         }
-      });
+      }, { status: 200 });
+      
     } catch (error: any) {
+      console.error('Resend API error:', error);
+      
       // If user already exists (409 conflict), just update their info
       if (error.statusCode === 409) {
         try {
-          await resend.contacts.update({
+          const updateResult = await resend.contacts.update({
             audienceId: AUDIENCE_ID,
             email: record.email,
             firstName: firstName,
@@ -85,21 +92,26 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             unsubscribed: false
           });
           
-          return res.status(200).json({
+          console.log('Updated existing contact:', updateResult);
+          
+          return NextResponse.json({
             message: 'User already in audience, contact updated',
             data: { email: record.email }
-          });
+          }, { status: 200 });
+          
         } catch (updateError) {
           console.error('Error updating existing contact:', updateError);
         }
       }
       
-      console.error('Error adding contact to audience:', error);
-      return res.status(500).json({ error: 'Failed to add user to audience' });
+      return NextResponse.json({ 
+        error: 'Failed to add user to audience', 
+        details: error.message 
+      }, { status: 500 });
     }
     
   } catch (error) {
     console.error('Webhook error:', error);
-    return res.status(500).json({ error: 'Internal server error' });
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
