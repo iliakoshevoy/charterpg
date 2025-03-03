@@ -7,6 +7,7 @@ import Image from "next/image";
 import Layout from "@/components/Layout";
 import { useAuth } from "@/contexts/AuthContext";
 import ProposalForm from "@/components/ProposalForm";
+import FAQ from "@/components/FAQ";
 
 export default function Page() {
   const { user, isLoading } = useAuth();
@@ -27,6 +28,9 @@ export default function Page() {
     return (
       <Layout>
         <ProposalForm />
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <FAQ />
+        </div>
       </Layout>
     );
   }
@@ -40,15 +44,34 @@ export default function Page() {
           {/* Left column with text and button */}
           <div className="text-left">
             <h1 className="text-4xl font-bold text-gray-900 sm:text-3xl mb-3">
-              Easily Generate PDF Proposals From Your Phone or Laptop
+              Generate Professional Charter Proposals On Your Phone or Laptop
             </h1>
-            <h3 className="text-lg sm:text-xl md:text-2xl font-bold mb-8 text-blue-600 max-w-3xl text-left leading-relaxed">
-              Forget about Word, PowerPoint or Pages...
-              CPG makes proposals generation quicker, easier AND ON THE GO!
+            <h3 className="text-lg sm:text-xl md:text-2xl font-bold mb-4 text-blue-600 max-w-3xl text-left leading-relaxed">
+              Faster, easier, and ON THE GO!
             </h3>
-            <div className="mt-10">
+            
+            <ul className="text-black mb-8 space-y-2">
+              <li className="flex items-start">
+                <span className="text-blue-600 mr-2">•</span>
+                <span>Automatically include flight map</span>
+              </li>
+              <li className="flex items-start">
+                <span className="text-blue-600 mr-2">•</span>
+                <span>Up to 5 legs and jet options</span>
+              </li>
+              <li className="flex items-start">
+                <span className="text-blue-600 mr-2">•</span>
+                <span>200+ jet models with cabin sizes</span>
+              </li>
+              <li className="flex items-start">
+                <span className="text-blue-600 mr-2">•</span>
+                <span>Some jets include a generic picture</span>
+              </li>
+            </ul>
+            
+            <div className="mt-8">
               <a href="/templates/CHARTER_OFFER_EXAMPLE.pdf" download className="px-6 py-3 bg-blue-600 text-white text-lg font-medium rounded-md shadow-md hover:bg-blue-700 transition">
-                Check .PDF Example
+                Download .PDF Example
               </a>
             </div>
           </div>
@@ -68,7 +91,7 @@ export default function Page() {
           </div>
         </div>
 
-        {/* Additional Features Section */}
+        {/* Additional Features Section 
         <div className="mt-24 grid grid-cols-1 md:grid-cols-3 gap-8">
           <div className="bg-white p-6 rounded-lg shadow-md">
             <div className="text-blue-600 mb-4">
@@ -135,7 +158,11 @@ export default function Page() {
 
         </div>
         */}
-        <div className="mt-20 text-center">
+        
+        {/* FAQ Section - Added before the Get Started button */}
+        <FAQ />
+        
+        <div className="mt-10 text-center">
             <Link href="/register">
               <button className="px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white text-lg font-semibold rounded-md shadow-md transition duration-300 ease-in-out transform hover:scale-105">
                 GET STARTED NOW
