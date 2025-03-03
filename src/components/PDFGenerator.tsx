@@ -165,8 +165,20 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ formData, airportDetails, r
       const response = await fetch(pdfBlob);
       const blobData = await response.blob();
       
+      // Format current date as dd/mm/yyyy
+      const today = new Date();
+      const formattedDate = `${today.getDate().toString().padStart(2, '0')}${today.getMonth() + 1 < 10 ? '0' : ''}${today.getMonth() + 1}${today.getFullYear()}`;
+      
       // Create proper filename
-      const filename = `charter-offer-${formData.customerName || "proposal"}.pdf`;
+      let filename;
+      if (formData.customerName) {
+        // With customer name: "Charter for customerName.pdf {date}"
+        filename = `Charter for ${formData.customerName} ${formattedDate}.pdf`;
+      } else {
+        // Without customer name: "Charter from {first departure ICAO} {date}"
+        const departureICAO = formData.flightLegs[0]?.departureAirport || "Unknown";
+        filename = `Charter from ${departureICAO} ${formattedDate}.pdf`;
+      }
       
       // Check if we're in a mobile context and Web Share API is available
       if (navigator.share && /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
