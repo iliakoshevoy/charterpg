@@ -35,15 +35,36 @@ export default function Page() {
   return (
     <Layout>
       <div className="max-w-6xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
-        {/* Your existing landing page content */}
-        <div className="text-center mb-10">
-          <h1 className="text-4xl font-bold text-gray-900 sm:text-3xl mb-3">
-            Easily Generate PDF Proposals From Your Phone or Laptop
-          </h1>
-          <div className="mt-10">
-            <a href="/templates/CHARTER_OFFER_EXAMPLE.pdf" download className="px-6 py-3 bg-blue-600 text-white text-lg font-medium rounded-md shadow-md hover:bg-blue-700 transition">
-              Check .PDF Example
-            </a>
+        {/* Updated hero section with two columns */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center mb-10">
+          {/* Left column with text and button */}
+          <div className="text-left">
+            <h1 className="text-4xl font-bold text-gray-900 sm:text-3xl mb-3">
+              Easily Generate PDF Proposals From Your Phone or Laptop
+            </h1>
+            <h3 className="text-lg sm:text-xl md:text-2xl font-bold mb-8 text-blue-600 max-w-3xl text-left leading-relaxed">
+              Forget about Word, PowerPoint or Pages...
+              CPG makes proposals generation quicker, easier AND ON THE GO!
+            </h3>
+            <div className="mt-10">
+              <a href="/templates/CHARTER_OFFER_EXAMPLE.pdf" download className="px-6 py-3 bg-blue-600 text-white text-lg font-medium rounded-md shadow-md hover:bg-blue-700 transition">
+                Check .PDF Example
+              </a>
+            </div>
+          </div>
+          
+          {/* Right column with image */}
+          <div className="flex justify-center mt-12 md:mt-0">
+            <div className="relative group shadow-lg rounded-lg overflow-hidden transition-all duration-300 ease-in-out transform hover:shadow-xl shadow-blue-400/70 hover:shadow-blue-500/80">
+              <div className="absolute inset-0 bg-transparent group-hover:bg-blue-100/50 transition-all duration-300 ease-in-out"></div>
+              <Image 
+                src="/templates/CPG_form.png" 
+                alt="Charter Proposal Generator Form" 
+                width={500} 
+                height={400} 
+                className="object-contain relative z-10 transition-all duration-300 ease-in-out"
+              />
+            </div>
           </div>
         </div>
 
@@ -80,13 +101,10 @@ export default function Page() {
           </div>
         </div>
       
-        {/* HOW IT LOOKS Section */}
+        {/* HOW IT LOOKS Section - Temporarily hidden
         <div className="mt-20 mb-20">
           <h2 className="text-3xl font-bold text-center text-gray-900 mb-10">HOW INTERFACE LOOKS LIKE</h2>
-          <h3 className="text-lg sm:text-xl md:text-2xl font-bold mb-8 text-blue-600 max-w-3xl mx-auto text-center leading-relaxed">
-          CPG was designed to simplify the process for brokers,
-          making proposal generation quicker, easier AND ON THE GO!
-          </h3>
+          
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
             <div className="text-center">
               <h3 className="text-lg font-semibold mb-8 text-black">On Mobile</h3>
@@ -116,6 +134,7 @@ export default function Page() {
           
 
         </div>
+        */}
         <div className="mt-20 text-center">
             <Link href="/register">
               <button className="px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white text-lg font-semibold rounded-md shadow-md transition duration-300 ease-in-out transform hover:scale-105">

@@ -310,7 +310,7 @@ const ProposalPDF: React.FC<ProposalPDFProps> = (props) => {
       <Page size={[595.28, 'auto']} style={styles.page}>
       <View style={styles.header}>
   <View style={styles.headerLeft}>
-    <Text style={styles.headerText}>Charter Offer</Text>
+    <Text style={styles.headerText}>Charter Proposal</Text>
     {props.customerName && (
       <Text style={styles.customerName}>Prepared for: {props.customerName}</Text>
     )}
