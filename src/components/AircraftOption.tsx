@@ -74,7 +74,7 @@ const AircraftOption: React.FC<AircraftOptionProps> = ({
 const notesSuggestions = [
   "Subject to Owner's Approval.",
   "Empty Leg Conditions apply.",
-  "Fleet aircraft. The exact unit will be assigned a few days prior to the flight."
+  "Floating Fleet. You may get this aircraft or equivalent."
 ];
 const [showSuggestions, setShowSuggestions] = useState(false);
 const [filteredSuggestions, setFilteredSuggestions] = useState<string[]>([]);

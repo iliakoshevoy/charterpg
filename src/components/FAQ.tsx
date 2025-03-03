@@ -2,6 +2,7 @@
 "use client";
 
 import React, { useState } from 'react';
+import Image from 'next/image';
 
 interface FAQItem {
   question: string;
@@ -35,14 +36,28 @@ const FAQ: React.FC = () => {
     {
         question: "Can I add Charter PG to my mobile phone's home screen?",
         answer: (
-          <span>
-            Yes! It's super easy and takes just 10 seconds. Follow these instructions: 
-            <ol className="list-decimal list-inside mt-2 ml-4">
-              <li>Open www.charterpropgen.com in your mobile browser (Chrome, Safari, etc.)</li>
-              <li>On iOS: tap the share icon in the top right corner and select "Add to Home Screen"</li>
-              <li>On Android: tap the menu (three dots) and select "Add to Home Screen"</li>
-            </ol>
-          </span>
+          <div className="space-y-4">
+            <span>
+              Yes! It's super easy and takes just 10 seconds. Follow these instructions: 
+              <ol className="list-decimal list-inside mt-2 ml-4">
+                <li>Open www.charterpropgen.com in your mobile browser (Chrome, Safari, etc.)</li>
+                <li>On iOS: tap the share icon in the top right corner and select "Add to Home Screen"</li>
+                <li>On Android: tap the menu (three dots) and select "Add to Home Screen"</li>
+              </ol>
+              <p className="mt-2">Charter PG icon will appear now on your screen as any other mobile applications.</p>
+            </span>
+            <div className="flex justify-center mt-4">
+              <div className="relative shadow-lg rounded-lg overflow-hidden">
+                <Image 
+                  src="/templates/CPG_add_to_mobile.png" 
+                  alt="Add Charter PG to mobile home screen" 
+                  width={500} 
+                  height={420} 
+                  className="object-contain"
+                />
+              </div>
+            </div>
+          </div>
         )
       },
     {
@@ -92,7 +107,7 @@ const FAQ: React.FC = () => {
             </button>
             <div 
               className={`px-6 overflow-hidden transition-all duration-300 ease-in-out ${
-                openIndex === index ? 'max-h-96 py-4' : 'max-h-0 py-0'
+                openIndex === index ? 'max-h-[600px] py-4' : 'max-h-0 py-0'
               }`}
             >
               <div className="text-gray-600">

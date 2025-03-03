@@ -91,73 +91,45 @@ export default function Page() {
           </div>
         </div>
 
-        {/* Additional Features Section 
-        <div className="mt-24 grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="bg-white p-6 rounded-lg shadow-md">
-            <div className="text-blue-600 mb-4">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
-              </svg>
-            </div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">Mobile Optimized</h3>
-            <p className="text-gray-600">Add app to your home screen and create proposals on the go in minutes</p>
-          </div>
-          
-          <div className="bg-white p-6 rounded-lg shadow-md">
-            <div className="text-blue-600 mb-4">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-              </svg>
-            </div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">Airports & Jets Database</h3>
-            <p className="text-gray-600">Add airports by their name or ICAO/IATA codes. More than 200+ private jets with their dimensions</p>
-          </div>
-          
-          <div className="bg-white p-6 rounded-lg shadow-md">
-            <div className="text-blue-600 mb-4">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-  <path strokeLinecap="round" strokeLinejoin="round" d="M9 6.75V15m6-6v8.25m.503 3.498 4.875-2.437c.381-.19.622-.58.622-1.006V4.82c0-.836-.88-1.38-1.628-1.006l-3.869 1.934c-.317.159-.69.159-1.006 0L9.503 3.252a1.125 1.125 0 0 0-1.006 0L3.622 5.689C3.24 5.88 3 6.27 3 6.695V19.18c0 .836.88 1.38 1.628 1.006l3.869-1.934c.317-.159.69-.159 1.006 0l4.994 2.497c.317.158.69.158 1.006 0Z" />
-</svg>
-            </div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">Flight Map</h3>
-            <p className="text-gray-600">Automatically add flight map to your proposal</p>
-          </div>
+        {/* Section Divider */}
+        <div className="flex justify-center my-16">
+          <div className="w-16 h-1 bg-blue-500 rounded-full"></div>
         </div>
-      
-        {/* HOW IT LOOKS Section - Temporarily hidden
-        <div className="mt-20 mb-20">
-          <h2 className="text-3xl font-bold text-center text-gray-900 mb-10">HOW INTERFACE LOOKS LIKE</h2>
-          
+
+{/* Add to Mobile Home Screen Section */}
+<div className="mt-10 mb-16">
+          <h2 className="text-3xl font-bold text-center text-gray-900 mb-10">Add to Mobile Home Screen as an App</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-            <div className="text-center">
-              <h3 className="text-lg font-semibold mb-8 text-black">On Mobile</h3>
-              <div className="rounded-xl overflow-hidden shadow-lg flex justify-center">
+            {/* Left column with image */}
+            <div className="flex justify-center">
+              <div className="relative group shadow-lg rounded-lg overflow-hidden transition-all duration-300 ease-in-out transform hover:shadow-xl shadow-blue-400/70 hover:shadow-blue-500/80">
+                <div className="absolute inset-0 bg-transparent group-hover:bg-blue-100/50 transition-all duration-300 ease-in-out"></div>
                 <Image 
-                  src="/templates/CPG_mobile.gif" 
-                  alt="Mobile interface preview" 
-                  width={300} 
-                  height={500} 
-                  className="object-contain"
-                />
-              </div>
-            </div>
-            <div className="text-center">
-              <h3 className="text-lg font-semibold mb-8 text-black">On Desktop</h3>
-              <div className="rounded-xl overflow-hidden shadow-lg flex justify-center">
-                <Image 
-                  src="/templates/chartergenprop_interface.png" 
-                  alt="Desktop interface preview" 
+                  src="/templates/CPG_add_to_mobile.png" 
+                  alt="Add Charter PG to mobile home screen" 
                   width={500} 
                   height={400} 
-                  className="object-contain"
+                  className="object-contain relative z-10 transition-all duration-300 ease-in-out"
                 />
               </div>
             </div>
+            
+            {/* Right column with instructions */}
+            <div className="flex flex-col justify-center">
+              <ol className="list-decimal pl-5 space-y-4 text-lg text-gray-800">
+                <li className="pl-2">Open <span className="text-blue-600 font-medium">www.charterpropgen.com</span> in your mobile browser (Chrome, Safari, etc.)</li>
+                <li className="pl-2">On iOS: tap the share icon in the top right corner and select <span className="font-medium">"Add to Home Screen"</span></li>
+                <li className="pl-2">On Android: tap the menu (three dots) and select <span className="font-medium">"Add to Home Screen"</span></li>
+              </ol>
+              <p className="mt-6 text-lg text-gray-800">Charter PG icon will appear now on your screen as any other mobile application available for easy access.</p>
+            </div>
           </div>
-          
-
         </div>
-        */}
+
+        {/* Section Divider */}
+        <div className="flex justify-center my-16">
+          <div className="w-16 h-1 bg-blue-500 rounded-full"></div>
+        </div>
         
         {/* FAQ Section - Added before the Get Started button */}
         <FAQ />
