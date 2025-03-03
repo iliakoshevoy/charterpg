@@ -17,6 +17,10 @@ const FAQ: React.FC = () => {
 
   const faqItems: FAQItem[] = [
     {
+        question: "What is different compared to proposals made with Word, PowerPoint, or Pages?",
+        answer: "The main difference is that you can create a proposal on the go on your mobile phone. Additionally, Charter PG can automatically add a flight map, jet cabin sizes, some generic interior images, and more. Plus, you can skip the formatting hassle that comes with office tools when creating proposals with multiple legs."
+      },
+    {
       question: "Can developers see my charter proposals or customer name?",
       answer: "No, PDF file generation happens locally in your browser, so developers do not have access to the generated proposals or their information."
     },
