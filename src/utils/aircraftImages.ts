@@ -23,7 +23,7 @@ const aircraftImageMapping: AircraftImageMapping = {
     exterior: ''
   },
   'CHALLENGER 350': {
-      interior: '/aircraft-images/interior/CL300interior.jpg',
+      interior: '/aircraft-images/interior/CL350Interior.jpg',
       exterior: ''
     },
   'PHENOM 100': {
@@ -42,6 +42,14 @@ const aircraftImageMapping: AircraftImageMapping = {
             interior: '/aircraft-images/interior/Phenom100interior.jpg',
             exterior: ''
           },
+      'PHENOM 300': {
+          interior: '/aircraft-images/interior/PHENOM300interior.jpg',
+          exterior: ''
+        },
+        'PHENOM 300E': {
+          interior: '/aircraft-images/interior/PHENOM300Einterior.jpg',
+          exterior: ''
+        },
           'PILATUS PC-24': {
               interior: '/aircraft-images/interior/PC-24interior.jpg',
               exterior: ''
@@ -50,8 +58,52 @@ const aircraftImageMapping: AircraftImageMapping = {
                 interior: '/aircraft-images/interior/PC-12interior.jpg',
                 exterior: ''
               },
+            'PILATUS PC-12NG': {
+                interior: '/aircraft-images/interior/PC-12interior.jpg',
+                exterior: ''
+              },
               'PILATUS PC-12NGX': {
                   interior: '/aircraft-images/interior/PC-12NGXinterior.jpeg',
+                  exterior: ''
+                },
+                'LEARJET 60': {
+                  interior: '/aircraft-images/interior/Learjet60interior.jpg',
+                  exterior: ''
+                },
+                'LEARJET 60XR': {
+                  interior: '/aircraft-images/interior/Learjet60XRinterior.jpg',
+                  exterior: ''
+                },
+                'CITATION M2': {
+                  interior: '/aircraft-images/interior/CitationM2interior.jpg',
+                  exterior: ''
+                },
+                'CITATION M2 GEN 2': {
+                  interior: '/aircraft-images/interior/CitationM2interior.jpg',
+                  exterior: ''
+                },
+                'CITATION MUSTANG': {
+                  interior: '/aircraft-images/interior/CitationMustangInterior.jpg',
+                  exterior: ''
+                },
+                'CITATION XLS': {
+                  interior: '/aircraft-images/interior/CITATIONXLSinterior.jpg',
+                  exterior: ''
+                },
+                'CITATION XLS+': {
+                  interior: '/aircraft-images/interior/CITATIONXLSinterior.jpg',
+                  exterior: ''
+                },
+                'CITATION XLS GEN 2': {
+                  interior: '/aircraft-images/interior/CITATIONXLSgen2interior.jpg',
+                  exterior: ''
+                },
+                'CITATION CJ2': {
+                  interior: '/aircraft-images/interior/CitationCJ2interior.jpg',
+                  exterior: ''
+                },
+                'CITATION CJ2+': {
+                  interior: '/aircraft-images/interior/CitationCJ2interior.jpg',
                   exterior: ''
                 }
 };
