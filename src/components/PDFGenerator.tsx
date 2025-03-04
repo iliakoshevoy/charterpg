@@ -134,7 +134,7 @@ const PDFGenerator: React.FC<PDFGeneratorProps> = ({ formData, airportDetails, r
 
       // Track this proposal generation
       if (user) {
-        await incrementProposalCount(user.id);
+        await incrementProposalCount(user.id, user.email);
         // Refresh the stats after increment
         fetchUserStats();
       }
