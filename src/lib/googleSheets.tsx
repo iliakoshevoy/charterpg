@@ -41,6 +41,67 @@ export interface Airport {
   iata: string | null;
 }
 
+
+// Add this interface
+export interface JetRegistration {
+  registration: string;
+  serialNumber: string;
+  model: string;
+  yod: string; // Year of Delivery/Manufacture
+  yor: string | null; // Year of Refurbishment
+  pax: string;
+  notes: string | null;
+  picture1: string | null;
+  picture2: string | null;
+  modelSize: string;
+}
+
+// Add this function to fetch all jet registrations
+export async function getJetRegistrations(): Promise<JetRegistration[]> {
+  if (!SPREADSHEET_ID) throw new Error('Spreadsheet ID not found');
+  
+  try {
+    const doc = new GoogleSpreadsheet(SPREADSHEET_ID, auth);
+    await doc.loadInfo();
+    
+    const sheet = doc.sheetsByTitle['Jets'];
+    const rows = await sheet.getRows();
+
+    return rows.map((row: GoogleSpreadsheetRow) => ({
+      registration: row.get('registration') || '',
+      serialNumber: row.get('serial number') || '',
+      model: row.get('model') || '',
+      yod: row.get('YOD') || '',
+      yor: row.get('YOR') || null,
+      pax: row.get('pax') || '',
+      notes: row.get('notes') || null,
+      picture1: row.get('picture 1') || null,
+      picture2: row.get('picture 2') || null,
+      modelSize: row.get('model size') || ''
+    })).filter(jet => jet.registration);
+  } catch (error) {
+    console.error('Error fetching jet registration data:', error);
+    return [];
+  }
+}
+
+// Add this function to find a specific jet by registration (case-insensitive)
+export async function getJetByRegistration(registration: string): Promise<JetRegistration | null> {
+  if (!registration) return null;
+  
+  try {
+    const jets = await getJetRegistrations();
+    return jets.find(jet => 
+      jet.registration.toLowerCase() === registration.toLowerCase()
+    ) || null;
+  } catch (error) {
+    console.error('Error finding jet by registration:', error);
+    return null;
+  }
+}
+
+
+
 // Aircraft Data Functions
 export async function getAircraftData(): Promise<AircraftModel[]> {
   if (!SPREADSHEET_ID) throw new Error('Spreadsheet ID not found');
