@@ -415,11 +415,11 @@ const ProposalPDF: React.FC<ProposalPDFProps> = (props) => {
         Year of Refurbishment: {option.data.yearRefurbishment}
       </Text>
     )}
-    {option.data.details?.passengerCapacity && (
-      <Text style={styles.detailsText}>
-        Passenger Capacity: {option.data.details.passengerCapacity}
-      </Text>
-    )}
+{(option.data.paxCapacity || option.data.details?.passengerCapacity) && (
+  <Text style={styles.detailsText}>
+    Passenger Capacity: {option.data.paxCapacity || option.data.details?.passengerCapacity}
+  </Text>
+)}
     {option.data.details?.jetSize && (
   <Text style={styles.detailsText}>
     Size: {option.data.details.jetSize}

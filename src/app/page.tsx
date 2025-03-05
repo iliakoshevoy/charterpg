@@ -29,6 +29,10 @@ export default function Page() {
       <Layout>
         <ProposalForm />
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+                  {/* Section Divider */}
+        <div className="flex justify-center my-16 mt-40">
+          <div className="w-16 h-1 bg-blue-500 rounded-full"></div>
+        </div>
           <FAQ />
         </div>
       </Layout>
