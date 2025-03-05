@@ -2,11 +2,38 @@ import type { NextConfig } from 'next'
 import type { Configuration as WebpackConfig } from 'webpack'
 import withPWA from '@ducanh2912/next-pwa'
 
-const nextConfig = withPWA({
+// Define the type for the urlPattern function
+type URLPatternFn = {
+  url: {
+    pathname: string;
+    [key: string]: any;
+  };
+  [key: string]: any;
+};
+
+// Create your PWA configuration with type assertion
+const pwaConfig = {
   dest: 'public',
   register: true,
-  disable: process.env.NODE_ENV === 'development'
-})({
+  disable: process.env.NODE_ENV === 'development',
+} as any;
+
+// Add runtimeCaching to the pwaConfig
+pwaConfig.runtimeCaching = [
+  {
+    urlPattern: ({ url }: URLPatternFn) => url.pathname === '/api/airports',
+    handler: 'NetworkFirst',
+    options: {
+      cacheName: 'airports-api',
+      expiration: {
+        maxEntries: 4,
+        maxAgeSeconds: 60 * 60 * 24, // 1 day
+      },
+    },
+  }
+];
+
+const nextConfig = withPWA(pwaConfig)({
   reactStrictMode: false,
   eslint: {
     ignoreDuringBuilds: true,

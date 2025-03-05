@@ -1,9 +1,10 @@
-//AirportInput.tsx
+// /components/AirportInput.tsx
 "use client";
 import React, { useState, useEffect, useMemo } from 'react';
 import type { Airport } from '@/lib/googleSheets';
 import { Loader2 } from 'lucide-react';
 import debounce from 'lodash/debounce';
+import { airportDbService } from '@/lib/airportDbService';
 
 interface AirportInputProps {
   value: string;
@@ -25,7 +26,6 @@ const AirportInput: React.FC<AirportInputProps> = ({
   const [suggestions, setSuggestions] = useState<Airport[]>([]);
   const [selectedAirport, setSelectedAirport] = useState<Airport | null>(null);
   const [displayValue, setDisplayValue] = useState(value);
-  const [dataInitialized, setDataInitialized] = useState(false);
 
   // Helper function to format airport codes
   const formatAirportCodes = (airport: Airport): string => {
@@ -36,61 +36,68 @@ const AirportInput: React.FC<AirportInputProps> = ({
   };
 
   const debouncedSearch = useMemo(() => {
-    const debouncedFn = debounce((searchTerm: string, airportsData: Airport[]) => {
+    return debounce(async (searchTerm: string) => {
       if (searchTerm.length < 2) {
         setSuggestions([]);
         setIsLoadingSuggestions(false);
         return;
       }
 
-      const term = searchTerm.toLowerCase();
-      const filtered = airportsData.filter(airport => 
-        airport.icao.toLowerCase().includes(term) ||
-        (airport.iata?.toLowerCase().includes(term)) ||
-        airport.airportName.toLowerCase().includes(term)
-      );
-      
-      setSuggestions(filtered);
-      setIsLoadingSuggestions(false);
-    }, 500);
-
-    return debouncedFn;
+      try {
+        const results = await airportDbService.searchAirports(searchTerm, 20);
+        setSuggestions(results);
+      } catch (error) {
+        console.error('Error searching airports:', error);
+        setSuggestions([]);
+      } finally {
+        setIsLoadingSuggestions(false);
+      }
+    }, 300);
   }, []);
 
   useEffect(() => {
     let isMounted = true;
     
-    const CACHE_DURATION = 1000 * 60 * 60 * 24; // 24 hours
-
-    const initializeData = async () => {
-      if (!dataInitialized) {
+    const loadData = async () => {
+      if (isMounted) {
         setIsLoadingData(true);
+        
         try {
-          const cachedData = localStorage.getItem('airportsData');
-          const cacheTimestamp = localStorage.getItem('airportsDataTimestamp');
-          const now = Date.now();
+          // Try to get data from IndexedDB first
+          let airportsData = await airportDbService.getAllAirports();
+          const isStale = await airportDbService.isCacheStale();
           
-          if (cachedData && cacheTimestamp && (now - Number(cacheTimestamp)) < CACHE_DURATION) {
-            const data = JSON.parse(cachedData);
-            if (isMounted) {
-              setAirports(data);
-              setDataInitialized(true);
-              setIsLoadingData(false);
+          // If no data in IndexedDB or it's stale, fetch from API
+          if (airportsData.length === 0 || isStale) {
+            console.log('Fetching fresh airport data from API...');
+            const response = await fetch('/api/airports');
+            
+            if (!response.ok) {
+              throw new Error('Failed to fetch airports');
             }
+            
+            const data = await response.json();
+            
+            // Store in IndexedDB
+            await airportDbService.storeAirports(data);
+            airportsData = data;
           }
           
-          const response = await fetch('/api/airports');
-          if (!response.ok) throw new Error('Failed to fetch airports');
-          const data = await response.json();
-          
           if (isMounted) {
-            setAirports(data);
-            setDataInitialized(true);
-            localStorage.setItem('airportsData', JSON.stringify(data));
-            localStorage.setItem('airportsDataTimestamp', String(now));
+            setAirports(airportsData);
           }
         } catch (err) {
           console.error('Failed to load airports:', err);
+          
+          // Try to use existing data from IndexedDB if API fetch fails
+          try {
+            const fallbackData = await airportDbService.getAllAirports();
+            if (fallbackData.length > 0 && isMounted) {
+              setAirports(fallbackData);
+            }
+          } catch (fallbackErr) {
+            console.error('Failed to load fallback airport data:', fallbackErr);
+          }
         } finally {
           if (isMounted) {
             setIsLoadingData(false);
@@ -99,14 +106,15 @@ const AirportInput: React.FC<AirportInputProps> = ({
       }
     };
 
-    initializeData();
+    loadData();
+    
     return () => { 
       isMounted = false;
       if (debouncedSearch) {
-        (debouncedSearch as ReturnType<typeof debounce>).cancel?.();
+        debouncedSearch.cancel();
       }
     };
-  }, [dataInitialized, debouncedSearch]);
+  }, []);
 
   useEffect(() => {
     if (airports.length > 0 && value) {
@@ -126,7 +134,7 @@ const AirportInput: React.FC<AirportInputProps> = ({
     if (input.length >= 2) {
       setIsLoadingSuggestions(true);
       setShowSuggestions(true);
-      debouncedSearch(input, airports);
+      debouncedSearch(input);
     } else {
       setSuggestions([]);
       setShowSuggestions(false);
@@ -160,34 +168,33 @@ const AirportInput: React.FC<AirportInputProps> = ({
         {label}
       </label>
       <div className="relative">
-      
-<input
-  type="text"
-  value={displayValue}
-  onChange={handleInputChange}
-  onFocus={() => {
-    if (displayValue.length >= 2) {
-      setShowSuggestions(true);
-    }
-  }}
-  onBlur={() => {
-    setTimeout(() => {
-      setShowSuggestions(false);
-    }, 200);
-  }}
-  inputMode="text"
-  autoComplete="off"
-  autoCapitalize="off"
-  autoCorrect="off"
-  spellCheck="false"
-  className="w-full px-3 py-2 border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-800 bg-white pr-10 text-sm"
-  placeholder={placeholder}
-/>
-        {(isLoadingData || isLoadingSuggestions) && (
+        <input
+          type="text"
+          value={displayValue}
+          onChange={handleInputChange}
+          onFocus={() => {
+            if (displayValue.length >= 2) {
+              setShowSuggestions(true);
+            }
+          }}
+          onBlur={() => {
+            setTimeout(() => {
+              setShowSuggestions(false);
+            }, 200);
+          }}
+          inputMode="text"
+          autoComplete="off"
+          autoCapitalize="off"
+          autoCorrect="off"
+          spellCheck="false"
+          className="w-full px-3 py-2 border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-800 bg-white pr-10 text-sm"
+          placeholder={placeholder}
+        />
+        {isLoadingData || isLoadingSuggestions ? (
           <div className="absolute right-3 top-1/2 -translate-y-1/2">
             <Loader2 className="h-4 w-4 animate-spin text-gray-400" />
           </div>
-        )}
+        ) : null}
       </div>
       
       {showSuggestions && suggestions.length > 0 && (
