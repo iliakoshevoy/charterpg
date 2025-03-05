@@ -420,6 +420,11 @@ const ProposalPDF: React.FC<ProposalPDFProps> = (props) => {
         Passenger Capacity: {option.data.details.passengerCapacity}
       </Text>
     )}
+    {option.data.details?.jetSize && (
+  <Text style={styles.detailsText}>
+    Size: {option.data.details.jetSize}
+  </Text>
+)}
     {option.data.details?.cabinHeight && (
       <Text style={styles.detailsText}>
         Cabin Height: {option.data.details.cabinHeight}

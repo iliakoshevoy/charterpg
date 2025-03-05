@@ -27,6 +27,7 @@
     deliveryStart: string; 
     defaultInteriorImageUrl?: string;
     defaultExteriorImageUrl?: string;
+    jetSize?: string | null;
   }
 
 

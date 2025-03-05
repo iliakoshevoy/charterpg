@@ -208,7 +208,8 @@ const AircraftOption: React.FC<AircraftOptionProps> = ({
           passengerCapacity: modelDetails.passengerCapacity || jet.pax,
           deliveryStart: modelDetails.deliveryStart || jet.yod,
           defaultInteriorImageUrl: jet.picture1 || undefined,
-          defaultExteriorImageUrl: jet.picture2 || undefined
+          defaultExteriorImageUrl: jet.picture2 || undefined,
+          jetSize: modelDetails.jetSize || jet.modelSize || null
         };
         
         // Update the details
