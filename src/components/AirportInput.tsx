@@ -1,4 +1,3 @@
-// /components/AirportInput.tsx
 "use client";
 import React, { useState, useEffect, useMemo } from 'react';
 import type { Airport } from '@/lib/googleSheets';
@@ -35,6 +34,27 @@ const AirportInput: React.FC<AirportInputProps> = ({
     return airport.icao;
   };
 
+  // Sort function for airports - prioritize those with IATA codes and name relevance
+  const sortAirports = (airports: Airport[], searchTerm: string): Airport[] => {
+    const lowerSearchTerm = searchTerm.toLowerCase();
+    
+    return [...airports].sort((a, b) => {
+      // First priority: Exact match at the beginning of the name
+      const aStartsWithSearch = a.airportName.toLowerCase().startsWith(lowerSearchTerm);
+      const bStartsWithSearch = b.airportName.toLowerCase().startsWith(lowerSearchTerm);
+      
+      if (aStartsWithSearch && !bStartsWithSearch) return -1;
+      if (!aStartsWithSearch && bStartsWithSearch) return 1;
+      
+      // Second priority: Has IATA code (airports with IATA come first)
+      if (a.iata && !b.iata) return -1;
+      if (!a.iata && b.iata) return 1;
+      
+      // Third priority: Sort by airport name alphabetically
+      return a.airportName.localeCompare(b.airportName);
+    });
+  };
+
   const debouncedSearch = useMemo(() => {
     return debounce(async (searchTerm: string) => {
       if (searchTerm.length < 2) {
@@ -45,7 +65,9 @@ const AirportInput: React.FC<AirportInputProps> = ({
 
       try {
         const results = await airportDbService.searchAirports(searchTerm, 20);
-        setSuggestions(results);
+        // Sort results to prioritize exact name matches and airports with IATA codes
+        const sortedResults = sortAirports(results, searchTerm);
+        setSuggestions(sortedResults);
       } catch (error) {
         console.error('Error searching airports:', error);
         setSuggestions([]);
