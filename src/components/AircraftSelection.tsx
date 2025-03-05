@@ -124,7 +124,8 @@ const AircraftSelection: React.FC<AircraftSelectionProps> = ({
         passengerCapacity: selectedAircraft.passengerCapacity,
         defaultInteriorImageUrl: interiorBase64,
         defaultExteriorImageUrl: exteriorBase64,
-        deliveryStart: selectedAircraft.deliveryStart
+        deliveryStart: selectedAircraft.deliveryStart,
+        jetSize: selectedAircraft.jetSize
       };
       console.log('Details being sent to parent:', details); // Add this line
       onAircraftSelect(details);
@@ -135,7 +136,8 @@ const AircraftSelection: React.FC<AircraftSelectionProps> = ({
         cabinHeight: selectedAircraft.cabinHeight,
         baggageVolume: selectedAircraft.baggageVolume,
         passengerCapacity: selectedAircraft.passengerCapacity,
-        deliveryStart: selectedAircraft.deliveryStart 
+        deliveryStart: selectedAircraft.deliveryStart,
+        jetSize: selectedAircraft.jetSize
       });
     }
     
