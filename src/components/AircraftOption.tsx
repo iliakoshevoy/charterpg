@@ -100,6 +100,21 @@ const AircraftOption: React.FC<AircraftOptionProps> = ({
   const [filteredRegistrations, setFilteredRegistrations] = useState<JetRegistration[]>([]);
   const [isSearching, setIsSearching] = useState(false);
 
+  // Reset search state when modal is closed
+  const handleCloseModal = () => {
+    setShowRegistrationModal(false);
+    setSearchRegistration('');
+    setFilteredRegistrations([]);
+  };
+  
+  // Effect to clear search when modal is opened
+  useEffect(() => {
+    if (showRegistrationModal) {
+      setSearchRegistration('');
+      setFilteredRegistrations([]);
+    }
+  }, [showRegistrationModal]);
+
   // API function to search jet registrations
   const searchJetRegistrations = async (query: string): Promise<JetRegistration[]> => {
     if (!query || query.length < 1) return [];
@@ -203,7 +218,8 @@ const AircraftOption: React.FC<AircraftOptionProps> = ({
       console.error('Error fetching model details:', error);
     }
     
-    setShowRegistrationModal(false);
+    // Reset the search state and close the modal
+    handleCloseModal();
   };
 
   const handleNotesChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -722,8 +738,7 @@ const AircraftOption: React.FC<AircraftOptionProps> = ({
   return (
     <div className={`space-y-4 transition-all duration-300 ease-in-out ${isMobile ? 'px-0 p-1' : 'px-6 p-6'} bg-gray-50 rounded-md ${className}`}>
       {isMobile ? renderMobileLayout() : renderDesktopLayout()}
-
-
+  
       {/* Registration Modal */}
       {showRegistrationModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -731,7 +746,7 @@ const AircraftOption: React.FC<AircraftOptionProps> = ({
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-medium text-gray-800">Aircraft Registration Lookup</h3>
               <button
-                onClick={() => setShowRegistrationModal(false)}
+                onClick={handleCloseModal}
                 className="text-gray-400 hover:text-gray-500"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -751,7 +766,7 @@ const AircraftOption: React.FC<AircraftOptionProps> = ({
                   type="text"
                   value={searchRegistration}
                   onChange={(e) => handleRegistrationInputChange(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
                   placeholder="e.g. N12345 or OE-"
                   autoFocus
                 />
@@ -766,10 +781,10 @@ const AircraftOption: React.FC<AircraftOptionProps> = ({
                       >
                         <div className="font-medium text-blue-700">{jet.registration}</div>
                         <div className="grid grid-cols-2 gap-1 mt-1 text-sm">
-                          <div><span className="text-gray-600">Model:</span> {jet.model}</div>
-                          <div><span className="text-gray-600">Year:</span> {jet.yod}</div>
-                          <div><span className="text-gray-600">Refurb:</span> {jet.yor || 'N/A'}</div>
-                          <div><span className="text-gray-600">Pax:</span> {jet.pax}</div>
+                          <div><span className="text-gray-700 font-medium">Model:</span> <span className="text-gray-900">{jet.model}</span></div>
+                          <div><span className="text-gray-700 font-medium">Year:</span> <span className="text-gray-900">{jet.yod}</span></div>
+                          <div><span className="text-gray-700 font-medium">Refurb:</span> <span className="text-gray-900">{jet.yor || 'N/A'}</span></div>
+                          <div><span className="text-gray-700 font-medium">Pax:</span> <span className="text-gray-900">{jet.pax}</span></div>
                         </div>
                       </div>
                     ))}
@@ -806,7 +821,7 @@ const AircraftOption: React.FC<AircraftOptionProps> = ({
             </div>
             
             <button
-              onClick={() => setShowRegistrationModal(false)}
+              onClick={handleCloseModal}
               className="mt-4 w-full border border-gray-300 text-gray-700 py-2 rounded-md hover:bg-gray-50"
             >
               Cancel
@@ -814,8 +829,8 @@ const AircraftOption: React.FC<AircraftOptionProps> = ({
           </div>
         </div>
       )}
-    </div>
-  );
+  </div>
+);
 };
 
 export default AircraftOption;
