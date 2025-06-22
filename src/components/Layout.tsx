@@ -156,8 +156,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         &copy; {new Date().getFullYear()} Charter Proposal Generator
       </span>
       <span>
-        <a href="mailto:info@charterpropgen.com" className="text-blue-600 hover:underline">
-          Contact Us: info@charterpropgen.com
+        <a href="mailto:info@jetsintel.com" className="text-blue-600 hover:underline">
+          Contact Us: info@jetsintel.com
         </a>
       </span>
       <span>

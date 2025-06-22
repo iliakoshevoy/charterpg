@@ -803,7 +803,7 @@ const AircraftOption: React.FC<AircraftOptionProps> = ({
                         // Generate mailto link with subject
                         const subject = `Please add aircraft registration: ${searchRegistration}`;
                         const body = `Hi,\n\nPlease add the following aircraft to the database:\n\nRegistration: ${searchRegistration}\n\nThank you!`;
-                        window.location.href = `mailto:info@charterpropgen.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+                        window.location.href = `mailto:info@jetsintel.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
                       }}
                       className="mt-3 text-sm text-blue-600 hover:text-blue-800 underline"
                     >

@@ -71,11 +71,11 @@ const FAQ: React.FC = () => {
     },
     {
         question: "Can I have a custom-made proposal layout for my company?",
-        answer: "Yes, we can try to accomodate this. Write us an email to info@charterpropgen.com"
+        answer: "Yes, we can try to accomodate this. Write us an email to info@jetsintel.com"
       },
     {
       question: "I have a suggestion, a question, or found a bug!",
-      answer: "Please email us at info@charterpropgen.com — we'll definitely reply!"
+      answer: "Please email us at info@jetsintel.com — we'll definitely reply!"
     }
   ];
 
